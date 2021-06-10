@@ -11,6 +11,9 @@ class UsersContextProvider extends Component {
         following: ["lex", "joe", "adin", "travis", "luka"],
         followers: ["lex", "joe", "adin", "travis", "luka"],
         pfpSource: require("../assets/user.png"),
+        bio: "n u t r i t i o n",
+        available: 33351.12,
+        pending: 1000000.00
       },
       lex: {
         firstName: "Lex",
@@ -20,6 +23,9 @@ class UsersContextProvider extends Component {
         pfpSource: {
           uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
         },
+        bio: '"This is the real secret of life -- to be completely engaged with what you are doing in the here and now. And instead of calling it work, realize it is play." - Alan Watts',
+        available: 33351.12,
+        pending: 1000000.00
       },
       joe: {
         firstName: "Joe",
@@ -29,6 +35,10 @@ class UsersContextProvider extends Component {
         pfpSource: {
           uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg",
         },
+        bio: "I love making Italian food. And coconut chicken",
+        available: 33351.12,
+        pending: 1000000.00
+
       },
       adin: {
         firstName: "Adin",
@@ -38,6 +48,9 @@ class UsersContextProvider extends Component {
         pfpSource: {
           uri: "https://informone.com/wp-content/uploads/2021/04/adinross-4f375e.jpg",
         },
+        bio: "world is so soft",
+        available: 33351.12,
+        pending: 1000000.00
       },
       luka: {
         firstName: "Luka",
@@ -47,6 +60,9 @@ class UsersContextProvider extends Component {
         pfpSource: {
           uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",
         },
+        bio: "To succeed you have to believe in something with such passion that it becomes a reality.",
+        available: 33351.12,
+        pending: 1000000.00
       },
       travis: {
         firstName: "Travis",
@@ -54,6 +70,9 @@ class UsersContextProvider extends Component {
         following: ["luka", "adin"],
         followers: ["lex", "adin"],
         pfpSource: { uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg" },
+        bio: "If she bad, she get a pass into the tour",
+        available: 33351.12,
+        pending: 1000000.00
       },
     },
   };
