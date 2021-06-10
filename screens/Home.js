@@ -2,9 +2,9 @@ import React, { Component, useState } from "react";
 import { FlatList, Text, View, StyleSheet, Image } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
-import FeedItem from './components/FeedItem';
+import FeedItem from "./components/FeedItem";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const user = "lex";
 
   const users = React.useContext(UsersContext).users;
@@ -17,11 +17,13 @@ const HomeScreen = () => {
       {(context) => (
         <FeedItem
           pfpSource={context.users[item.user].pfpSource}
+          userName={item.user}
           firstName={context.users[item.user].firstName}
           lastName={context.users[item.user].lastName}
           title={item.title}
           imageURL={item.imageURL}
           likes={item.likes}
+          navigation={navigation}
         />
       )}
     </UsersContext.Consumer>
@@ -46,7 +48,7 @@ const HomeScreen = () => {
       <View>
         <Text
           style={{
-            color: 'white',
+            color: "white",
             fontSize: 40,
             fontWeight: "600",
             paddingTop: 30,

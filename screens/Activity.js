@@ -15,10 +15,11 @@ import { Octicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
 
-const ActivityScreen = ({ navigation }) => {
-    
+const ActivityScreen = ({ navigation}) => {
+
   const users = React.useContext(UsersContext).users;
-  const user = "lex";
+  //const user = navigation.state.params.user;
+  const user = 'lex';
   const userData = users[user];
   const userFeed = React.useContext(PostsContext).posts.filter(
     (post) => post.user === user

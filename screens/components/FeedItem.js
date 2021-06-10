@@ -1,8 +1,17 @@
 import React from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 
-function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
+function FeedItem({
+  pfpSource,
+  userName,
+  firstName,
+  lastName,
+  title,
+  imageURL,
+  likes,
+  navigation,
+}) {
   return (
     <View
       style={{
@@ -13,10 +22,24 @@ function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
         paddingHorizontal: 10,
       }}
     >
-      <Image
-        source={pfpSource}
-        style={{ width: 50, height: 50, marginRight: 10, borderRadius: 30 }}
-      />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(
+            "Profile",
+            {},
+            {
+              type: "Navigate",
+              routeName: "HomeStackNavigator",
+              params: { user: userName },
+            }
+          );
+        }}
+      >
+        <Image
+          source={pfpSource}
+          style={{ width: 50, height: 50, marginRight: 10, borderRadius: 30 }}
+        />
+      </TouchableOpacity>
       <View>
         <Text
           style={{
@@ -52,7 +75,13 @@ function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
             {title}
           </Text>
         </View>
-        <View style={{ flexDirection: "row", alignSelf: "flex-end", alignContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignSelf: "flex-end",
+            alignContent: "center",
+          }}
+        >
           <EvilIcons name="heart" size={24} color="white" />
           <Text style={{ paddingLeft: 5, color: "white", fontWeight: "200" }}>
             {likes}
@@ -74,7 +103,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignItems: "center",
     resizeMode: "contain",
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
 });
 export default FeedItem;
