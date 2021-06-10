@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
+import { EvilIcons } from "@expo/vector-icons";
 
 function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
   return (
@@ -20,9 +21,9 @@ function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
         <Text
           style={{
             paddingTop: 7,
-            fontWeight: "bold",
+            fontWeight: "400",
             fontSize: 16.0,
-            color: "black",
+            color: "white",
           }}
         >
           {firstName} {lastName} bought:
@@ -39,20 +40,23 @@ function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
           }}
         >
           <Image source={{ uri: imageURL }} style={styles.itemImage} />
-          <Text style={{ flex: 1, flexWrap: "wrap", flexShrink: 1 }}>
+          <Text
+            style={{
+              color: "white",
+              fontWeight: "300",
+              flex: 1,
+              flexWrap: "wrap",
+              flexShrink: 1,
+            }}
+          >
             {title}
           </Text>
         </View>
-        <View style={{ flexDirection: "row", alignSelf: "flex-end" }}>
-          <Image
-            source={require("../../assets/heart.png")}
-            style={{
-              width: 20,
-              height: 20,
-              resizeMode: "contain",
-            }}
-          />
-          <Text style={{ paddingLeft: 5 }}>{likes}</Text>
+        <View style={{ flexDirection: "row", alignSelf: "flex-end", alignContent: 'center' }}>
+          <EvilIcons name="heart" size={24} color="white" />
+          <Text style={{ paddingLeft: 5, color: "white", fontWeight: "200" }}>
+            {likes}
+          </Text>
         </View>
       </View>
     </View>
@@ -61,6 +65,7 @@ function FeedItem({ pfpSource, firstName, lastName, title, imageURL, likes }) {
 
 const styles = StyleSheet.create({
   itemImage: {
+    borderColor: "#4d4b4b",
     width: 200,
     height: 200,
     borderRadius: 20,
@@ -69,6 +74,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignItems: "center",
     resizeMode: "contain",
+    backgroundColor: 'white'
   },
 });
 export default FeedItem;

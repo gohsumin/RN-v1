@@ -6,102 +6,172 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import { Octicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import FeedItem from "./components/FeedItem";
 
 const ActivityScreen = ({ navigation }) => {
+    
   const users = React.useContext(UsersContext).users;
-  const user = "joe";
+  const user = "lex";
   const userData = users[user];
+  const userFeed = React.useContext(PostsContext).posts.filter(
+    (post) => post.user === user
+  );
   const feed = React.useContext(PostsContext).posts.filter((post) =>
     users[user].following.includes(post.user)
   );
-  const balanceData = [
-    { title: "Available:", amount: userData.available },
-    { title: "Pending:", amount: userData.pending },
-  ];
 
-  const renderItem = ({ item }) => {
-    <Text style={{ fontSize: 20, color: "#ffffff" }}>HELLO</Text>;
-    /* <View style={{ flexDirection: "row", alignContent: "center" }}>
-        <View>
-          <Text
-            style={{
-              color: item.title === "Available" ? "#3CB371" : "#DC143C",
-            }}
-          >
-            {item.title}
-          </Text>
-          <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: "bold" }}>
-            {item.amount}
-          </Text>
-        </View>
-        <Octicons name="right" size={18} color="#539dfc" />
-      </View> */
-  };
+  const renderBalanceItem = (title, amount, index) => (
+    <View
+      style={{
+        flexDirection: "row",
+        width: "100%",
+        paddingVertical: 6,
+        paddingLeft: 12,
+        alignItems: "center",
+        backgroundColor: "#1d1b1b",
+      }}
+    >
+      <View style={{ flex: 9 }}>
+        <Text
+          style={{
+            fontSize: 14,
+            color: index === 0 ? "#3CB371" : "#DC143C",
+          }}
+        >
+          {title}
+        </Text>
+        <Text
+          style={{
+            padding: 2,
+            color: "#ffffff",
+            fontSize: 20,
+            fontWeight: "bold",
+          }}
+        >
+          {amount}
+        </Text>
+      </View>
+      <Entypo
+        style={{ flex: 1 }}
+        name="chevron-thin-right"
+        size={18}
+        color="#539dfc"
+      />
+    </View>
+  );
+
+  const renderItem = ({ item }) => (
+    <FeedItem
+      pfpSource={userData.pfpSource}
+      firstName={userData.firstName}
+      lastName={userData.lastName}
+      title={item.title}
+      imageURL={item.imageURL}
+      likes={item.likes}
+    />
+  );
 
   const renderSeparator = () => {
     return (
       <View
         style={{
           height: 0.3,
-          width: "90%",
-          backgroundColor: "#000",
+          width: "95%",
+          backgroundColor: "#808080",
           opacity: 0.5,
-          alignSelf: "center",
+          alignSelf: "flex-end",
         }}
       />
     );
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={userData.pfpSource}
-        style={{ width: 150, height: 150, borderRadius: 15 }}
-      />
-      <Text
-        style={{
-          fontWeight: "bold",
-          fontSize: 23,
-          color: "#ffffff",
-          marginTop: 12,
-        }}
-      >
-        {userData.firstName} {userData.lastName}{" "}
-        <Octicons name="verified" size={18} color="#539dfc" />
-      </Text>
-      <Text
-        style={{
-          color: "#ffffff",
-          fontSize: 14,
-          marginVertical: 16,
-          marginHorizontal: 45,
-          textAlign: "center",
-          lineHeight: 18,
-        }}
-      >
-        {userData.bio}
-      </Text>
-      <TouchableOpacity
-        style={{
-          width: 170,
-          alignItems: "center",
-          backgroundColor: "#2d2b2b",
-          padding: 12,
-          borderRadius: 4,
-        }}
-      >
-        <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
-      </TouchableOpacity>
-      <FlatList
-        data={balanceData}
-        renderItem={renderItem}
-        ItemSeparatorComponent={renderSeparator}
-      />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Image
+          source={userData.pfpSource}
+          style={{ width: 150, height: 150, borderRadius: 15 }}
+        />
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 23,
+            color: "#ffffff",
+            marginTop: 12,
+          }}
+        >
+          {userData.firstName} {userData.lastName}{" "}
+          <Octicons name="verified" size={18} color="#539dfc" />
+        </Text>
+        <Text
+          style={{
+            color: "#ffffff",
+            fontSize: 14,
+            marginVertical: 16,
+            marginHorizontal: 45,
+            textAlign: "center",
+            lineHeight: 18,
+          }}
+        >
+          {userData.bio}
+        </Text>
+        <TouchableOpacity
+          style={{
+            width: 170,
+            alignItems: "center",
+            backgroundColor: "#2d2b2b",
+            padding: 12,
+            borderRadius: 4,
+          }}
+        >
+          <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
+        </TouchableOpacity>
+
+        <View style={{ marginTop: 30 }}>
+          <Text
+            style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+          >
+            MY BALANCE
+          </Text>
+
+          <View style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}>
+            {renderBalanceItem("Available:", 10, 0)}
+            {renderSeparator()}
+            {renderBalanceItem("Pending:", 120, 1)}
+          </View>
+        </View>
+
+        <View style={{ marginVertical: 30 }}>
+          <Text
+            style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+          >
+            MY POSTS
+          </Text>
+
+          <View
+            style={{
+              width: "100%",
+              borderRadius: 9,
+              backgroundColor: "#151515",
+              overflow: "hidden",
+            }}
+          >
+            <FlatList
+              data={userFeed}
+              renderItem={renderItem}
+              ItemSeparatorComponent={renderSeparator}
+            />
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 export default ActivityScreen;
@@ -111,7 +181,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#000000",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingTop: 60,
   },
 });

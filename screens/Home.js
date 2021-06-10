@@ -1,16 +1,15 @@
 import React, { Component, useState } from "react";
 import { FlatList, Text, View, StyleSheet, Image } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import FeedItem from './components/FeedItem';
 
 const HomeScreen = () => {
-  const user = "joe";
+  const user = "lex";
 
   const users = React.useContext(UsersContext).users;
   const feed = React.useContext(PostsContext).posts.filter((post) =>
-    users[user].following.includes(post.user)
+    users[user].following.concat(user).includes(post.user)
   );
 
   const renderItem = ({ item }) => (
@@ -33,10 +32,10 @@ const HomeScreen = () => {
       <View
         style={{
           height: 0.3,
-          width: "90%",
-          backgroundColor: "#000",
+          width: "95%",
+          backgroundColor: "#808080",
           opacity: 0.5,
-          alignSelf: "center",
+          alignSelf: "flex-end",
         }}
       />
     );
@@ -47,8 +46,9 @@ const HomeScreen = () => {
       <View>
         <Text
           style={{
+            color: 'white',
             fontSize: 40,
-            fontWeight: "bold",
+            fontWeight: "600",
             paddingTop: 30,
             paddingBottom: 20,
           }}
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 60,
     paddingHorizontal: 15,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#050505",
   },
   itemImage: {
     width: 200,
