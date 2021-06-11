@@ -25,6 +25,7 @@ const HomeScreen = ({ navigation }) => {
           imageURL={item.imageURL}
           likes={item.likes}
           navigation={navigation}
+          width={100}
         />
       )}
     </UsersContext.Consumer>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -15,11 +15,10 @@ import { Octicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
 
-const ActivityScreen = ({ navigation}) => {
-
+const ActivityScreen = ({ navigation }) => {
   const users = React.useContext(UsersContext).users;
   //const user = navigation.state.params.user;
-  const user = 'michelle';
+  const user = "michelle";
   const userData = users[user];
   const userFeed = React.useContext(PostsContext).posts.filter(
     (post) => post.user === user
@@ -27,6 +26,8 @@ const ActivityScreen = ({ navigation}) => {
   const feed = React.useContext(PostsContext).posts.filter((post) =>
     users[user].following.includes(post.user)
   );
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const [toggleRender, setToggleRender] = useState(false);
 
   const renderBalanceItem = (title, amount, index) => (
     <View
@@ -43,7 +44,7 @@ const ActivityScreen = ({ navigation}) => {
         <Text
           style={{
             fontSize: 14,
-            fontWeight: '500',
+            fontWeight: "500",
             color: index === 0 ? "#3CB371" : "#ff7400",
           }}
         >
@@ -69,7 +70,7 @@ const ActivityScreen = ({ navigation}) => {
     </View>
   );
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item } /* , width */) => (
     <FeedItem
       pfpSource={userData.pfpSource}
       userName={user}
@@ -80,6 +81,8 @@ const ActivityScreen = ({ navigation}) => {
       imageURL={item.imageURL}
       likes={item.likes}
       navigation={navigation}
+      key={item.key}
+      width={flatListWidth}
     />
   );
 
@@ -157,7 +160,11 @@ const ActivityScreen = ({ navigation}) => {
           </View>
         </View>
 
-        <View style={{ marginVertical: 30 }}>
+        <View style={{ marginVertical: 30 }}onLayout={(event) => {
+              setFlatListWidth(event.nativeEvent.layout.width);
+              setToggleRender(!toggleRender);
+              console.log(event.nativeEvent.layout.width);
+            }}>
           <Text
             style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
           >
@@ -171,11 +178,28 @@ const ActivityScreen = ({ navigation}) => {
               backgroundColor: "#151515",
               overflow: "hidden",
             }}
+            
           >
             {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
             <FlatList
               data={userFeed}
-              renderItem={renderItem}
+              renderItem={({ item }) => (
+                <FeedItem
+                  pfpSource={userData.pfpSource}
+                  userName={user}
+                  firstName={userData.firstName}
+                  lastName={userData.lastName}
+                  title={item.title}
+                  timePosted={item.datePosted}
+                  imageURL={item.imageURL}
+                  likes={item.likes}
+                  navigation={navigation}
+                  key={item.key}
+                  width={flatListWidth}
+                />
+              )}
+              extraData={toggleRender}
+              keyExtractor={(item) => item.datePosted}
               ItemSeparatorComponent={renderSeparator}
             />
           </View>
