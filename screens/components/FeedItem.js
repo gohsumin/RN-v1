@@ -1,42 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
 import { getElapsedTime } from "../../helpers/postsHelpers";
 
-function FeedItem({
-  pfpSource,
-  userName,
-  firstName,
-  lastName,
-  title,
-  timePosted,
-  imageURL,
-  likes,
-  navigation,
-  key,
-  width
-}) {
+function FeedItem(props) {
+  const {
+    pfpSource,
+    userName,
+    firstName,
+    lastName,
+    title,
+    timePosted,
+    imageURL,
+    likes,
+    navigation,
+    key,
+    width,
+  } = props;
   const horLeftRatio = 0.15;
   const horRightRatio = 1 - horLeftRatio;
 
-  const [leftGridWidth, setLeftGridWidth] = useState(width*horLeftRatio);
-  const [rightGridWidth, setRightGridWidth] = useState(width*horRightRatio);
+  const [totalWidth, setTotalWidth] = useState(0);
+  const [leftGridWidth, setLeftGridWidth] = useState(0);
+  const [rightGridWidth, setRightGridWidth] = useState(0);
 
   const itemImageRatio = 0.6;
   const titleRatio = 1 - itemImageRatio;
 
   return (
     <View
+      key={key}
       onLayout={(event) => {
-        setLeftGridWidth(event.nativeEvent.layout.width * horLeftRatio);
-        setRightGridWidth(event.nativeEvent.layout.width * horRightRatio);
-        console.log("hey");
+        setTotalWidth(width);
+        setLeftGridWidth(width * horLeftRatio);
+        setRightGridWidth(width * horRightRatio);
       }}
       key={key}
       style={{
-        width: "100%",
+        width: totalWidth,
         flexDirection: "row",
         marginVertical: 10,
+        justifyContent: 'center',
       }}
     >
       {/* profile pic */}

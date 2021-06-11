@@ -102,7 +102,15 @@ const ActivityScreen = ({ navigation }) => {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          backgroundColor: "#000000",
+          paddingHorizontal: 15,
+          paddingTop: 60,
+        }}
+      >
         <Image
           source={userData.pfpSource}
           style={{ width: 150, height: 150, borderRadius: 15 }}
@@ -146,7 +154,13 @@ const ActivityScreen = ({ navigation }) => {
           <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
         </TouchableOpacity>
 
-        <View style={{ marginTop: 30 }}>
+        <View
+          style={{ marginTop: 30 }}
+          onLayout={(event) => {
+            setFlatListWidth(event.nativeEvent.layout.width);
+            setToggleRender(!toggleRender);
+          }}
+        >
           <Text
             style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
           >
@@ -160,11 +174,7 @@ const ActivityScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ marginVertical: 30 }}onLayout={(event) => {
-              setFlatListWidth(event.nativeEvent.layout.width);
-              setToggleRender(!toggleRender);
-              console.log(event.nativeEvent.layout.width);
-            }}>
+        <View style={{ marginVertical: 30 }}>
           <Text
             style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
           >
@@ -173,12 +183,12 @@ const ActivityScreen = ({ navigation }) => {
 
           <View
             style={{
-              width: "100%",
+              width: flatListWidth,
               borderRadius: 9,
               backgroundColor: "#151515",
               overflow: "hidden",
+              alignItems: 'center'
             }}
-            
           >
             {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
             <FlatList
@@ -195,7 +205,7 @@ const ActivityScreen = ({ navigation }) => {
                   likes={item.likes}
                   navigation={navigation}
                   key={item.key}
-                  width={flatListWidth}
+                  width={flatListWidth*.9}
                 />
               )}
               extraData={toggleRender}
@@ -210,12 +220,4 @@ const ActivityScreen = ({ navigation }) => {
 };
 export default ActivityScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "#000000",
-    paddingHorizontal: 15,
-    paddingTop: 60,
-  },
-});
+

@@ -11,6 +11,8 @@ const HomeScreen = ({ navigation }) => {
   const feed = React.useContext(PostsContext).posts.filter((post) =>
     users[user].following.concat(user).includes(post.user)
   );
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const [toggleRender, setToggleRender] = useState(false);
 
   const renderItem = ({ item }) => (
     <UsersContext.Consumer>
@@ -25,7 +27,8 @@ const HomeScreen = ({ navigation }) => {
           imageURL={item.imageURL}
           likes={item.likes}
           navigation={navigation}
-          width={100}
+          key={item.key}
+          width={0}
         />
       )}
     </UsersContext.Consumer>
@@ -65,38 +68,48 @@ const HomeScreen = ({ navigation }) => {
   };
   /* return for HomeScreen */
   return (
-    <View style={styles.container}>
-      <PostsContext.Consumer>
-        {(context) => (
-          <FlatList
-            data={feed}
-            renderItem={renderItem}
-            ListHeaderComponent={renderHeader}
-            ItemSeparatorComponent={renderSeparator}
-          />
-        )}
-      </PostsContext.Consumer>
+    <View
+      style={{
+        flex: 1,
+        paddingTop: 60,
+        paddingHorizontal: 15,
+        backgroundColor: "#050505",
+      }}
+    >
+      <View
+        onLayout={(event) => {
+          setFlatListWidth(event.nativeEvent.layout.width);
+          setToggleRender(!toggleRender);
+        }}
+      >
+        <PostsContext.Consumer>
+          {(context) => (
+            <FlatList
+              data={feed}
+              renderItem={({ item }) => (
+                <FeedItem
+                  pfpSource={users[item.user].pfpSource}
+                  userName={item.user}
+                  firstName={users[item.user].firstName}
+                  lastName={users[item.user].lastName}
+                  title={item.title}
+                  timePosted={item.datePosted}
+                  imageURL={item.imageURL}
+                  likes={item.likes}
+                  navigation={navigation}
+                  key={item.key}
+                  width={flatListWidth}
+                />
+              )}
+              ListHeaderComponent={renderHeader}
+              ItemSeparatorComponent={renderSeparator}
+              keyExtractor={(item) => item.datePosted}
+            />
+          )}
+        </PostsContext.Consumer>
+      </View>
     </View>
   );
 };
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 15,
-    backgroundColor: "#050505",
-  },
-  itemImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 20,
-    borderWidth: 0.2,
-    marginTop: 10,
-    marginRight: 10,
-    alignItems: "center",
-    resizeMode: "contain",
-  },
-});
