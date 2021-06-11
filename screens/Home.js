@@ -21,6 +21,7 @@ const HomeScreen = ({ navigation }) => {
           firstName={context.users[item.user].firstName}
           lastName={context.users[item.user].lastName}
           title={item.title}
+          timePosted={item.datePosted}
           imageURL={item.imageURL}
           likes={item.likes}
           navigation={navigation}

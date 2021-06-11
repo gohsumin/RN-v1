@@ -1,6 +1,8 @@
 import React from "react";
 import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { EvilIcons } from "@expo/vector-icons";
+import { getElapsedTime } from "../../helpers/postsHelpers";
+import Moment from "moment";
 
 function FeedItem({
   pfpSource,
@@ -8,6 +10,7 @@ function FeedItem({
   firstName,
   lastName,
   title,
+  timePosted,
   imageURL,
   likes,
   navigation,
@@ -44,7 +47,7 @@ function FeedItem({
         <Text
           style={{
             paddingTop: 7,
-            fontWeight: "400",
+            fontWeight: "500",
             fontSize: 16.0,
             color: "white",
           }}
@@ -52,11 +55,11 @@ function FeedItem({
           {firstName} {lastName} bought:
         </Text>
         <Text style={{ paddingTop: 3, fontSize: 14.0, color: "gray" }}>
-          19 hours ago
+          {getElapsedTime(timePosted)}
         </Text>
         <View
           style={{
-            width: 290,
+            width: 280,
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
@@ -65,8 +68,9 @@ function FeedItem({
           <Image source={{ uri: imageURL }} style={styles.itemImage} />
           <Text
             style={{
-              color: "white",
+              color: "#cecece",
               fontWeight: "300",
+              fontSize: 15,
               flex: 1,
               flexWrap: "wrap",
               flexShrink: 1,
@@ -95,8 +99,8 @@ function FeedItem({
 const styles = StyleSheet.create({
   itemImage: {
     borderColor: "#4d4b4b",
-    width: 200,
-    height: 200,
+    width: 190,
+    height: 190,
     borderRadius: 20,
     borderWidth: 0.2,
     marginTop: 10,

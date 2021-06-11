@@ -19,7 +19,7 @@ const ActivityScreen = ({ navigation}) => {
 
   const users = React.useContext(UsersContext).users;
   //const user = navigation.state.params.user;
-  const user = 'lex';
+  const user = 'michelle';
   const userData = users[user];
   const userFeed = React.useContext(PostsContext).posts.filter(
     (post) => post.user === user
@@ -43,7 +43,8 @@ const ActivityScreen = ({ navigation}) => {
         <Text
           style={{
             fontSize: 14,
-            color: index === 0 ? "#3CB371" : "#DC143C",
+            fontWeight: '500',
+            color: index === 0 ? "#3CB371" : "#ff7400",
           }}
         >
           {title}
@@ -71,11 +72,14 @@ const ActivityScreen = ({ navigation}) => {
   const renderItem = ({ item }) => (
     <FeedItem
       pfpSource={userData.pfpSource}
+      userName={user}
       firstName={userData.firstName}
       lastName={userData.lastName}
       title={item.title}
+      timePosted={item.datePosted}
       imageURL={item.imageURL}
       likes={item.likes}
+      navigation={navigation}
     />
   );
 
@@ -102,7 +106,8 @@ const ActivityScreen = ({ navigation}) => {
         />
         <Text
           style={{
-            fontWeight: "bold",
+            fontWeight: "700",
+            letterSpacing: 0.4,
             fontSize: 23,
             color: "#ffffff",
             marginTop: 12,
@@ -114,9 +119,12 @@ const ActivityScreen = ({ navigation}) => {
         <Text
           style={{
             color: "#ffffff",
-            fontSize: 14,
-            marginVertical: 16,
-            marginHorizontal: 45,
+            fontSize: 15,
+            fontWeight: "500",
+            letterSpacing: 0.2,
+            marginTop: 16,
+            marginBottom: 20,
+            marginHorizontal: 35,
             textAlign: "center",
             lineHeight: 18,
           }}
@@ -143,9 +151,9 @@ const ActivityScreen = ({ navigation}) => {
           </Text>
 
           <View style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}>
-            {renderBalanceItem("Available:", 10, 0)}
+            {renderBalanceItem("Available:", userData.available, 0)}
             {renderSeparator()}
-            {renderBalanceItem("Pending:", 120, 1)}
+            {renderBalanceItem("Pending:", userData.pending, 1)}
           </View>
         </View>
 
@@ -164,6 +172,7 @@ const ActivityScreen = ({ navigation}) => {
               overflow: "hidden",
             }}
           >
+            {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
             <FlatList
               data={userFeed}
               renderItem={renderItem}
