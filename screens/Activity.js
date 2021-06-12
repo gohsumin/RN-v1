@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { LogBox } from "react-native";
 import {
   Text,
   View,
@@ -11,14 +12,16 @@ import {
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
+import AppContext from "../data/AppContext";
 import { Octicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
+import AppContextProvider from "../data/AppContextProvider";
 
-const ActivityScreen = ({ navigation }) => {
+const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
-  //const user = navigation.state.params.user;
-  const user = "michelle";
+  const { user } = route.params;
+  const isUser = React.useContext(AppContext).user === user;
   const userData = users[user];
   const userFeed = React.useContext(PostsContext).posts.filter(
     (post) => post.user === user
@@ -28,6 +31,16 @@ const ActivityScreen = ({ navigation }) => {
   );
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
+
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+
+  useEffect(() => {
+    userFeed.forEach((post) => {
+      Image.prefetch(post.imageSource.uri);
+    });
+  });
 
   const renderBalanceItem = (title, amount, index) => (
     <View
@@ -70,22 +83,6 @@ const ActivityScreen = ({ navigation }) => {
     </View>
   );
 
-  const renderItem = ({ item } /* , width */) => (
-    <FeedItem
-      pfpSource={userData.pfpSource}
-      userName={user}
-      firstName={userData.firstName}
-      lastName={userData.lastName}
-      title={item.title}
-      timePosted={item.datePosted}
-      imageURL={item.imageURL}
-      likes={item.likes}
-      navigation={navigation}
-      key={item.key}
-      width={flatListWidth}
-    />
-  );
-
   const renderSeparator = () => {
     return (
       <View
@@ -106,11 +103,23 @@ const ActivityScreen = ({ navigation }) => {
         style={{
           flex: 1,
           alignItems: "center",
-          backgroundColor: "#000000",
+          backgroundColor: "black",
           paddingHorizontal: 15,
           paddingTop: 60,
         }}
       >
+        <View
+          style={{
+            backgroundColor: "pink",
+            width: "100%",
+            height: 0,
+            position: "absolute",
+          }}
+          onLayout={(event) => {
+            setFlatListWidth(event.nativeEvent.layout.width);
+            setToggleRender(!toggleRender);
+          }}
+        />
         <Image
           source={userData.pfpSource}
           style={{ width: 150, height: 150, borderRadius: 15 }}
@@ -119,7 +128,7 @@ const ActivityScreen = ({ navigation }) => {
           style={{
             fontWeight: "700",
             letterSpacing: 0.4,
-            fontSize: 23,
+            fontSize: 25,
             color: "#ffffff",
             marginTop: 12,
           }}
@@ -132,7 +141,6 @@ const ActivityScreen = ({ navigation }) => {
             color: "#ffffff",
             fontSize: 15,
             fontWeight: "500",
-            letterSpacing: 0.2,
             marginTop: 16,
             marginBottom: 20,
             marginHorizontal: 35,
@@ -142,44 +150,45 @@ const ActivityScreen = ({ navigation }) => {
         >
           {userData.bio}
         </Text>
-        <TouchableOpacity
-          style={{
-            width: 170,
-            alignItems: "center",
-            backgroundColor: "#2d2b2b",
-            padding: 12,
-            borderRadius: 4,
-          }}
-        >
-          <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
-        </TouchableOpacity>
 
-        <View
-          style={{ marginTop: 30 }}
-          onLayout={(event) => {
-            setFlatListWidth(event.nativeEvent.layout.width);
-            setToggleRender(!toggleRender);
-          }}
-        >
-          <Text
-            style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+        {isUser && (
+          <TouchableOpacity
+            style={{
+              width: 170,
+              alignItems: "center",
+              backgroundColor: "#2d2b2b",
+              padding: 12,
+              borderRadius: 4,
+            }}
           >
-            MY BALANCE
-          </Text>
-
-          <View style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}>
-            {renderBalanceItem("Available:", userData.available, 0)}
-            {renderSeparator()}
-            {renderBalanceItem("Pending:", userData.pending, 1)}
+            <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
+          </TouchableOpacity>
+        )}
+        {isUser && (
+          <View style={{ marginTop: 30 }}>
+            <Text
+              style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+            >
+              MY BALANCE
+            </Text>
+            <View
+              style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}
+            >
+              {renderBalanceItem("Available:", userData.available, 0)}
+              {renderSeparator()}
+              {renderBalanceItem("Pending:", userData.pending, 1)}
+            </View>
           </View>
-        </View>
+        )}
 
         <View style={{ marginVertical: 30 }}>
-          <Text
-            style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
-          >
-            MY POSTS
-          </Text>
+          {isUser && (
+            <Text
+              style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+            >
+              MY POSTS
+            </Text>
+          )}
 
           <View
             style={{
@@ -187,7 +196,7 @@ const ActivityScreen = ({ navigation }) => {
               borderRadius: 9,
               backgroundColor: "#151515",
               overflow: "hidden",
-              alignItems: 'center'
+              alignItems: "center",
             }}
           >
             {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
@@ -201,11 +210,11 @@ const ActivityScreen = ({ navigation }) => {
                   lastName={userData.lastName}
                   title={item.title}
                   timePosted={item.datePosted}
-                  imageURL={item.imageURL}
+                  imageSource={item.imageSource}
                   likes={item.likes}
                   navigation={navigation}
                   key={item.key}
-                  width={flatListWidth*.9}
+                  width={flatListWidth * 0.9}
                 />
               )}
               extraData={toggleRender}
@@ -219,5 +228,3 @@ const ActivityScreen = ({ navigation }) => {
   );
 };
 export default ActivityScreen;
-
-

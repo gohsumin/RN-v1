@@ -11,9 +11,9 @@ function FeedItem(props) {
     lastName,
     title,
     timePosted,
-    imageURL,
+    imageSource,
     likes,
-    navigation,
+    navigate,
     key,
     width,
   } = props;
@@ -35,26 +35,17 @@ function FeedItem(props) {
         setLeftGridWidth(width * horLeftRatio);
         setRightGridWidth(width * horRightRatio);
       }}
-      key={key}
       style={{
         width: totalWidth,
         flexDirection: "row",
         marginVertical: 10,
-        justifyContent: 'center',
+        justifyContent: "center",
       }}
     >
       {/* profile pic */}
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate(
-            "Profile",
-            {},
-            {
-              type: "Navigate",
-              routeName: "HomeStackNavigator",
-              params: { user: userName },
-            }
-          );
+          navigate(userName);
         }}
         style={{
           width: leftGridWidth,
@@ -103,21 +94,10 @@ function FeedItem(props) {
             paddingTop: 10,
           }}
         >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate(
-                "Profile",
-                {},
-                {
-                  type: "Navigate",
-                  routeName: "HomeStackNavigator",
-                  params: { user: userName },
-                }
-              );
-            }}
-          >
+          <TouchableOpacity>
             <Image
-              source={{ uri: imageURL }}
+              source={imageSource}
+              transition={false}
               style={{
                 borderColor: "#4d4b4b",
                 width: rightGridWidth * itemImageRatio,

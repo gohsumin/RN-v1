@@ -1,38 +1,25 @@
-import React, { Component, useState } from "react";
-import { FlatList, Text, View, StyleSheet, Image } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
+import { FlatList, Text, View, Image } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
+import AppContext from "../data/AppContext";
 import FeedItem from "./components/FeedItem";
+import { BlurView } from "expo-blur";
 
 const HomeScreen = ({ navigation }) => {
-  const user = "lex";
-
-  const users = React.useContext(UsersContext).users;
-  const feed = React.useContext(PostsContext).posts.filter((post) =>
+  const user = useContext(AppContext).user;
+  const users = useContext(UsersContext).users;
+  const feed = useContext(PostsContext).posts.filter((post) =>
     users[user].following.concat(user).includes(post.user)
   );
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
 
-  const renderItem = ({ item }) => (
-    <UsersContext.Consumer>
-      {(context) => (
-        <FeedItem
-          pfpSource={context.users[item.user].pfpSource}
-          userName={item.user}
-          firstName={context.users[item.user].firstName}
-          lastName={context.users[item.user].lastName}
-          title={item.title}
-          timePosted={item.datePosted}
-          imageURL={item.imageURL}
-          likes={item.likes}
-          navigation={navigation}
-          key={item.key}
-          width={0}
-        />
-      )}
-    </UsersContext.Consumer>
-  );
+  useEffect(() => {
+    feed.forEach((post) => {
+      Image.prefetch(post.imageSource.uri);
+    });
+  });
 
   const renderSeparator = () => {
     return (
@@ -50,7 +37,14 @@ const HomeScreen = ({ navigation }) => {
 
   const renderHeader = () => {
     return (
-      <View>
+      <View style={{ backgroundColor: "transparent", position: "absolute" }}>
+        <BlurView
+          style={{
+            height: "100%",
+            position: "absolute",
+          }}
+          intensity={100}
+        />
         <Text
           style={{
             color: "white",
@@ -58,14 +52,21 @@ const HomeScreen = ({ navigation }) => {
             fontWeight: "600",
             paddingTop: 30,
             paddingBottom: 20,
+            backgroundColor: "transparent",
+            paddingTop: 60,
+            paddingHorizontal: 15,
           }}
         >
           Home
         </Text>
-        {renderSeparator()}
       </View>
     );
   };
+
+  function navigate(screen, user) {
+    navigation.navigate(screen, { user: user });
+  }
+
   /* return for HomeScreen */
   return (
     <View
@@ -73,7 +74,6 @@ const HomeScreen = ({ navigation }) => {
         flex: 1,
         paddingTop: 60,
         paddingHorizontal: 15,
-        backgroundColor: "#050505",
       }}
     >
       <View
@@ -82,31 +82,54 @@ const HomeScreen = ({ navigation }) => {
           setToggleRender(!toggleRender);
         }}
       >
-        <PostsContext.Consumer>
-          {(context) => (
-            <FlatList
-              data={feed}
-              renderItem={({ item }) => (
-                <FeedItem
-                  pfpSource={users[item.user].pfpSource}
-                  userName={item.user}
-                  firstName={users[item.user].firstName}
-                  lastName={users[item.user].lastName}
-                  title={item.title}
-                  timePosted={item.datePosted}
-                  imageURL={item.imageURL}
-                  likes={item.likes}
-                  navigation={navigation}
-                  key={item.key}
-                  width={flatListWidth}
-                />
-              )}
-              ListHeaderComponent={renderHeader}
-              ItemSeparatorComponent={renderSeparator}
-              keyExtractor={(item) => item.datePosted}
+        <FlatList
+          data={feed}
+          renderItem={({ item }) => (
+            <FeedItem
+              pfpSource={users[item.user].pfpSource}
+              userName={item.user}
+              firstName={users[item.user].firstName}
+              lastName={users[item.user].lastName}
+              title={item.title}
+              timePosted={item.datePosted}
+              imageSource={item.imageSource}
+              likes={item.likes}
+              navigate={(user) => {
+                navigate("Profile", user);
+              }}
+              key={item.key}
+              width={flatListWidth}
             />
           )}
-        </PostsContext.Consumer>
+          ListHeaderComponent={<View style={{ height: 68, width: '100%', backgroundColor: 'black' }} />}
+          ItemSeparatorComponent={renderSeparator}
+          keyExtractor={(item) => item.datePosted}
+        />
+      </View>
+      <View style={{ backgroundColor: "transparent", position: "absolute", left:0, right:0 }}>
+        <BlurView
+          style={{
+            height: "100%",
+            width: '100%',
+            position: "absolute",
+          }}
+          intensity={100}
+          blurTint='dark'
+        />
+        <Text
+          style={{
+            color: "white",
+            fontSize: 40,
+            fontWeight: "600",
+            paddingTop: 30,
+            paddingBottom: 20,
+            backgroundColor: "transparent",
+            paddingTop: 60,
+            paddingHorizontal: 15,
+          }}
+        >
+          Home
+        </Text>
       </View>
     </View>
   );

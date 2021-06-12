@@ -8,44 +8,40 @@ import { HomeStackNavigator } from "./HomeStackNavigator";
 import { ActivityStackNavigator } from "./ActivityStackNavigator";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 
 function TabBar() {
   return (
     <Tab.Navigator
-      activeColor="white"
-      inactiveColor="gray"
-      tintColor="white"
-      barStyle={{ backgroundColor: "#5d5d5d" }}
+    barStyle={{ backgroundColor: 'black' }}
+    shifting={true}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Explore") {
+            iconName = focused ?  "search" : "search-outline";
+          } else {
+            iconName = focused ? "person-circle": "person-circle-outline";
+          }
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: "dodgerblue",
+        inactiveTintColor: "gainsboro",
+        style: {
+          backgroundColor: 'black'
+        }
+      }}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: "Feed",
-          tabBarIcon: ({ tintColor }) => (
-            <Entypo name="home" size={24} color={tintColor} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Clubs"
-        component={ClubsScreen}
-        options={{
-          tabBarLabel: "Browse",
-          tabBarIcon: ({ tintColor }) => (
-            <AntDesign name="search1" size={24} color={tintColor} />
-          ),
-        }}
-      />
-      <Tab.Screen name="Activity" component={ActivityStackNavigator}
-      options={{
-        tabBarLabel: "Profile",
-        tabBarIcon: ({ tintColor }) => (
-          <AntDesign name="user" size={24} color={tintColor} />
-        )
-      }}/>
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen name="Explore" component={ClubsScreen} />
+      <Tab.Screen name="Profile" component={ActivityStackNavigator} />
     </Tab.Navigator>
   );
 }
