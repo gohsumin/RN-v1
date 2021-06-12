@@ -36,11 +36,11 @@ const ActivityScreen = ({ route, navigation }) => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
-  useEffect(() => {
+  /* useEffect(() => {
     userFeed.forEach((post) => {
       Image.prefetch(post.imageSource.uri);
     });
-  });
+  }); */
 
   const renderBalanceItem = (title, amount, index) => (
     <View

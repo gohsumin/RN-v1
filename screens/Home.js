@@ -15,11 +15,11 @@ const HomeScreen = ({ navigation }) => {
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
 
-  useEffect(() => {
+  /* useEffect(() => {
     feed.forEach((post) => {
       Image.prefetch(post.imageSource.uri);
     });
-  });
+  }); */
 
   const renderSeparator = () => {
     return (

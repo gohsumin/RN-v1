@@ -27,6 +27,10 @@ function FeedItem(props) {
   const itemImageRatio = 0.6;
   const titleRatio = 1 - itemImageRatio;
 
+/*   useEffect(() => {
+    Image.prefetch(imageSource.uri);
+  }); */
+
   return (
     <View
       key={key}

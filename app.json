@@ -22,6 +22,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "splash": {
+      "image": "./assets/loading.gif",
+      "resizeMode": "cover",
+      "backgroundColor": "#000000"
     }
   }
 }
