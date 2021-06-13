@@ -4,11 +4,14 @@ import AppContext from "./AppContext";
 class AppContextProvider extends Component {
   state = {
     user: "michelle",
+    theme: "dark",
   };
 
   render() {
     return (
-      <AppContext.Provider value={{ user: this.state.user }}>
+      <AppContext.Provider
+        value={{ user: this.state.user, theme: this.state.theme }}
+      >
         {this.props.children}
       </AppContext.Provider>
     );

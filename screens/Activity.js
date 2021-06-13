@@ -3,20 +3,18 @@ import { LogBox } from "react-native";
 import {
   Text,
   View,
-  StyleSheet,
   Image,
   TouchableOpacity,
   FlatList,
   ScrollView,
-  SafeAreaView,
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
+import ThemeContext from "../data/ThemeContext";
 import { Octicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
-import AppContextProvider from "../data/AppContextProvider";
 
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
@@ -29,18 +27,14 @@ const ActivityScreen = ({ route, navigation }) => {
   const feed = React.useContext(PostsContext).posts.filter((post) =>
     users[user].following.includes(post.user)
   );
+  const theme = React.useContext(AppContext).theme;
+  const colors = React.useContext(ThemeContext).colors[theme];
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
-
-  /* useEffect(() => {
-    userFeed.forEach((post) => {
-      Image.prefetch(post.imageSource.uri);
-    });
-  }); */
 
   const renderBalanceItem = (title, amount, index) => (
     <View
@@ -50,7 +44,7 @@ const ActivityScreen = ({ route, navigation }) => {
         paddingVertical: 6,
         paddingLeft: 12,
         alignItems: "center",
-        backgroundColor: "#1d1b1b",
+        backgroundColor: colors.balanceItemBackground,
       }}
     >
       <View style={{ flex: 9 }}>
@@ -58,7 +52,9 @@ const ActivityScreen = ({ route, navigation }) => {
           style={{
             fontSize: 14,
             fontWeight: "500",
-            color: index === 0 ? "#3CB371" : "#ff7400",
+            letterSpacing: 0.2,
+            color:
+              index === 0 ? colors.availableBalance : colors.pendingBalance,
           }}
         >
           {title}
@@ -66,7 +62,8 @@ const ActivityScreen = ({ route, navigation }) => {
         <Text
           style={{
             padding: 2,
-            color: "#ffffff",
+            letterSpacing: 0.4,
+            color: colors.antiBackground,
             fontSize: 20,
             fontWeight: "bold",
           }}
@@ -78,7 +75,7 @@ const ActivityScreen = ({ route, navigation }) => {
         style={{ flex: 1 }}
         name="chevron-thin-right"
         size={18}
-        color="#539dfc"
+        color={colors.blue}
       />
     </View>
   );
@@ -103,14 +100,14 @@ const ActivityScreen = ({ route, navigation }) => {
         style={{
           flex: 1,
           alignItems: "center",
-          backgroundColor: "black",
+          backgroundColor: colors.background,
           paddingHorizontal: 15,
-          paddingTop: 60,
+          paddingTop: 40,
         }}
       >
+        {/* this is just for getting the width inside the padding */}
         <View
           style={{
-            backgroundColor: "pink",
             width: "100%",
             height: 0,
             position: "absolute",
@@ -120,29 +117,32 @@ const ActivityScreen = ({ route, navigation }) => {
             setToggleRender(!toggleRender);
           }}
         />
+        {/* profile image */}
         <Image
           source={userData.pfpSource}
-          style={{ width: 150, height: 150, borderRadius: 15 }}
+          style={{ width: 170, height: 170, borderRadius: 15 }}
         />
+        {/* user name and verified icon */}
         <Text
           style={{
             fontWeight: "700",
-            letterSpacing: 0.4,
-            fontSize: 25,
-            color: "#ffffff",
-            marginTop: 12,
+            letterSpacing: 0.1,
+            fontSize: 26,
+            color: colors.antiBackground,
+            marginTop: 20,
           }}
         >
           {userData.firstName} {userData.lastName}{" "}
-          <Octicons name="verified" size={18} color="#539dfc" />
+          <Octicons name="verified" size={18} color={colors.blue} />
         </Text>
+        {/* bio */}
         <Text
           style={{
-            color: "#ffffff",
+            color: colors.antiBackground,
             fontSize: 15,
-            fontWeight: "500",
-            marginTop: 16,
-            marginBottom: 20,
+            fontWeight: "400",
+            marginTop: 12,
+            marginBottom: 12,
             marginHorizontal: 35,
             textAlign: "center",
             lineHeight: 18,
@@ -152,22 +152,30 @@ const ActivityScreen = ({ route, navigation }) => {
         </Text>
 
         {isUser && (
+          /* edit profile button */
           <TouchableOpacity
             style={{
               width: 170,
               alignItems: "center",
-              backgroundColor: "#2d2b2b",
-              padding: 12,
+              backgroundColor: colors.editProfileButton,
+              padding: 10,
+              marginTop: 25,
               borderRadius: 4,
             }}
           >
-            <Text style={{ color: "#ffffff" }}>Edit Profile</Text>
+            <Text style={{ color: colors.antiBackground }}>Edit Profile</Text>
           </TouchableOpacity>
         )}
         {isUser && (
+          /* balance information */
           <View style={{ marginTop: 30 }}>
             <Text
-              style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+              style={{
+                color: colors.smallText,
+                alignSelf: "flex-start",
+                paddingLeft: 5,
+                paddingBottom: 5,
+              }}
             >
               MY BALANCE
             </Text>
@@ -180,21 +188,25 @@ const ActivityScreen = ({ route, navigation }) => {
             </View>
           </View>
         )}
-
         <View style={{ marginVertical: 30 }}>
           {isUser && (
             <Text
-              style={{ color: "#6d6b6b", alignSelf: "flex-start", padding: 5 }}
+              style={{
+                color: colors.smallText,
+                alignSelf: "flex-start",
+                paddingLeft: 5,
+                paddingBottom: 5,
+              }}
             >
               MY POSTS
             </Text>
           )}
-
+          {/* user's posts */}
           <View
             style={{
               width: flatListWidth,
               borderRadius: 9,
-              backgroundColor: "#151515",
+              backgroundColor: colors.profileFeedBackground,
               overflow: "hidden",
               alignItems: "center",
             }}
@@ -214,12 +226,13 @@ const ActivityScreen = ({ route, navigation }) => {
                   likes={item.likes}
                   navigation={navigation}
                   key={item.key}
-                  width={flatListWidth * 0.9}
+                  width={flatListWidth * 0.96}
                 />
               )}
               extraData={toggleRender}
               keyExtractor={(item) => item.datePosted}
               ItemSeparatorComponent={renderSeparator}
+              ListFooterComponent={<View style={{ height: 60 }} />}
             />
           </View>
         </View>

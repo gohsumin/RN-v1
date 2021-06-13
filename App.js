@@ -4,6 +4,7 @@ import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import UsersContextProvider from "./data/UsersContextProvider";
 import PostsContextProvider from "./data/PostsContextProvider";
 import AppContextProvider from "./data/AppContextProvider";
+import ThemeContextProvider from "./data/ThemeContextProvider";
 import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 
@@ -35,6 +36,7 @@ export default class App extends React.Component {
       require("./assets/maggieofarrell.png"),
       require("./assets/margaretmacmillan.png"),
       require("./assets/robertkolker.png"),
+      require("./assets/headerbg.jpeg"),
     ]);
 
     await Promise.all([...imageAssets]);
@@ -53,13 +55,15 @@ export default class App extends React.Component {
     return (
       /* Contexts can be composed later into a single component. */
       <AppContextProvider>
-        <UsersContextProvider>
-          <PostsContextProvider>
-            <NavigationContainer>
-              <TabBar />
-            </NavigationContainer>
-          </PostsContextProvider>
-        </UsersContextProvider>
+        <ThemeContextProvider>
+          <UsersContextProvider>
+            <PostsContextProvider>
+              <NavigationContainer>
+                <TabBar />
+              </NavigationContainer>
+            </PostsContextProvider>
+          </UsersContextProvider>
+        </ThemeContextProvider>
       </AppContextProvider>
     );
   }

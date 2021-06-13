@@ -9,13 +9,18 @@ import { ActivityStackNavigator } from "./ActivityStackNavigator";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
+import AppContext from "../data/AppContext";
+import ThemeContext from "../data/ThemeContext";
 
 const Tab = createBottomTabNavigator();
 
 function TabBar() {
+  
+  const theme = React.useContext(AppContext).theme;
+  const colors = React.useContext(ThemeContext).colors[theme];
+
   return (
     <Tab.Navigator
-    barStyle={{ backgroundColor: 'black' }}
     shifting={true}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
@@ -26,16 +31,21 @@ function TabBar() {
           } else if (route.name === "Explore") {
             iconName = focused ?  "search" : "search-outline";
           } else {
-            iconName = focused ? "person-circle": "person-circle-outline";
+            iconName = focused ? "person": "person-outline";
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
-        activeTintColor: "dodgerblue",
+        activeTintColor: colors.blue,
         inactiveTintColor: "gainsboro",
+        indicatorStyle: {
+          backgroundColor: 'transparent'
+        },
         style: {
-          backgroundColor: 'black'
+          backgroundColor: colors.tabBar,
+          borderTopColor: 'transparent',
+          position: 'absolute',
         }
       }}
     >

@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FlatList, Text, View, Image } from "react-native";
+import { FlatList, Text, View, Image, Dimensions } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
+import ThemeContext from "../data/ThemeContext";
 import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
 
@@ -14,12 +15,8 @@ const HomeScreen = ({ navigation }) => {
   );
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
-
-  /* useEffect(() => {
-    feed.forEach((post) => {
-      Image.prefetch(post.imageSource.uri);
-    });
-  }); */
+  const theme = React.useContext(AppContext).theme;
+  const colors = React.useContext(ThemeContext).colors[theme];
 
   const renderSeparator = () => {
     return (
@@ -35,34 +32,6 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderHeader = () => {
-    return (
-      <View style={{ backgroundColor: "transparent", position: "absolute" }}>
-        <BlurView
-          style={{
-            height: "100%",
-            position: "absolute",
-          }}
-          intensity={100}
-        />
-        <Text
-          style={{
-            color: "white",
-            fontSize: 40,
-            fontWeight: "600",
-            paddingTop: 30,
-            paddingBottom: 20,
-            backgroundColor: "transparent",
-            paddingTop: 60,
-            paddingHorizontal: 15,
-          }}
-        >
-          Home
-        </Text>
-      </View>
-    );
-  };
-
   function navigate(screen, user) {
     navigation.navigate(screen, { user: user });
   }
@@ -72,16 +41,13 @@ const HomeScreen = ({ navigation }) => {
     <View
       style={{
         flex: 1,
-        paddingTop: 60,
-        paddingHorizontal: 15,
+      }}
+      onLayout={(event) => {
+        setFlatListWidth(event.nativeEvent.layout.width);
+        setToggleRender(!toggleRender);
       }}
     >
-      <View
-        onLayout={(event) => {
-          setFlatListWidth(event.nativeEvent.layout.width);
-          setToggleRender(!toggleRender);
-        }}
-      >
+      <View>
         <FlatList
           data={feed}
           renderItem={({ item }) => (
@@ -98,34 +64,54 @@ const HomeScreen = ({ navigation }) => {
                 navigate("Profile", user);
               }}
               key={item.key}
-              width={flatListWidth}
+              width={Dimensions.get('window').width}
             />
           )}
-          ListHeaderComponent={<View style={{ height: 68, width: '100%', backgroundColor: 'black' }} />}
+          ListHeaderComponent={
+            <View style={{height: 130}}>
+              <Image
+                style={{ height: 600, top: -470, width: "100%" }}
+                source={require("../assets/headerbg.jpeg")}
+              />
+            </View>
+          }
+          ListFooterComponent={
+            <View style={{height: 90}}>
+              {/* <Image
+                style={{ height: 200, bottom: -110, width: "100%" }}
+                source={require("../assets/headerbg.jpeg")}
+              /> */}
+            </View>
+          }
           ItemSeparatorComponent={renderSeparator}
           keyExtractor={(item) => item.datePosted}
         />
       </View>
-      <View style={{ backgroundColor: "transparent", position: "absolute", left:0, right:0 }}>
+      <View
+        style={{
+          backgroundColor: "transparent",
+          position: "absolute",
+          left: 0,
+          right: 0,
+        }}
+      >
         <BlurView
           style={{
-            height: "100%",
-            width: '100%',
+            height: 130,
+            width: "100%",
             position: "absolute",
           }}
-          intensity={100}
-          blurTint='dark'
+          intensity={99}
+          blurTint={theme === 'dark' ? 'dark' : 'light'}
         />
         <Text
           style={{
-            color: "white",
-            fontSize: 40,
-            fontWeight: "600",
-            paddingTop: 30,
-            paddingBottom: 20,
+            color: colors.antiBackground,
+            fontSize: 42,
+            fontWeight: "500",
+            marginTop: 70,
+            marginLeft: 30,
             backgroundColor: "transparent",
-            paddingTop: 60,
-            paddingHorizontal: 15,
           }}
         >
           Home
