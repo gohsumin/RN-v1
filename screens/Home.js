@@ -47,7 +47,9 @@ const HomeScreen = ({ navigation }) => {
         setToggleRender(!toggleRender);
       }}
     >
-      <View>
+      <View
+        style={{ backgroundColor: colors.background, alignItems: "center" }}
+      >
         <FlatList
           data={feed}
           renderItem={({ item }) => (
@@ -64,19 +66,23 @@ const HomeScreen = ({ navigation }) => {
                 navigate("Profile", user);
               }}
               key={item.key}
-              width={Dimensions.get('window').width}
+              width={Dimensions.get("window").width}
             />
           )}
           ListHeaderComponent={
-            <View style={{height: 130}}>
+            <View style={{ height: 130 }}>
               <Image
                 style={{ height: 600, top: -470, width: "100%" }}
-                source={require("../assets/headerbg.jpeg")}
+                source={
+                  theme === "dark"
+                    ? require("../assets/headerbgdark.jpeg")
+                    : require("../assets/headerbglight.jpeg")
+                }
               />
             </View>
           }
           ListFooterComponent={
-            <View style={{height: 90}}>
+            <View style={{ height: 90 }}>
               {/* <Image
                 style={{ height: 200, bottom: -110, width: "100%" }}
                 source={require("../assets/headerbg.jpeg")}
@@ -102,7 +108,7 @@ const HomeScreen = ({ navigation }) => {
             position: "absolute",
           }}
           intensity={99}
-          blurTint={theme === 'dark' ? 'dark' : 'light'}
+          blurTint={theme === "dark" ? "dark" : "light"}
         />
         <Text
           style={{

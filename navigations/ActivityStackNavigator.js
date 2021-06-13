@@ -2,20 +2,24 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import ActivityScreen from "../screens/Activity";
 import AppContext from "../data/AppContext";
-
-const screenOptionStyle = {
-  headerStyle: {
-    backgroundColor: "#000000",
-  },
-  cardStyle: { backgroundColor: "#000" },
-  headerTintColor: "white",
-  headerBackTitle: "Back",
-};
+import ThemeContext from "../data/ThemeContext";
 
 const Stack = createStackNavigator();
 
 const ActivityStackNavigator = () => {
-  const user = React.useContext(AppContext).user;
+
+  const {theme,user} = React.useContext(AppContext);
+  const colors = React.useContext(ThemeContext).colors[theme];
+
+  const screenOptionStyle = {
+    headerStyle: {
+      backgroundColor: colors.background,
+    },
+    cardStyle: { backgroundColor: colors.background },
+    headerTintColor: colors.antiBackground,
+    headerBackTitle: "Back",
+  };
+
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen

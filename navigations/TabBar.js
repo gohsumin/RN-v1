@@ -38,7 +38,7 @@ function TabBar() {
       })}
       tabBarOptions={{
         activeTintColor: colors.blue,
-        inactiveTintColor: "gainsboro",
+        inactiveTintColor: colors.foreground1,
         indicatorStyle: {
           backgroundColor: 'transparent'
         },

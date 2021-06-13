@@ -44,7 +44,7 @@ const ActivityScreen = ({ route, navigation }) => {
         paddingVertical: 6,
         paddingLeft: 12,
         alignItems: "center",
-        backgroundColor: colors.balanceItemBackground,
+        backgroundColor: colors.foreground3,
       }}
     >
       <View style={{ flex: 9 }}>
@@ -157,13 +157,13 @@ const ActivityScreen = ({ route, navigation }) => {
             style={{
               width: 170,
               alignItems: "center",
-              backgroundColor: colors.editProfileButton,
+              backgroundColor: colors.foreground2,
               padding: 10,
               marginTop: 25,
               borderRadius: 4,
             }}
           >
-            <Text style={{ color: colors.antiBackground }}>Edit Profile</Text>
+            <Text style={{ color: colors.antiBackground, fontWeight: '500' }}>Edit Profile</Text>
           </TouchableOpacity>
         )}
         {isUser && (
@@ -171,7 +171,7 @@ const ActivityScreen = ({ route, navigation }) => {
           <View style={{ marginTop: 30 }}>
             <Text
               style={{
-                color: colors.smallText,
+                color: colors.foreground1,
                 alignSelf: "flex-start",
                 paddingLeft: 5,
                 paddingBottom: 5,
@@ -192,7 +192,7 @@ const ActivityScreen = ({ route, navigation }) => {
           {isUser && (
             <Text
               style={{
-                color: colors.smallText,
+                color: colors.foreground1,
                 alignSelf: "flex-start",
                 paddingLeft: 5,
                 paddingBottom: 5,
@@ -206,9 +206,10 @@ const ActivityScreen = ({ route, navigation }) => {
             style={{
               width: flatListWidth,
               borderRadius: 9,
-              backgroundColor: colors.profileFeedBackground,
+              backgroundColor: colors.foreground4,
               overflow: "hidden",
               alignItems: "center",
+              marginBottom: 60
             }}
           >
             {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
@@ -231,8 +232,8 @@ const ActivityScreen = ({ route, navigation }) => {
               )}
               extraData={toggleRender}
               keyExtractor={(item) => item.datePosted}
-              ItemSeparatorComponent={renderSeparator}
-              ListFooterComponent={<View style={{ height: 60 }} />}
+              ItemSeparatorComponent={renderSeparator}/* 
+              ListFooterComponent={<View style={{ height: 60 }} />} */
             />
           </View>
         </View>

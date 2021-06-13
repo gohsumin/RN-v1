@@ -64,7 +64,7 @@ function FeedItem({
             width: leftGridWidth * 0.8,
             height: leftGridWidth * 0.8,
             borderRadius: leftGridWidth / 2,
-            alignSelf: "center",
+            alignSelf: "flex-start",
           }}
         />
       </TouchableOpacity>
@@ -85,7 +85,7 @@ function FeedItem({
           >
             {firstName} {lastName} bought:
           </Text>
-          <Text style={{ fontSize: 14.0, color: colors.smallText }}>
+          <Text style={{ fontSize: 14.0, color: colors.foreground1 }}>
             {getElapsedTime(timePosted)}
           </Text>
         </View>
@@ -109,13 +109,13 @@ function FeedItem({
                 borderWidth: 0.2,
                 alignItems: "center",
                 resizeMode: "contain",
-                backgroundColor: colors.antiBackground,
+                backgroundColor: 'white',
               }}
             />
           </TouchableOpacity>
           <Text
             style={{
-              color: "#cecece",
+              color: colors.foreground1,
               fontWeight: "300",
               fontSize: 13,
               paddingLeft: 10,

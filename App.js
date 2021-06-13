@@ -36,7 +36,8 @@ export default class App extends React.Component {
       require("./assets/maggieofarrell.png"),
       require("./assets/margaretmacmillan.png"),
       require("./assets/robertkolker.png"),
-      require("./assets/headerbg.jpeg"),
+      require("./assets/headerbgdark.jpeg"),
+      require("./assets/headerbglight.jpeg"),
     ]);
 
     await Promise.all([...imageAssets]);
