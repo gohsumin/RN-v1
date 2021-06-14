@@ -15,6 +15,8 @@ import ThemeContext from "../data/ThemeContext";
 import { Octicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
+import { BlurView } from "expo-blur";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
@@ -31,6 +33,7 @@ const ActivityScreen = ({ route, navigation }) => {
   const colors = React.useContext(ThemeContext).colors[theme];
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
+  const tabBarheight = useBottomTabBarHeight();
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -95,150 +98,165 @@ const ActivityScreen = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          backgroundColor: colors.background,
-          paddingHorizontal: 15,
-          paddingTop: 40,
-        }}
-      >
-        {/* this is just for getting the width inside the padding */}
+    <View>
+      <ScrollView>
         <View
           style={{
-            width: "100%",
-            height: 0,
-            position: "absolute",
-          }}
-          onLayout={(event) => {
-            setFlatListWidth(event.nativeEvent.layout.width);
-            setToggleRender(!toggleRender);
-          }}
-        />
-        {/* profile image */}
-        <Image
-          source={userData.pfpSource}
-          style={{ width: 170, height: 170, borderRadius: 15 }}
-        />
-        {/* user name and verified icon */}
-        <Text
-          style={{
-            fontWeight: "700",
-            letterSpacing: 0.1,
-            fontSize: 26,
-            color: colors.antiBackground,
-            marginTop: 20,
+            flex: 1,
+            alignItems: "center",
+            backgroundColor: colors.background,
+            paddingHorizontal: 15,
+            paddingTop: 40,
           }}
         >
-          {userData.firstName} {userData.lastName}{" "}
-          <Octicons name="verified" size={18} color={colors.blue} />
-        </Text>
-        {/* bio */}
-        <Text
-          style={{
-            color: colors.antiBackground,
-            fontSize: 15,
-            fontWeight: "400",
-            marginTop: 12,
-            marginBottom: 12,
-            marginHorizontal: 35,
-            textAlign: "center",
-            lineHeight: 18,
-          }}
-        >
-          {userData.bio}
-        </Text>
-
-        {isUser && (
-          /* edit profile button */
-          <TouchableOpacity
-            style={{
-              width: 170,
-              alignItems: "center",
-              backgroundColor: colors.foreground2,
-              padding: 10,
-              marginTop: 25,
-              borderRadius: 4,
-            }}
-          >
-            <Text style={{ color: colors.antiBackground, fontWeight: '500' }}>Edit Profile</Text>
-          </TouchableOpacity>
-        )}
-        {isUser && (
-          /* balance information */
-          <View style={{ marginTop: 30 }}>
-            <Text
-              style={{
-                color: colors.foreground1,
-                alignSelf: "flex-start",
-                paddingLeft: 5,
-                paddingBottom: 5,
-              }}
-            >
-              MY BALANCE
-            </Text>
-            <View
-              style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}
-            >
-              {renderBalanceItem("Available:", userData.available, 0)}
-              {renderSeparator()}
-              {renderBalanceItem("Pending:", userData.pending, 1)}
-            </View>
-          </View>
-        )}
-        <View style={{ marginVertical: 30 }}>
-          {isUser && (
-            <Text
-              style={{
-                color: colors.foreground1,
-                alignSelf: "flex-start",
-                paddingLeft: 5,
-                paddingBottom: 5,
-              }}
-            >
-              MY POSTS
-            </Text>
-          )}
-          {/* user's posts */}
+          {/* this is just for getting the width inside the padding */}
           <View
             style={{
-              width: flatListWidth,
-              borderRadius: 9,
-              backgroundColor: colors.foreground4,
-              overflow: "hidden",
-              alignItems: "center",
-              marginBottom: 60
+              width: "100%",
+              height: 0,
+              position: "absolute",
+            }}
+            onLayout={(event) => {
+              setFlatListWidth(event.nativeEvent.layout.width);
+              setToggleRender(!toggleRender);
+            }}
+          />
+          {/* profile image */}
+          <Image
+            source={userData.pfpSource}
+            style={{ width: 170, height: 170, borderRadius: 15 }}
+          />
+          {/* user name and verified icon */}
+          <Text
+            style={{
+              fontWeight: "700",
+              letterSpacing: 0.1,
+              fontSize: 26,
+              color: colors.antiBackground,
+              marginTop: 20,
             }}
           >
-            {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
-            <FlatList
-              data={userFeed}
-              renderItem={({ item }) => (
-                <FeedItem
-                  pfpSource={userData.pfpSource}
-                  userName={user}
-                  firstName={userData.firstName}
-                  lastName={userData.lastName}
-                  title={item.title}
-                  timePosted={item.datePosted}
-                  imageSource={item.imageSource}
-                  likes={item.likes}
-                  navigation={navigation}
-                  key={item.key}
-                  width={flatListWidth * 0.96}
-                />
-              )}
-              extraData={toggleRender}
-              keyExtractor={(item) => item.datePosted}
-              ItemSeparatorComponent={renderSeparator}/* 
+            {userData.firstName} {userData.lastName}{" "}
+            <Octicons name="verified" size={18} color={colors.blue} />
+          </Text>
+          {/* bio */}
+          <Text
+            style={{
+              color: colors.antiBackground,
+              fontSize: 15,
+              fontWeight: "400",
+              marginTop: 12,
+              marginBottom: 12,
+              marginHorizontal: 35,
+              textAlign: "center",
+              lineHeight: 18,
+            }}
+          >
+            {userData.bio}
+          </Text>
+
+          {isUser && (
+            /* edit profile button */
+            <TouchableOpacity
+              style={{
+                width: 170,
+                alignItems: "center",
+                backgroundColor: colors.foreground2,
+                padding: 10,
+                marginTop: 25,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ color: colors.antiBackground, fontWeight: "500" }}>
+                Edit Profile
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isUser && (
+            /* balance information */
+            <View style={{ marginTop: 30 }}>
+              <Text
+                style={{
+                  color: colors.foreground1,
+                  alignSelf: "flex-start",
+                  paddingLeft: 5,
+                  paddingBottom: 5,
+                }}
+              >
+                MY BALANCE
+              </Text>
+              <View
+                style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}
+              >
+                {renderBalanceItem("Available:", userData.available, 0)}
+                {renderSeparator()}
+                {renderBalanceItem("Pending:", userData.pending, 1)}
+              </View>
+            </View>
+          )}
+          <View style={{ marginVertical: 30 }}>
+            {isUser && (
+              <Text
+                style={{
+                  color: colors.foreground1,
+                  alignSelf: "flex-start",
+                  paddingLeft: 5,
+                  paddingBottom: 5,
+                }}
+              >
+                MY POSTS
+              </Text>
+            )}
+            {/* user's posts */}
+            <View
+              style={{
+                width: flatListWidth,
+                borderRadius: 9,
+                backgroundColor: colors.foreground4,
+                overflow: "hidden",
+                alignItems: "center",
+                marginBottom: 60,
+              }}
+            >
+              {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
+              <FlatList
+                data={userFeed}
+                renderItem={({ item }) => (
+                  <FeedItem
+                    pfpSource={userData.pfpSource}
+                    userName={user}
+                    firstName={userData.firstName}
+                    lastName={userData.lastName}
+                    title={item.title}
+                    timePosted={item.datePosted}
+                    imageSource={item.imageSource}
+                    likes={item.likes}
+                    navigation={navigation}
+                    key={item.key}
+                    width={flatListWidth}
+                  />
+                )}
+                extraData={toggleRender}
+                keyExtractor={(item) => item.datePosted}
+                ItemSeparatorComponent={renderSeparator} /* 
               ListFooterComponent={<View style={{ height: 60 }} />} */
-            />
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      <BlurView
+        style={{
+          height: tabBarheight,
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+        }}
+        intensity={99}
+        blurTint={theme === "dark" ? "dark" : "light"}
+      />
+    </View>
   );
 };
 export default ActivityScreen;

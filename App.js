@@ -29,7 +29,7 @@ export default class App extends React.Component {
       require("./assets/annawiener.png"),
       require("./assets/ayadakhtar.png"),
       require("./assets/barackobama.png"),
-      require("./assets/britbennett.jpeg"),
+      require("./assets/britbennett.png"),
       require("./assets/jamesmcbride.png"),
       require("./assets/jamesshapiro.png"),
       require("./assets/lydiamillet.png"),
@@ -38,6 +38,27 @@ export default class App extends React.Component {
       require("./assets/robertkolker.png"),
       require("./assets/headerbgdark.jpeg"),
       require("./assets/headerbglight.jpeg"),
+      require("./assets/dongsan.jpeg"),
+      {
+        uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
+        cache: "force-cache",
+      },
+      {
+        uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg",
+        cache: "force-cache",
+      },
+      {
+        uri: "https://api.time.com/wp-content/uploads/2020/01/Michelle-Obama.jpg",
+        cache: "force-cache",
+      },
+      {
+        uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",
+        cache: "force-cache",
+      },
+      {
+        uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg",
+        cache: "force-cache",
+      }
     ]);
 
     await Promise.all([...imageAssets]);

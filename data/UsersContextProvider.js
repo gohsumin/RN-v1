@@ -10,7 +10,7 @@ class UsersContextProvider extends Component {
         lastName: "Goh",
         following: ["lex", "joe", "adin", "travis", "luka"],
         followers: ["lex", "joe", "adin", "travis", "luka"],
-        pfpSource: require("../assets/user.png"),
+        pfpSource: require("../assets/dongsan.jpeg"),
         bio: "n u t r i t i o n",
         available: "$33,351.12",
         pending: "$1,000,000.00",
@@ -31,7 +31,7 @@ class UsersContextProvider extends Component {
       joe: {
         firstName: "Joe",
         lastName: "Jonas",
-        following: ["lex", "adin"],
+        following: ["lex", "adin", "michelle", "luka", "travis"],
         followers: ["lex", "luka"],
         pfpSource: {
           uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg",
@@ -58,7 +58,7 @@ class UsersContextProvider extends Component {
         firstName: "Luka",
         lastName: "Doncic",
         following: ["lex", "joe"],
-        followers: ["lex", "travis"],
+        followers: ["lex", "travis", "joe"],
         pfpSource: {
           uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",
           cache: "force-cache",
@@ -71,7 +71,7 @@ class UsersContextProvider extends Component {
         firstName: "Travis",
         lastName: "Scott",
         following: ["luka", "adin"],
-        followers: ["lex", "adin"],
+        followers: ["lex", "adin", "joe"],
         pfpSource: {
           uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg",
           cache: "force-cache",

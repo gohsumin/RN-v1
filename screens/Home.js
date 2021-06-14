@@ -6,6 +6,7 @@ import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 const HomeScreen = ({ navigation }) => {
   const user = useContext(AppContext).user;
@@ -17,15 +18,17 @@ const HomeScreen = ({ navigation }) => {
   const [toggleRender, setToggleRender] = useState(false);
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
+  const tabBarheight = useBottomTabBarHeight();
+  const headerHeight = 140;
 
   const renderSeparator = () => {
     return (
       <View
         style={{
-          height: 0.3,
-          width: "95%",
+          height: 0.4,
+          width: "100%",
           backgroundColor: "#808080",
-          opacity: 0.5,
+          opacity: 0.6,
           alignSelf: "flex-end",
         }}
       />
@@ -70,9 +73,9 @@ const HomeScreen = ({ navigation }) => {
             />
           )}
           ListHeaderComponent={
-            <View style={{ height: 130 }}>
+            <View style={{ height: headerHeight }}>
               <Image
-                style={{ height: 600, top: -470, width: "100%" }}
+                style={{ height: 600, top: (headerHeight - 600), width: "100%" }}
                 source={
                   theme === "dark"
                     ? require("../assets/headerbgdark.jpeg")
@@ -103,26 +106,41 @@ const HomeScreen = ({ navigation }) => {
       >
         <BlurView
           style={{
-            height: 130,
+            height: headerHeight,
             width: "100%",
             position: "absolute",
           }}
-          intensity={99}
+          intensity={100}
           blurTint={theme === "dark" ? "dark" : "light"}
         />
         <Text
           style={{
             color: colors.antiBackground,
-            fontSize: 42,
-            fontWeight: "500",
-            marginTop: 70,
-            marginLeft: 30,
+            fontSize: 44,
+            fontWeight: "300",
+            marginTop: (headerHeight - 57),
+            marginLeft: 22,
             backgroundColor: "transparent",
+            opacity: 1,
+            shadowOffset: {width: 1, height: 1},
+            shadowColor: 'black',
+            shadowOpacity: 0.1,
+            letterSpacing: 0.1
           }}
         >
           Home
         </Text>
       </View>
+      <BlurView
+        style={{
+          height: tabBarheight,
+          width: "100%",
+          position: "absolute",
+          bottom: 0,
+        }}
+        intensity={100}
+        blurTint={theme === "dark" ? "dark" : "light"}
+      />
     </View>
   );
 };

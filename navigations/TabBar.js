@@ -11,17 +11,17 @@ import { AntDesign } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
+import { BlurView } from "expo-blur";
 
 const Tab = createBottomTabNavigator();
 
 function TabBar() {
-  
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
 
   return (
     <Tab.Navigator
-    shifting={true}
+      shifting={true}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -29,24 +29,29 @@ function TabBar() {
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Explore") {
-            iconName = focused ?  "search" : "search-outline";
+            iconName = focused ? "search" : "search-outline";
           } else {
-            iconName = focused ? "person": "person-outline";
+            iconName = focused ? "person" : "person-outline";
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
         activeTintColor: colors.blue,
-        inactiveTintColor: colors.foreground1,
+        inactiveTintColor: colors.tabBarInactiveTint,
         indicatorStyle: {
-          backgroundColor: 'transparent'
+          backgroundColor: "transparent",
+        },
+        labelStyle: {
+          fontSize: 11,
+          fontWeight: '500'
         },
         style: {
           backgroundColor: colors.tabBar,
-          borderTopColor: 'transparent',
-          position: 'absolute',
-        }
+          borderTopColor: "transparent",
+          position: "absolute",
+          paddingTop: 10
+        },
       }}
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />

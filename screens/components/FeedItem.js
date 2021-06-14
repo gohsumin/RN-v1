@@ -19,11 +19,14 @@ function FeedItem({
   width,
 }) {
 
+
   /* refer to ./FeedItemDiagram */
-  const horLeftRatio = 0.17;
+  const horLeftRatio = 0.15;
   const horRightRatio = 1 - horLeftRatio;
-  const itemImageRatio = 0.69;
+  const itemImageRatio = 0.71;
   const titleRatio = 1 - itemImageRatio;
+
+  const marginHorizontal = 10;
 
   const [totalWidth, setTotalWidth] = useState(0);
   const [leftGridWidth, setLeftGridWidth] = useState(0);
@@ -37,13 +40,14 @@ function FeedItem({
       key={key}
       onLayout={(event) => {
         setTotalWidth(width);
-        setLeftGridWidth(width * horLeftRatio);
-        setRightGridWidth(width * horRightRatio);
+        setLeftGridWidth((width - 2 * marginHorizontal) * horLeftRatio);
+        setRightGridWidth((width - 2 * marginHorizontal) * horRightRatio);
       }}
       style={{
         width: totalWidth,
         flexDirection: "row",
         marginVertical: 10,
+        paddingHorizontal: marginHorizontal,
         justifyContent: "center",
       }}
     >
@@ -74,18 +78,19 @@ function FeedItem({
           style={{
             height: leftGridWidth,
             justifyContent: "center",
+            opacity: 0.9
           }}
         >
           <Text
             style={{
-              fontWeight: "500",
-              fontSize: 16.0,
+              fontWeight: "400",
+              fontSize: 15,
               color: colors.antiBackground,
             }}
           >
             {firstName} {lastName} bought:
           </Text>
-          <Text style={{ fontSize: 14.0, color: colors.foreground1 }}>
+          <Text style={{ fontSize: 13.5, color: colors.foreground1, opacity: 0.9 }}>
             {getElapsedTime(timePosted)}
           </Text>
         </View>
@@ -96,7 +101,7 @@ function FeedItem({
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 10,
+            paddingTop: 5,
           }}
         >
           <TouchableOpacity>
@@ -115,9 +120,9 @@ function FeedItem({
           </TouchableOpacity>
           <Text
             style={{
-              color: colors.foreground1,
+              color: colors.antiBackground,
               fontWeight: "300",
-              fontSize: 13,
+              fontSize: 13.5,
               paddingLeft: 10,
               width: rightGridWidth * titleRatio,
               flex: 1,
