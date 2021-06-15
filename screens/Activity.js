@@ -257,9 +257,7 @@ const ActivityScreen = ({ route, navigation }) => {
           </View>
         </View>
       </ScrollView>
-
-
-      <BlurView
+      {/* <BlurView
         style={{
           height: headerHeight,
           width: "100%",
@@ -267,8 +265,17 @@ const ActivityScreen = ({ route, navigation }) => {
         }}
         intensity={100}
         blurTint={theme === "dark" ? "dark" : "light"}
+      /> */}
+      <View
+        style={{
+          height: headerHeight,
+          width: "100%",
+          position: "absolute",
+          backgroundColor: colors.background,
+          borderBottomColor: colors.antiBackground,
+          borderBottomWidth: 0.4
+        }}
       />
-
       <BlurView
         style={{
           height: tabBarheight,

@@ -105,7 +105,7 @@ const HomeScreen = ({ navigation }) => {
           right: 0,
         }}
       >
-        <BlurView
+        {/* <BlurView
           style={{
             height: headerHeight,
             width: "100%",
@@ -113,7 +113,18 @@ const HomeScreen = ({ navigation }) => {
           }}
           intensity={100}
           blurTint={theme === "dark" ? "dark" : "light"}
-        />{/* 
+        /> */}
+        <View
+          style={{
+            height: headerHeight,
+            width: "100%",
+            position: "absolute",
+            backgroundColor: colors.background,
+            borderBottomColor: colors.antiBackground,
+            borderBottomWidth: 0.4
+          }}
+        />
+        {/* 
         <Text
           style={{
             color: colors.antiBackground,

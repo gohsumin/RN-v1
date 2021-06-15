@@ -15,7 +15,7 @@ class ThemeContextProvider extends Component {
             blue: 'white', */
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
-            tabBar: 'rgba(0, 0, 0, 0.7)',
+            tabBar: 'rgba(0, 0, 0, 0.85)',
             /* tabBar: 'transparent', */
             tabBarInactiveTint: '#e0e0e0'/* 
             tabBarInactiveTint: '#ddd' */
