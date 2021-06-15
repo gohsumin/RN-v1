@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
-    AppRegistry,
     View,
     Image,
     Dimensions,
     Animated,
     TouchableWithoutFeedback,
-    PanResponder
+    PanResponder,
+    Text
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
@@ -19,20 +19,28 @@ import SwipeCardsContextProvider from "../data/SwipeCardsContextProvider";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useHeaderHeight } from '@react-navigation/stack';
 
-const SwipeScreen = ({ navigation }) => {
+function SwipeScreen({ navigation }) {
     const user = useContext(AppContext).user;
-    const { remaining, setremaining } = useContext(SwipeCardsContext);
+    const { remaining, setRemaining } = useContext(SwipeCardsContext);
     //const [flatListWidth, setFlatListWidth] = useState(0);
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
     const SCREEN_HEIGHT = Dimensions.get('window').height;
     const SCREEN_WIDTH = Dimensions.get('window').width;
 
-    const [position, setPosition] = useState(new Animated.ValueXY());
+    const { posts, addPost } = React.useContext(PostsContext);
+
+    //const [position, setPosition] = useState(new Animated.ValueXY());
+    const position = useRef(new Animated.ValueXY()).current;
+
+    const [text, setText] = useState("HELLO");
 
     let [translateX, translateY] = [position.x, position.y];
 
     const headerHeight = useHeaderHeight();
+
+    const [isTransitioning, setIsTransitioning] = useState(true);
+    const [pendingPush, setPendingPush] = useState(false);
 
     const panResponder = React.useRef(PanResponder.create({
         onResponderTerminationRequest: () => false,
@@ -43,24 +51,55 @@ const SwipeScreen = ({ navigation }) => {
             position.setValue({ x: 0, y: 0 });
         },
         onPanResponderMove: (evt, { dx, dy }) => {
-            const absdx = dx > 0 ? dx : - dx;
+            const newY = ((-2) * (dx > 0 ? dx : - dx) ** (0.6));
             position.setValue({
-                x: dx, y: (-2) * absdx ** (0.6)
+                x: dx, y: newY
             });
             return true;
         },
-        onPanResponderRelease: (evt, gestureState) => {
-            position.flattenOffset();
-            position.setValue({ x: 0, y: 0 });
+        onPanResponderRelease: (evt, { moveX }) => {
+            setText("yo");
+            if (moveX > SCREEN_WIDTH * 0.55) {
+                setText("triggered");
+                /* post to backend */
+                // <code>
+                /* update posts context */
+                setIsTransitioning(true);
+                setPendingPush(true);
+                /* update swipe cards context */
 
+            }
+            else {
+                position.setValue({
+                    x: 0, y: 0
+                });
+                //Animated.spring(position, {toValue: {x: 0, y: 0}}).start();
+            }
+            position.flattenOffset();
             return true;
         }
     }));
 
-    const [isTransitioning, setIsTransitioning] = useState(true);
+    function pushPost() {
+        const top = remaining[0];
+        const newPost = {
+            user: top.user,
+            datePurchased: top.datePurchased,
+            datePosted: new Date().getTime() / 1000,
+            likes: 0,
+            title: top.title,
+            imageSource: { uri: top.imageURL }
+        }
+        addPost(newPost);
+    }
+
 
     useEffect(() => {
         if (remaining.length > 0) {
+            if(pendingPush) {
+                pushPost();
+                setPendingPush(false);
+            }
             setIsTransitioning(false);
             // maybe do stuff with posting to backend
         }
@@ -72,7 +111,7 @@ const SwipeScreen = ({ navigation }) => {
     function Card() {
         return <Animated.View
             {...panResponder.current.panHandlers}
-            key={remaining[0].id}
+            key={remaining[0].user+remaining[0].datePurchased}
             style={[
                 { transform: [{ translateX }, { translateY }] /* position.getTranslateTransform() */ },
                 {
@@ -80,7 +119,7 @@ const SwipeScreen = ({ navigation }) => {
                     width: SCREEN_WIDTH * 0.85,
                     backgroundColor: "white",
                     borderRadius: 15,
-                    marginTop: 150,
+                    marginTop: 135,
                     alignSelf: 'center',
                     position: 'absolute',
                 }
@@ -118,6 +157,7 @@ const SwipeScreen = ({ navigation }) => {
                     />
                     <View style={{ flex: 7 }}>
                         <Card />
+                        <Text style={{ color: "white" }}>{text}</Text>
                     </View>
                     <View style={{
                         width: "60%",
