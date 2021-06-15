@@ -13,11 +13,12 @@ const ActivityStackNavigator = () => {
 
   const screenOptionStyle = {
     headerStyle: {
-      backgroundColor: colors.background,
+      backgroundColor: 'transparent',
+      height: 100
     },
-    cardStyle: { backgroundColor: colors.background },
     headerTintColor: colors.antiBackground,
     headerBackTitle: "Back",
+    headerTransparent: 'true',
   };
 
   return (

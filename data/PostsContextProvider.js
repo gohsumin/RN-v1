@@ -22,7 +22,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/lydiamillet.png'),
       },
       {
-        user: "lukamichelle",
+        user: "michelle",
         datePurchased: "1622606180",
         datePosted: "1622606223",
         likes: 870,

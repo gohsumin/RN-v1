@@ -17,6 +17,7 @@ import { Entypo } from "@expo/vector-icons";
 import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useHeaderHeight } from '@react-navigation/stack';
 
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
@@ -34,6 +35,7 @@ const ActivityScreen = ({ route, navigation }) => {
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
   const tabBarheight = useBottomTabBarHeight();
+  const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -87,8 +89,8 @@ const ActivityScreen = ({ route, navigation }) => {
     return (
       <View
         style={{
-          height: 0.3,
-          width: "95%",
+          height: 0.4,
+          width: "100%",
           backgroundColor: "#808080",
           opacity: 0.5,
           alignSelf: "flex-end",
@@ -100,6 +102,16 @@ const ActivityScreen = ({ route, navigation }) => {
   return (
     <View>
       <ScrollView>
+        <View style={{ height: headerHeight }}>
+          <Image
+            style={{ height: 600, top: (headerHeight - 600), width: "100%" }}
+            source={
+              theme === "dark"
+                ? require("../assets/headerbgdark.jpeg")
+                : require("../assets/headerbglight.jpeg")
+            }
+          />
+        </View>
         <View
           style={{
             flex: 1,
@@ -245,6 +257,17 @@ const ActivityScreen = ({ route, navigation }) => {
           </View>
         </View>
       </ScrollView>
+
+
+      <BlurView
+        style={{
+          height: headerHeight,
+          width: "100%",
+          position: "absolute",
+        }}
+        intensity={100}
+        blurTint={theme === "dark" ? "dark" : "light"}
+      />
 
       <BlurView
         style={{

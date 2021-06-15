@@ -7,6 +7,7 @@ import ThemeContext from "../data/ThemeContext";
 import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useHeaderHeight } from '@react-navigation/stack';
 
 const HomeScreen = ({ navigation }) => {
   const user = useContext(AppContext).user;
@@ -19,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
   const tabBarheight = useBottomTabBarHeight();
-  const headerHeight = 140;
+  const headerHeight = useHeaderHeight();
 
   const renderSeparator = () => {
     return (
@@ -28,7 +29,7 @@ const HomeScreen = ({ navigation }) => {
           height: 0.4,
           width: "100%",
           backgroundColor: "#808080",
-          opacity: 0.6,
+          opacity: 0.5,
           alignSelf: "flex-end",
         }}
       />
@@ -112,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
           }}
           intensity={100}
           blurTint={theme === "dark" ? "dark" : "light"}
-        />
+        />{/* 
         <Text
           style={{
             color: colors.antiBackground,
@@ -122,14 +123,14 @@ const HomeScreen = ({ navigation }) => {
             marginLeft: 22,
             backgroundColor: "transparent",
             opacity: 1,
-            shadowOffset: {width: 1, height: 1},
-            shadowColor: 'black',
+            shadowOffset: { width: 1, height: 1 },
+            shadowColor: colors.background,
             shadowOpacity: 0.1,
             letterSpacing: 0.1
           }}
         >
           Home
-        </Text>
+        </Text> */}
       </View>
       <BlurView
         style={{

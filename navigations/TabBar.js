@@ -50,7 +50,8 @@ function TabBar() {
           backgroundColor: colors.tabBar,
           borderTopColor: "transparent",
           position: "absolute",
-          paddingTop: 10
+          paddingVertical: 10,
+          height: 80
         },
       }}
     >
