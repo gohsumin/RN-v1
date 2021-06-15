@@ -29,8 +29,8 @@ export default class App extends React.Component {
     images: images, // make this a context so cached images can keep updating
   };
 
-  setRemaining = cards => {
-    this.remaining.setState({ cards });
+  popRemaining = () => {
+    this.setState(prev => ({remaining: prev.remaining.slice(1)}));
   }
 
   addPost = newPost => {
@@ -60,7 +60,7 @@ export default class App extends React.Component {
 
     return (
       /* Contexts can be composed later into a single component. */
-      <SwipeCardsContext.Provider value={{ remaining: this.state.remaining, setRemaining: this.setRemaining }}>
+      <SwipeCardsContext.Provider value={{ remaining: this.state.remaining, popRemaining: this.popRemaining }}>
         <AppContextProvider>
           <ThemeContextProvider>
             <UsersContext.Provider value={{ users: this.state.users }}>

@@ -21,8 +21,8 @@ import { useHeaderHeight } from '@react-navigation/stack';
 
 function SwipeScreen({ navigation }) {
     const user = useContext(AppContext).user;
-    const { remaining, setRemaining } = useContext(SwipeCardsContext);
-    //const [flatListWidth, setFlatListWidth] = useState(0);
+    const { popRemaining } = useContext(SwipeCardsContext);
+    const [remaining, setRemaining] = useState(useContext(SwipeCardsContext).remaining);
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
     const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -39,7 +39,7 @@ function SwipeScreen({ navigation }) {
 
     const headerHeight = useHeaderHeight();
 
-    const [isTransitioning, setIsTransitioning] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
     const [pendingPush, setPendingPush] = useState(false);
 
     const panResponder = React.useRef(PanResponder.create({
@@ -64,10 +64,14 @@ function SwipeScreen({ navigation }) {
                 /* post to backend */
                 // <code>
                 /* update posts context */
+                popRemaining();
                 setIsTransitioning(true);
+                pushPost();
                 setPendingPush(true);
-                /* update swipe cards context */
-
+            }
+            else if(moveX < SCREEN_WIDTH * 0.45) {
+                popRemaining();
+                setIsTransitioning(true);
             }
             else {
                 position.setValue({
@@ -93,14 +97,34 @@ function SwipeScreen({ navigation }) {
         addPost(newPost);
     }
 
+    useEffect(() => {
+        console.log("remaining data changed");
+        if(remaining.length === 0) {
+            navigation.goBack();
+        }
+        if(isTransitioning) {
+            console.log("remaining.length="+remaining.length);
+            if(remaining.length == 0) {
+                navigation.goBack();
+            }
+            position.flattenOffset();
+            position.setValue({
+                x: 0, y: 0
+            });
+            setIsTransitioning(false);
+        }
+    }, [remaining]);
+
+    useEffect(() => {
+        if(pendingPush) {
+            setPendingPush(false);
+        }
+    }, [pendingPush]);
 
     useEffect(() => {
         if (remaining.length > 0) {
-            if(pendingPush) {
-                pushPost();
-                setPendingPush(false);
+            if(isTransitioning) {
             }
-            setIsTransitioning(false);
             // maybe do stuff with posting to backend
         }
         else {
@@ -111,7 +135,7 @@ function SwipeScreen({ navigation }) {
     function Card() {
         return <Animated.View
             {...panResponder.current.panHandlers}
-            key={remaining[0].user+remaining[0].datePurchased}
+            key={remaining[0].datePurchased}
             style={[
                 { transform: [{ translateX }, { translateY }] /* position.getTranslateTransform() */ },
                 {
@@ -143,7 +167,7 @@ function SwipeScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1 }}>
-            {!isTransitioning &&
+            {!(isTransitioning || pendingPush) &&
                 <View style={{ flex: 1, backgroundColor: colors.background }}>
                     <View
                         style={{

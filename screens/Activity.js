@@ -244,7 +244,7 @@ const ActivityScreen = ({ route, navigation }) => {
                     imageSource={item.imageSource}
                     likes={item.likes}
                     navigation={navigation}
-                    key={item.key}
+                    key={item.datePosted}
                     width={flatListWidth}
                   />
                 )}
