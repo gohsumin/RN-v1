@@ -3,7 +3,7 @@ import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
 import PostsContext from "./data/PostsContext";
-import AppContextProvider from "./data/AppContextProvider";
+import AppContext from "./data/AppContext";
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import SwipeCardsContext from "./data/SwipeCardsContext";
 import AppLoading from "expo-app-loading";
@@ -27,6 +27,8 @@ export default class App extends React.Component {
     posts: posts,
     users: users,
     images: images, // make this a context so cached images can keep updating
+    user: "",
+    theme: "dark",
   };
 
   popRemaining = () => {
@@ -39,6 +41,10 @@ export default class App extends React.Component {
 
   setImages = images => {
     this.images.setState({ images });
+  }
+
+  setUser = user => {
+    this.setState({user: user});
   }
 
   /* To-do: get a list of file names in the assets folder */
@@ -61,7 +67,7 @@ export default class App extends React.Component {
     return (
       /* Contexts can be composed later into a single component. */
       <SwipeCardsContext.Provider value={{ remaining: this.state.remaining, popRemaining: this.popRemaining }}>
-        <AppContextProvider>
+        <AppContext.Provider value={{ user: this.state.user, theme: this.state.theme, setUser: this.setUser }}>
           <ThemeContextProvider>
             <UsersContext.Provider value={{ users: this.state.users }}>
               <PostsContext.Provider value={{ posts: this.state.posts, addPost: this.addPost }}>
@@ -71,7 +77,7 @@ export default class App extends React.Component {
               </PostsContext.Provider>
             </UsersContext.Provider>
           </ThemeContextProvider>
-        </AppContextProvider>
+        </AppContext.Provider>
       </SwipeCardsContext.Provider>
     );
   }

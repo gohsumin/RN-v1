@@ -12,9 +12,10 @@ import { useHeaderHeight } from '@react-navigation/stack';
 const HomeScreen = ({ navigation }) => {
   const user = useContext(AppContext).user;
   const users = useContext(UsersContext).users;
-  const feed = useContext(PostsContext).posts.filter((post) =>
-    users[user].following.concat(user).includes(post.user)
-  );
+  const feed = user === "" ? useContext(PostsContext).posts
+    : useContext(PostsContext).posts.filter((post) =>
+      users[user].following.concat(user).includes(post.user)
+    );
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
   const theme = React.useContext(AppContext).theme;

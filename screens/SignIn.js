@@ -1,7 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import AppContext from '../data/AppContext'
 
 function SignIn({ navigation }) {
+
+    const {user, setUser, theme} = useContext(AppContext);
 
     return (
         <View style={{ flex: 1, backgroundColor: "black", padding: 25 }}>
@@ -13,8 +16,10 @@ function SignIn({ navigation }) {
                     paddingBottom: 18
                 }} onPress={() => {
                     /////
-
-                    navigation.navigate("Profile", { user: 'michelle' });
+                    const user = "michelle";
+                    // this sets the user across the app, locally through a context
+                    setUser(user);
+                    navigation.navigate("Profile", { user: user });
                 }}>
                     <View style={{
                         width: "100%",

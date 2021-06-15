@@ -23,7 +23,7 @@ const ActivityStackNavigator = () => {
   };
 
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
+    <Stack.Navigator initialRouteName={user !== "" ? "Profile" : "Sign In"} screenOptions={screenOptionStyle}>
       <Stack.Screen
         name="Sign In"
         component={SignInScreen}
@@ -35,6 +35,7 @@ const ActivityStackNavigator = () => {
         name="Profile"
         component={ActivityScreen}
         initialParams={{ user: user }}
+        options={{ headerLeft: null, gestureEnabled: false }}
       ></Stack.Screen>
     </Stack.Navigator>
   );
