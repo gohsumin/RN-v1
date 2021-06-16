@@ -50,7 +50,7 @@ class UsersContextProvider extends Component {
           uri: "https://api.time.com/wp-content/uploads/2020/01/Michelle-Obama.jpg",
           cache: "force-cache",
         },
-        bio: "Always stay true to yourself",
+        bio: "Always stay true to yourself 🌄",
         available: "$33,351.12",
         pending: "$1,000,000.00",
       },

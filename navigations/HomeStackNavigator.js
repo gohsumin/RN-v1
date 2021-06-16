@@ -15,13 +15,14 @@ const HomeStackNavigator = () => {
 
   const screenOptionStyle = {
     headerStyle: {
-      backgroundColor: 'transparent',
-      height: 100
+      backgroundColor: colors.foreground4,
+      height: 100,
+      shadowColor: 'transparent'
     },
     
     headerTintColor: colors.antiBackground,
     headerBackTitle: "Back",
-    headerTransparent: 'true',
+    //headerTransparent: 'true',
   };
 
   return (

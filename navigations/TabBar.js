@@ -6,6 +6,7 @@ import ClubsScreen from "../screens/Clubs.js";
 import ActivityScreen from "../screens/Activity.js";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import { ActivityStackNavigator } from "./ActivityStackNavigator";
+import ActivityModalNavigator from "./ActivityModalNavigator";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -57,7 +58,7 @@ function TabBar() {
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
       <Tab.Screen name="Explore" component={ClubsScreen} />
-      <Tab.Screen name="Profile" component={ActivityStackNavigator} />
+      <Tab.Screen name="Profile" component={/* ActivityStackNavigator */ ActivityModalNavigator} />
     </Tab.Navigator>
   );
 }

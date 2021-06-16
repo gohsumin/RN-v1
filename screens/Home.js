@@ -74,7 +74,7 @@ const HomeScreen = ({ navigation }) => {
               width={Dimensions.get("window").width}
             />
           )}
-          ListHeaderComponent={
+          /* ListHeaderComponent={
             <View style={{ height: headerHeight }}>
               <Image
                 style={{ height: 600, top: (headerHeight - 600), width: "100%" }}
@@ -85,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
                 }
               />
             </View>
-          }
+          } */
           ListFooterComponent={
             <View style={{ height: 90 }}>
               {/* <Image
@@ -115,7 +115,7 @@ const HomeScreen = ({ navigation }) => {
           intensity={100}
           blurTint={theme === "dark" ? "dark" : "light"}
         /> */}
-        <View
+        {/* <View
           style={{
             height: headerHeight,
             width: "100%",
@@ -124,7 +124,7 @@ const HomeScreen = ({ navigation }) => {
             borderBottomColor: colors.antiBackground,
             borderBottomWidth: 0.4
           }}
-        />
+        /> */}
         {/* 
         <Text
           style={{

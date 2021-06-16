@@ -11,7 +11,7 @@ class ThemeContextProvider extends Component {
             foreground2: '#303030',
             foreground3: '#202020',
             foreground4: '#151515',
-            blue: '#4faaff',/* 
+            blue: '#0085ff',/* 
             blue: 'white', */
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',

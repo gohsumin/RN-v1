@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LogBox } from "react-native";
+import { LogBox, Dimensions } from "react-native";
 import {
   Text,
   View,
@@ -36,6 +36,8 @@ const ActivityScreen = ({ route, navigation }) => {
   const [toggleRender, setToggleRender] = useState(false);
   const tabBarheight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
+  const fullWidth = Dimensions.get("window").width;
+  const fullHeight = Dimensions.get("window").height;
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -100,9 +102,9 @@ const ActivityScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View>
-      <ScrollView>
-        <View style={{ height: headerHeight }}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
+        {/* <View style={{ height: headerHeight }}>
           <Image
             style={{ height: 600, top: (headerHeight - 600), width: "100%" }}
             source={
@@ -111,13 +113,13 @@ const ActivityScreen = ({ route, navigation }) => {
                 : require("../assets/headerbglight.jpeg")
             }
           />
-        </View>
+        </View> */}
         <View
           style={{
             flex: 1,
             alignItems: "center",
             backgroundColor: colors.background,
-            paddingHorizontal: 15,
+            paddingHorizontal: 14,
             paddingTop: 40,
           }}
         >
@@ -136,20 +138,20 @@ const ActivityScreen = ({ route, navigation }) => {
           {/* profile image */}
           <Image
             source={userData.pfpSource}
-            style={{ width: 170, height: 170, borderRadius: 15 }}
+            style={{ width: 160, height: 160, borderRadius: 12 }}
           />
           {/* user name and verified icon */}
           <Text
             style={{
               fontWeight: "700",
               letterSpacing: 0.1,
-              fontSize: 26,
+              fontSize: 25,
               color: colors.antiBackground,
               marginTop: 20,
             }}
           >
-            {userData.firstName} {userData.lastName}{" "}
-            <Octicons name="verified" size={18} color={colors.blue} />
+            {userData.firstName} {userData.lastName}{"  "}
+            <Octicons name="verified" size={23} color={colors.blue} />
           </Text>
           {/* bio */}
           <Text
@@ -157,7 +159,7 @@ const ActivityScreen = ({ route, navigation }) => {
               color: colors.antiBackground,
               fontSize: 15,
               fontWeight: "400",
-              marginTop: 12,
+              marginTop: 15,
               marginBottom: 12,
               marginHorizontal: 35,
               textAlign: "center",
@@ -166,24 +168,84 @@ const ActivityScreen = ({ route, navigation }) => {
           >
             {userData.bio}
           </Text>
-
-          {isUser && (
-            /* edit profile button */
-            <TouchableOpacity
-              style={{
-                width: 170,
+          {/* posts, followers, following */
+            !isUser &&
+            <View style={{
+              width: "100%",
+              height: 45,
+              alignContent: 'center',
+              marginTop: 16,
+              marginBottom: 13,
+              flexDirection: 'row',
+              justifyContent: 'center'
+            }}>
+              <TouchableOpacity style={{
+                paddingHorizontal: 16,
+                alignItems: 'center',
+                /* borderRightWidth: 0.2,
+                borderRightColor: colors.foreground1 */
+              }}>
+                <Text style={{ color: colors.antiBackground, fontWeight: '600', fontSize: 14 }}>
+                  {userData.following.length}
+                </Text>
+                <Text style={{ fontSize: 14, color: colors.antiBackground, fontWeight: '600' }}>
+                  Following
+                </Text>
+              </TouchableOpacity>
+              <View style={{ height: '70%', width: 0, borderWidth: 0.4, borderColor: '#bbb', alignSelf: 'center' }} />
+              <TouchableOpacity style={{
+                paddingHorizontal: 16,
+                alignItems: 'center',
+                /* borderRightWidth: 0.2,
+                borderRightColor: colors.foreground2 */
+              }}>
+                <Text style={{ color: colors.antiBackground, fontWeight: '600', fontSize: 14 }}>
+                  {userData.followers.length}
+                </Text>
+                <Text style={{ fontSize: 14, color: colors.antiBackground, fontWeight: '600' }}>
+                  Followers
+                </Text>
+              </TouchableOpacity>
+              <View style={{ height: '70%', width: 0, borderWidth: 0.4, borderColor: '#bbb', alignSelf: 'center' }} />
+              <TouchableOpacity style={{
+                width: 140,
                 alignItems: "center",
-                backgroundColor: colors.foreground2,
-                padding: 10,
-                marginTop: 25,
+                justifyContent: 'center',
+                backgroundColor: colors.blue,
+                marginHorizontal: 16,
                 borderRadius: 4,
               }}
-            >
-              <Text style={{ color: colors.antiBackground, fontWeight: "500" }}>
-                Edit Profile
-              </Text>
-            </TouchableOpacity>
-          )}
+                onPress={() => {
+                  // update user context for following & followers
+                  // post changes to backend
+                }}>
+                <Text style={{ fontSize: 15, color: colors.antiBackground, fontWeight: "600" }}>
+                  Follow
+                </Text>
+              </TouchableOpacity>
+            </View>}
+          {/* edit profile button */
+            isUser && (
+              <TouchableOpacity
+                style={{
+                  width: 170,
+                  alignItems: "center",
+                  backgroundColor: colors.foreground2,
+                  padding: 10,
+                  marginTop: 15,
+                  borderRadius: 2,
+                }}
+                onPress={() => {
+                  // navigate to edit profile
+                }}
+              >
+                <Text style={{ color: colors.antiBackground, fontWeight: "500" }}>
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
+            )
+          }
+
           {isUser && (
             /* balance information */
             <View style={{ marginTop: 30 }}>
@@ -222,9 +284,10 @@ const ActivityScreen = ({ route, navigation }) => {
             {/* user's posts */}
             <View
               style={{
-                width: flatListWidth,
+                flex: 1,
+                width: isUser ? flatListWidth : fullWidth,
                 borderRadius: 9,
-                backgroundColor: colors.foreground4,
+                backgroundColor: isUser ? colors.foreground4 : colors.background,
                 overflow: "hidden",
                 alignItems: "center",
                 marginBottom: 60,
@@ -233,7 +296,8 @@ const ActivityScreen = ({ route, navigation }) => {
               {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
               <FlatList
                 data={userFeed}
-                renderItem={({ item }) => (
+                numColumns={(isUser ? 1 : 3)}
+                renderItem={({ item }) => (isUser ?
                   <FeedItem
                     pfpSource={userData.pfpSource}
                     userName={user}
@@ -246,11 +310,41 @@ const ActivityScreen = ({ route, navigation }) => {
                     navigation={navigation}
                     key={item.datePosted}
                     width={flatListWidth}
-                  />
+                  /> :
+                  <TouchableOpacity style={{
+                    width: flatListWidth / 3,
+                    height: flatListWidth / 3,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    /* borderWidth: 1,
+                    borderColor: 'pink' */
+                  }}
+                    onPress={() => {
+                      // modal with the feed item
+                      navigation.navigate('Feed Item', { height: fullHeight });
+                    }}>
+                    <View style={{
+                      padding: 8,
+                      width: 92,
+                      height: 92,
+                      borderRadius: 28,
+                      overflow: 'hidden',
+                      backgroundColor: 'white'
+                    }}>
+                      <Image style={{
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'contain',
+                      }}
+                        source={item.imageSource} />
+                    </View>
+
+                  </TouchableOpacity>
                 )}
                 extraData={toggleRender}
-                keyExtractor={(item) => item.datePosted}
-                ItemSeparatorComponent={renderSeparator} /* 
+                keyExtractor={(item, index) => index.toString()}
+                ItemSeparatorComponent={isUser && renderSeparator} /* 
               ListFooterComponent={<View style={{ height: 60 }} />} */
               />
             </View>
@@ -266,7 +360,7 @@ const ActivityScreen = ({ route, navigation }) => {
         intensity={100}
         blurTint={theme === "dark" ? "dark" : "light"}
       /> */}
-      <View
+      {/* <View
         style={{
           height: headerHeight,
           width: "100%",
@@ -275,7 +369,7 @@ const ActivityScreen = ({ route, navigation }) => {
           borderBottomColor: colors.antiBackground,
           borderBottomWidth: 0.4
         }}
-      />
+      /> */}
       <BlurView
         style={{
           height: tabBarheight,

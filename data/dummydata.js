@@ -13,6 +13,22 @@ const images = [
     require("../assets/headerbglight.jpeg"),
     require("../assets/dongsan.jpeg"),
     {
+        uri: 'https://www.ikea.com/kr/en/images/products/fejka-artificial-potted-plant-in-outdoor-monstera__0614197_pe686822_s5.jpg',
+        cache: 'force-cache'
+    },
+    {
+        uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3bNrKZqCCuyi6Se_-7M6d85i1882HBId9c81kQ9uYY7Af535dxw0ypqbkinIaxjK7uqU&usqp=CAU',
+        cache: 'force-cache'
+    },
+    {
+        uri: 'https://cf.shopee.com.my/file/7552d406a037e1f90ad766845a7e7bd1',
+        cache: 'force-cache'
+    },
+    {
+        uri: 'https://static.pullandbear.net/2/photos/2021/V/0/1/p/4470/328/802/4470328802_1_1_3.jpg?t=1614855668191',
+        cache: 'force-cache'
+    },
+    {
         uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
         cache: "force-cache",
     },
@@ -21,7 +37,7 @@ const images = [
         cache: "force-cache",
     },
     {
-        uri: "https://api.time.com/wp-content/uploads/2020/01/Michelle-Obama.jpg",
+        uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg",
         cache: "force-cache",
     },
     {
@@ -61,12 +77,36 @@ const remaining = [
 
 const posts = [
     {
+        user: "michelle",
+        datePurchased: "1622931841",
+        datePosted: "1622931843",
+        likes: 870,
+        title: "Uncanny Valley",
+        imageSource: { uri: 'https://www.ikea.com/kr/en/images/products/fejka-artificial-potted-plant-in-outdoor-monstera__0614197_pe686822_s5.jpg' },
+    },
+    {
+        user: "michelle",
+        datePurchased: "1622931840",
+        datePosted: "1622931842",
+        likes: 870,
+        title: "Uncanny Valley",
+        imageSource: { uri: 'https://static.pullandbear.net/2/photos/2021/V/0/1/p/4470/328/802/4470328802_1_1_3.jpg?t=1614855668191' },
+    },
+    {
         user: "travis",
         datePurchased: "1622931742",
         datePosted: "1622931742",
         likes: 2904,
         title: "Shakespeare in a Divided America",
         imageSource: require('../assets/jamesshapiro.png'),
+    },
+    {
+        user: "michelle",
+        datePurchased: "1622866650",
+        datePosted: "1622866660",
+        likes: 870,
+        title: "Uncanny Valley",
+        imageSource: { uri: 'https://cf.shopee.com.my/file/7552d406a037e1f90ad766845a7e7bd1' },
     },
     {
         user: "luka",
@@ -76,8 +116,17 @@ const posts = [
         title: "A Children's Bible",
         imageSource: require('../assets/lydiamillet.png'),
     },
+
     {
         user: "michelle",
+        datePurchased: "1622682163",
+        datePosted: "1622692163",
+        likes: 870,
+        title: "Uncanny Valley",
+        imageSource: require('../assets/annawiener.png'),
+    },
+    {
+        user: "lex",
         datePurchased: "1622606180",
         datePosted: "1622606223",
         likes: 870,
@@ -91,6 +140,14 @@ const posts = [
         likes: 2143,
         title: "Hamnet",
         imageSource: require('../assets/maggieofarrell.png'),
+    },
+    {
+        user: "michelle",
+        datePurchased: "1622442002",
+        datePosted: "1622442102",
+        likes: 870,
+        title: "Uncanny Valley",
+        imageSource: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3bNrKZqCCuyi6Se_-7M6d85i1882HBId9c81kQ9uYY7Af535dxw0ypqbkinIaxjK7uqU&usqp=CAU' },
     },
     {
         user: "lex",
@@ -183,9 +240,9 @@ const users = {
         firstName: "Michelle",
         lastName: "Obama",
         following: ["lex", "travis"],
-        followers: ["lex", "travis", "joe"],
+        followers: ["lex", "travis", "joe", "luka"],
         pfpSource: {
-            uri: "https://api.time.com/wp-content/uploads/2020/01/Michelle-Obama.jpg",
+            uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg",
             cache: "force-cache",
         },
         bio: "Always stay true to yourself",
@@ -195,7 +252,7 @@ const users = {
     luka: {
         firstName: "Luka",
         lastName: "Doncic",
-        following: ["lex", "joe"],
+        following: ["lex", "joe", "michelle"],
         followers: ["lex", "travis", "joe"],
         pfpSource: {
             uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",

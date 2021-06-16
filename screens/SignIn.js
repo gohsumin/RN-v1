@@ -16,7 +16,7 @@ function SignIn({ navigation }) {
                     paddingBottom: 18
                 }} onPress={() => {
                     /////
-                    const user = "michelle";
+                    const user = "luka";
                     // this sets the user across the app, locally through a context
                     setUser(user);
                     navigation.navigate("Profile", { user: user });
