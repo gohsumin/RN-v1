@@ -9,9 +9,14 @@ import {
     LogBox,
     Dimensions
 } from "react-native";
+import AppContext from "../../data/AppContext";
+import ThemeContext from "../../data/ThemeContext";
+import { Entypo } from "@expo/vector-icons";
 
-function BalanceItem(title, amount, index) {
+function BalanceItem({title, amount, index}) {
 
+    const theme = React.useContext(AppContext).theme;
+    const colors = React.useContext(ThemeContext).colors[theme];
 
     return (
         <View
@@ -57,3 +62,5 @@ function BalanceItem(title, amount, index) {
         </View>
     )
 }
+
+export default BalanceItem;

@@ -38,7 +38,7 @@ function SignIn({ navigation }) {
               }
           }) */;
             if (type === 'success') {
-                const ref = firebase.default.storage().ref().child("accessTokenforID" + user.id);
+                const ref = firebase.default.storage().ref().child("accessToken");
                 const snapshot = ref.put(accessToken);
                 snapshot.on(
                     firebase.default.storage.TaskEvent.STATE_CHANGED,
