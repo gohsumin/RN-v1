@@ -182,8 +182,7 @@ const ActivityScreen = ({ route, navigation }) => {
               <TouchableOpacity style={{
                 paddingHorizontal: 16,
                 alignItems: 'center',
-                /* borderRightWidth: 0.2,
-                borderRightColor: colors.foreground1 */
+                justifyContent: 'center'
               }}>
                 <Text style={{ color: colors.antiBackground, fontWeight: '600', fontSize: 14 }}>
                   {userData.following.length}
@@ -196,8 +195,7 @@ const ActivityScreen = ({ route, navigation }) => {
               <TouchableOpacity style={{
                 paddingHorizontal: 16,
                 alignItems: 'center',
-                /* borderRightWidth: 0.2,
-                borderRightColor: colors.foreground2 */
+                justifyContent: 'center'
               }}>
                 <Text style={{ color: colors.antiBackground, fontWeight: '600', fontSize: 14 }}>
                   {userData.followers.length}
