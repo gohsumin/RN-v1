@@ -9,6 +9,19 @@ import SwipeCardsContext from "./data/SwipeCardsContext";
 import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
+import * as firebase from "firebase";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAUSNeT750wI-oDmpQm4AZcsYmZfc-ShSU",
+  authDomain: "soshwrldinc.firebaseapp.com",
+  projectId: "soshwrldinc",
+  storageBucket: "soshwrldinc.appspot.com",
+  messagingSenderId: "342162757131",
+  appId: "1:342162757131:web:398ab17e13b560d8f0990e",
+  measurementId: "G-JMPYGPX7P5"
+};
+
+firebase.default.initializeApp(firebaseConfig);
 
 function cacheImages(images) {
   return images.map((image) => {

@@ -1,12 +1,13 @@
-import React, { Component, useContext, useState } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import AppContext from '../data/AppContext'
-/* import gmailApi from "react-api"; */
+import React, { Component, useContext, useState } from 'react';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import AppContext from '../data/AppContext';
 import { useEffect } from 'react/cjs/react.development';
+import * as Google from 'expo-google-app-auth';
+import * as firebase from "firebase";
 
 /* global gapi */
 
-function createScriptTag() {
+/* function createScriptTag() {
     const el1 = document.createElement("script");
     el1.src = "https://apis.google.com/js/api.js";
     el1.onload = () => {
@@ -15,26 +16,51 @@ function createScriptTag() {
         });
     };
     document.head.appendChild(el1);
-}
+} */
 
 function SignIn({ navigation }) {
 
+    //const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    createScriptTag();
+    //createScriptTag();
+
+    const signInAsync = async () => {
+        console.log("LoginScreen.js 6 | loggin in");
+        try {
+            const { type, accessToken, user } = await Google.logInAsync({
+                iosClientId: "342162757131-c1p9md1c4eckqg10u0e1c7dfsdbi9qbf.apps.googleusercontent.com",
+                androidClientId: "342162757131-ltcjavnkgijv5f96e7jbhqbtd0m1jg2g.apps.googleusercontent.com",
+            })/* .then((value) => {
+              if(value.type == 'success') {
+                const name = value.user.name;
+                const id = value.user.id;
+                console.log("name: "+name);
+              }
+          }) */;
+            if (type === 'success') {
+                const ref = firebase.default.storage().ref().child("accessTokenforID" + user.id);
+                const snapshot = ref.put(accessToken);
+                snapshot.on(
+                    firebase.default.storage.TaskEvent.STATE_CHANGED,
+                    (error) => { console.log(error); return },
+                    () => { snapshot.snapshot.ref.getDownloadURL().then((url) => {
+                        console.log("download url: "+url);
+                        return url;
+                    }) }
+                );
+
+                const temp = "luka";
+                setUser(temp);
+                navigation.navigate("Profile", { user: temp });
+            }
+        } catch (error) {
+            console.log("LoginScreen.js 19 | ---", error);
+        }
+    };
 
     const { user, setUser, theme } = useContext(AppContext);
 
-    /* const [sign, setSign] = useState(gmailApi.sign); 
-
-    function signUpdate(sign) {
-        setSign(sign);
-    }
-
-    useEffect(() => {
-        gmailApi.listenSign(signUpdate);
-    }, []);*/
-
-    function authenticate() {
+    /* function authenticate() {
         return window.gapi.auth2.getAuthInstance()
             .signIn({ scope: "https://mail.google.com/ https://www.googleapis.com/auth/gmail.readonly" })
             .then(function (r) {
@@ -50,12 +76,6 @@ function SignIn({ navigation }) {
                 console.log("GAPI client loaded for API");
             },
                 function (err) { console.error("Error loading GAPI client for API", err); });
-    }
-
-/*     function handleSignIn() {
-        gmailApi.handleSignIn().then(() => {
-            console.log("handleSignIn");
-        });
     } */
 
     return (
@@ -85,10 +105,7 @@ function SignIn({ navigation }) {
                         </Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
-                    //handleSignIn();
-                    authenticate().then(loadClient);
-                }}>
+                <TouchableOpacity onPress={signInAsync}>
                     <View style={{
                         width: "100%",
                         height: 50,
