@@ -26,7 +26,7 @@ function BalanceItem({title, amount, index}) {
                 paddingVertical: 6,
                 paddingLeft: 12,
                 alignItems: "center",
-                backgroundColor: colors.foreground3,
+                backgroundColor: colors.foreground4,
             }}
         >
             <View style={{ flex: 9 }}>
@@ -56,8 +56,8 @@ function BalanceItem({title, amount, index}) {
             <Entypo
                 style={{ flex: 1 }}
                 name="chevron-thin-right"
-                size={18}
-                color={colors.blue}
+                size={16}
+                color={colors.foreground1}
             />
         </View>
     )

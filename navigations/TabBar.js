@@ -45,7 +45,7 @@ function TabBar() {
         },
         labelStyle: {
           fontSize: 11,
-          fontWeight: '500'
+          fontWeight: '400'
         },
         style: {
           backgroundColor: colors.tabBar,
@@ -58,7 +58,7 @@ function TabBar() {
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
       <Tab.Screen name="Explore" component={ClubsScreen} />
-      <Tab.Screen name="Profile" component={/* ActivityStackNavigator */ ActivityModalNavigator} />
+      <Tab.Screen name="Profile" component={ActivityStackNavigator} />
     </Tab.Navigator>
   );
 }

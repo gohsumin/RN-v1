@@ -1,4 +1,5 @@
 import React from "react";
+import { View } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import ActivityScreen from "../screens/Activity";
 import SignInScreen from "../screens/SignIn";
@@ -24,14 +25,14 @@ const ActivityStackNavigator = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName={user !== "" ? "Profile" : "Sign In"} screenOptions={screenOptionStyle}>
-      <Stack.Screen
+    <Stack.Navigator initialRouteName={/* user !== "" ?  */"Profile" /* : "Sign In" */} screenOptions={screenOptionStyle}>
+      {/* <Stack.Screen
         name="Sign In"
         component={SignInScreen}
         options={{ headerShown: false }}
 
       >
-      </Stack.Screen>
+      </Stack.Screen> */}
       <Stack.Screen
         name="Profile"
         component={ActivityScreen}

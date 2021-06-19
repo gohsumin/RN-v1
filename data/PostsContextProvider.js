@@ -6,7 +6,7 @@ class PostsContextProvider extends Component {
   state = {
     posts: [
       {
-        user: "travis",
+        user: "travis.scott",
         datePurchased: "1622931742",
         datePosted: "1622931742",
         likes: 2904,
@@ -22,7 +22,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/lydiamillet.png'),
       },
       {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622606180",
         datePosted: "1622606223",
         likes: 870,
@@ -46,7 +46,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/ayadakhtar.png'),
       },
       {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622230580",
         datePosted: "1622230702",
         likes: 834,
@@ -62,7 +62,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/jamesmcbride.png'),
       },
       {
-        user: "travis",
+        user: "travis.scott",
         datePurchased: "1620470052",
         datePosted: "1620516970",
         likes: 4953,
@@ -78,7 +78,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/barackobama.png'),
       },
       {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1618767121",
         datePosted: "1618767260",
         likes: 12467,

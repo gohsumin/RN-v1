@@ -71,6 +71,11 @@ function FeedItem({
             alignSelf: "flex-start",
           }}
         />
+
+
+
+
+        
       </TouchableOpacity>
       <View style={{ width: rightGridWidth }}>
         {/* texts next to the profile pic: buyer name and date */}

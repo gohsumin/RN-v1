@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Animated,
+  Easing
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
@@ -16,20 +18,51 @@ import { BlurView } from "expo-blur";
 import Bio from './components/Bio';
 import FeedItem from "./components/FeedItem";
 import BalanceSection from './components/BalanceSection';
-import UserPostsSection from './components/UserPostsSection';
 import UserInfoBar from './components/UserInfoBar';
+import PostPopUp from "./components/PostPopUp";
+import SelfPosts from "./components/SelfPosts";
+import OtherUserPosts from "./components/OtherUserPosts";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { toggle } from "cli-spinners";
 
-const ActivityScreen = ({ route, navigation }) => {
+function ActivityScreenNew({ route, navigation }) {
+
   const users = React.useContext(UsersContext).users;
-  const { user } = route.params;
-  const isUser = React.useContext(AppContext).user === user;
-  const userData = users[user];
-  const userFeed = React.useContext(PostsContext).posts.filter(
-    (post) => post.user === user
-  );
+  const posts = React.useContext(PostsContext).posts;
+  const [user, setUser] = useState("");
+  const [isUser, setIsUser] = useState(true);
+  const [userData, setUserData] = useState({});
+  const [userFeed, setUserFeed] = useState({});
+  const logger = React.useContext(AppContext).user;
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    console.log("###" + route.params.user + "###");
+    console.log("###" + logger + "###");
+    if ((typeof route.params.user === "string")) {
+      const u = route.params.user;
+      setUser(u);
+      if (u === logger) {
+        console.log("true true");
+        setIsUser(true);
+      }
+      else {
+        setIsUser(false);
+      }
+      setUserData(users[u]);
+      setUserFeed(posts.filter(
+        (post) => post.user === u
+      ));
+      navigation.setOptions({ title: u });
+      setShow(true);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
+
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
   const [flatListWidth, setFlatListWidth] = useState(0);
@@ -39,26 +72,125 @@ const ActivityScreen = ({ route, navigation }) => {
   const fullWidth = Dimensions.get("window").width;
   const fullHeight = Dimensions.get("window").height;
 
+  const [modal, setModal] = useState(false);
+  const [modalInfo, setModalInfo] = useState(null);
+
+  const renderView = () => {
+    return (
+      <ScrollView style={{ flex: 1, backgroundColor: 'black' }}>
+        {isUser &&
+          <View
+            style={isUser ? {
+              flex: 'auto',
+              width: flatListWidth,
+              borderRadius: 9,
+              backgroundColor: colors.foreground4,
+              overflow: "hidden",
+              alignItems: "center",
+              marginBottom: 60,
+            } : {
+              flex: 1,
+              width: fullWidth,
+              borderRadius: 9,
+              backgroundColor: colors.background,
+              overflow: "hidden",
+              alignItems: "center",
+              marginBottom: 60,
+            }}
+          >
+            {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
+            {isUser ?
+              <SelfPosts
+                navigation={navigation}
+                userFeed={userFeed}
+                userData={userData}
+                width={flatListWidth}
+                toggleRender={toggleRender}
+              /> :
+              <OtherUserPosts
+                navigation={navigation}
+                userFeed={userFeed}
+                userData={userData}
+                width={flatListWidth}
+                height={fullHeight}
+                toggleRender={toggleRender}
+                setModal={setModal}
+                setModalInfo={(info) => {
+                  setModalInfo({
+                    ...info,
+                    navigate: navigation,
+                    setModal: setModal,
+                    width: fullWidth * 0.90
+                  });
+                }}
+              />}
+          </View>
+        }
+      </ScrollView>
+    )
+  }
+
+
+  return (
+    <View style={{ flex: 1 }}>
+      {show ? renderView()
+        : <View style={{ flex: 1, backgroundColor: 'blue' }} />
+      }
+    </View>
+
+  )
+}
+
+const ActivityScreen = ({ route, navigation }) => {
+  const users = React.useContext(UsersContext).users;
+  const posts = React.useContext(PostsContext).posts;
+  const [user, setUser] = useState("");
+  const [isUser, setIsUser] = useState(true);
+  const [userData, setUserData] = useState({});
+  const [userFeed, setUserFeed] = useState({});
+  const logger = React.useContext(AppContext).user;
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    console.log("###" + route.params.user + "###");
+    console.log("###" + logger + "###");
+    if ((typeof route.params.user === "string")) {
+      const u = route.params.user;
+      setUser(u);
+      if (u === logger) {
+        console.log("true true");
+        setIsUser(true);
+      }
+      else {
+        setIsUser(false);
+      }
+      setUserData(users[u]);
+      setUserFeed(posts.filter(
+        (post) => post.user === u
+      ));
+      navigation.setOptions({ title: u });
+      setShow(true);
+    }
+  }, [route.params]);
+
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
-  const renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 0.4,
-          width: "100%",
-          backgroundColor: "#808080",
-          opacity: 0.5,
-          alignSelf: "flex-end",
-        }}
-      />
-    );
-  };
+  const theme = React.useContext(AppContext).theme;
+  const colors = React.useContext(ThemeContext).colors[theme];
+  const [flatListWidth, setFlatListWidth] = useState(0);
+  const [toggleRender, setToggleRender] = useState(false);
+  const tabBarheight = useBottomTabBarHeight();
+  const headerHeight = useHeaderHeight();
+  const fullWidth = Dimensions.get("window").width;
+  const fullHeight = Dimensions.get("window").height;
 
-  return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+  const [modal, setModal] = useState(false);
+  const [modalInfo, setModalInfo] = useState(null);
+
+  const renderView = () => {
+    return (
       <ScrollView style={{ flex: 1 }}>
         <View
           style={{
@@ -87,16 +219,6 @@ const ActivityScreen = ({ route, navigation }) => {
           <UserInfoBar userData={userData} isUser={isUser} />
           { /* balance information */
             isUser && <BalanceSection userData={userData} />}
-{/*           <UserPostsSection
-            navigation={ navigation }
-            userFeed={ userFeed }
-            user={ user }
-            userData={ userData }
-            isUser={ isUser }
-            flatListWidth={ flatListWidth }
-            fullWidth={ fullWidth }
-            toggleRender={ toggleRender }
-          /> */}
           <View style={{ marginVertical: 30 }}>
             {isUser && (
               <Text
@@ -112,74 +234,63 @@ const ActivityScreen = ({ route, navigation }) => {
             )}
             {/* user's posts */}
             <View
-              style={{
-                flex: !isUser ? 1 : 'auto',
-                width: isUser ? flatListWidth : fullWidth,
+              style={isUser ? {
+                width: flatListWidth,
                 borderRadius: 9,
-                backgroundColor: isUser ? colors.foreground4 : colors.background,
+                backgroundColor: colors.foreground4,
+                overflow: "hidden",
+                alignItems: "center",
+                marginBottom: 60,
+              } : {
+                flex: 1,
+                width: fullWidth,
+                borderRadius: 9,
+                backgroundColor: colors.background,
                 overflow: "hidden",
                 alignItems: "center",
                 marginBottom: 60,
               }}
             >
               {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
-              <FlatList
-                data={userFeed}
-                numColumns={(isUser ? 1 : 3)}
-                renderItem={({ item }) => (isUser ?
-                  <FeedItem
-                    pfpSource={userData.pfpSource}
-                    userName={user}
-                    firstName={userData.firstName}
-                    lastName={userData.lastName}
-                    title={item.title}
-                    timePosted={item.datePosted}
-                    imageSource={item.imageSource}
-                    likes={item.likes}
-                    navigation={navigation}
-                    key={item.datePosted}
-                    width={flatListWidth}
-                  /> :
-                  <TouchableOpacity style={{
-                    width: flatListWidth / 3,
-                    height: flatListWidth / 3,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    /* borderWidth: 1,
-                    borderColor: 'pink' */
+              {isUser ?
+                <SelfPosts
+                  navigation={navigation}
+                  userFeed={userFeed}
+                  userData={userData}
+                  width={flatListWidth}
+                  toggleRender={toggleRender}
+                /> :
+                <OtherUserPosts
+                  navigation={navigation}
+                  userFeed={userFeed}
+                  userData={userData}
+                  width={flatListWidth}
+                  height={fullHeight}
+                  toggleRender={toggleRender}
+                  setModal={setModal}
+                  setModalInfo={(info) => {
+                    setModalInfo({
+                      ...info,
+                      navigate: navigation,
+                      setModal: setModal,
+                      width: fullWidth * 0.90
+                    });
                   }}
-                    onPress={() => {
-                      // modal with the feed item
-                      navigation.navigate('Feed Item', { height: fullHeight });
-                    }}>
-                    <View style={{
-                      padding: 8,
-                      width: 92,
-                      height: 92,
-                      borderRadius: 28,
-                      overflow: 'hidden',
-                      backgroundColor: 'white'
-                    }}>
-                      <Image style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'contain',
-                      }}
-                        source={item.imageSource} />
-                    </View>
-
-                  </TouchableOpacity>
-                )}
-                extraData={toggleRender}
-                keyExtractor={(item, index) => index.toString()}
-                ItemSeparatorComponent={isUser && renderSeparator} /* 
-              ListFooterComponent={<View style={{ height: 60 }} />} */
-              />
+                />}
             </View>
           </View>
         </View>
       </ScrollView>
+    )
+  }
+
+  return (
+
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {show ?
+        renderView()
+        : <View />
+      }
       <BlurView
         style={{
           height: tabBarheight,
@@ -190,6 +301,7 @@ const ActivityScreen = ({ route, navigation }) => {
         intensity={99}
         blurTint={theme === "dark" ? "dark" : "light"}
       />
+      {modal && <PostPopUp info={modalInfo} />}
     </View>
   );
 };

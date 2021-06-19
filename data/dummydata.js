@@ -67,7 +67,7 @@ const remaining = [
         "itemURL": "https://www.freedomfurniture.co.nz/cushions-throws-and-decor/c/artificial-foliage"
     },
     {
-        "user": "travis",
+        "user": "travis.scott",
         "datePurchased": "1623733200",
         "title": "Naviglio Couch",
         "imageURL": "https://www.esperiri.com/wp-content/uploads/prodotti/arf-naviglio-sof/arflex-naviglio.png",
@@ -77,23 +77,23 @@ const remaining = [
 
 const posts = [
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622931841",
         datePosted: "1622931843",
         likes: 870,
-        title: "Uncanny Valley",
+        title: "Faux Plant",
         imageSource: { uri: 'https://www.ikea.com/kr/en/images/products/fejka-artificial-potted-plant-in-outdoor-monstera__0614197_pe686822_s5.jpg' },
     },
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622931840",
         datePosted: "1622931842",
         likes: 870,
-        title: "Uncanny Valley",
+        title: "Blazer",
         imageSource: { uri: 'https://static.pullandbear.net/2/photos/2021/V/0/1/p/4470/328/802/4470328802_1_1_3.jpg?t=1614855668191' },
     },
     {
-        user: "travis",
+        user: "travis.scott",
         datePurchased: "1622931742",
         datePosted: "1622931742",
         likes: 2904,
@@ -101,11 +101,11 @@ const posts = [
         imageSource: require('../assets/jamesshapiro.png'),
     },
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622866650",
         datePosted: "1622866660",
         likes: 870,
-        title: "Uncanny Valley",
+        title: "Carlton Badminton Set",
         imageSource: { uri: 'https://cf.shopee.com.my/file/7552d406a037e1f90ad766845a7e7bd1' },
     },
     {
@@ -118,7 +118,7 @@ const posts = [
     },
 
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622682163",
         datePosted: "1622692163",
         likes: 870,
@@ -142,11 +142,11 @@ const posts = [
         imageSource: require('../assets/maggieofarrell.png'),
     },
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622442002",
         datePosted: "1622442102",
         likes: 870,
-        title: "Uncanny Valley",
+        title: "Abstract Bookshelf",
         imageSource: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3bNrKZqCCuyi6Se_-7M6d85i1882HBId9c81kQ9uYY7Af535dxw0ypqbkinIaxjK7uqU&usqp=CAU' },
     },
     {
@@ -158,7 +158,7 @@ const posts = [
         imageSource: require('../assets/ayadakhtar.png'),
     },
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1622230580",
         datePosted: "1622230702",
         likes: 834,
@@ -174,7 +174,7 @@ const posts = [
         imageSource: require('../assets/jamesmcbride.png'),
     },
     {
-        user: "travis",
+        user: "travis.scott",
         datePurchased: "1620470052",
         datePosted: "1620516970",
         likes: 4953,
@@ -190,7 +190,7 @@ const posts = [
         imageSource: require('../assets/barackobama.png'),
     },
     {
-        user: "michelle",
+        user: "michelle.obama",
         datePurchased: "1618767121",
         datePosted: "1618767260",
         likes: 12467,
@@ -203,8 +203,8 @@ const users = {
     dongsan: {
         firstName: "Dongsan",
         lastName: "Goh",
-        following: ["lex", "joe", "adin", "travis", "luka"],
-        followers: ["lex", "joe", "adin", "travis", "luka"],
+        following: ["lex", "joe", "adin", "travis.scott", "luka"],
+        followers: ["lex", "joe", "adin", "travis.scott", "luka"],
         pfpSource: require("../assets/dongsan.jpeg"),
         bio: "n u t r i t i o n",
         available: "$33,351.12",
@@ -213,11 +213,10 @@ const users = {
     lex: {
         firstName: "Lex",
         lastName: "Fridman",
-        following: ["joe", "adin", "travis", "luka"],
+        following: ["joe", "adin", "travis.scott", "luka"],
         followers: ["joe", "adin", "luka"],
         pfpSource: {
             uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
-            cache: "force-cache",
         },
         bio: '"This is the real secret of life -- to be completely engaged with what you are doing in the here and now. And instead of calling it work, realize it is play." - Alan Watts',
         available: "$33,351.12",
@@ -226,24 +225,22 @@ const users = {
     joe: {
         firstName: "Joe",
         lastName: "Jonas",
-        following: ["lex", "adin", "michelle", "luka", "travis"],
+        following: ["lex", "adin", "michelle.obama", "luka", "travis.scott"],
         followers: ["lex", "luka"],
         pfpSource: {
-            uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg",
-            cache: "force-cache",
+            uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg"
         },
         bio: "I love making Italian food. And coconut chicken",
         available: "$33,351.12",
         pending: "$1,000,000.00",
     },
-    michelle: {
+    "michelle.obama": {
         firstName: "Michelle",
         lastName: "Obama",
-        following: ["lex", "travis"],
-        followers: ["lex", "travis", "joe", "luka"],
+        following: ["lex", "travis.scott"],
+        followers: ["lex", "travis.scott", "joe", "luka"],
         pfpSource: {
-            uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg",
-            cache: "force-cache",
+            uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg"
         },
         bio: "Always stay true to yourself",
         available: "$33,351.12",
@@ -252,24 +249,22 @@ const users = {
     luka: {
         firstName: "Luka",
         lastName: "Doncic",
-        following: ["lex", "joe", "michelle"],
-        followers: ["lex", "travis", "joe"],
+        following: ["lex", "joe", "michelle.obama"],
+        followers: ["lex", "travis.scott", "joe"],
         pfpSource: {
-            uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",
-            cache: "force-cache",
+            uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg"
         },
         bio: "To succeed you have to believe in something with such passion that it becomes a reality.",
         available: "$33,351.12",
         pending: "$1,000,000.00",
     },
-    travis: {
+    "travis.scott": {
         firstName: "Travis",
         lastName: "Scott",
         following: ["luka", "adin"],
         followers: ["lex", "adin", "joe"],
         pfpSource: {
-            uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg",
-            cache: "force-cache",
+            uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg"
         },
         bio: "If she bad, she get a pass into the tour",
         available: "$33,351.12",

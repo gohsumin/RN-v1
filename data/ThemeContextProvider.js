@@ -7,11 +7,11 @@ class ThemeContextProvider extends Component {
         dark: {
             background: 'black',
             antiBackground: 'white',
-            foreground1: '#ddd',
+            foreground1: '#848486',
             foreground2: '#303030',
-            foreground3: '#202020',
-            foreground4: '#151515',
-            blue: '#0085ff',/* 
+            foreground3: '#2c2c2e',
+            foreground4: '#121111',
+            blue: '#349af4',/* 
             blue: 'white', */
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',

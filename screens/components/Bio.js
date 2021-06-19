@@ -7,32 +7,41 @@ import {
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import { Octicons } from "@expo/vector-icons";
+import { MaterialIcons } from '@expo/vector-icons';
+import { useEffect } from 'react/cjs/react.development';
 
-function Bio({userData}) {
+function Bio({ userData }) {
+
+    
 
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
 
     return (
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
             {/* profile image */}
             <Image
                 source={userData.pfpSource}
                 style={{ width: 160, height: 160, borderRadius: 12 }}
             />
             {/* user name and verified icon */}
-            <Text
-                style={{
-                    fontWeight: "700",
-                    letterSpacing: 0.1,
-                    fontSize: 25,
-                    color: colors.antiBackground,
-                    marginTop: 20,
-                }}
-            >
-                {userData.firstName} {userData.lastName}{"  "}
-                <Octicons name="verified" size={23} color={colors.blue} />
-            </Text>
+            <View style={{
+                flexDirection: 'row', alignItems: 'center',
+                marginTop: 20,
+            }}>
+                <Text
+                    style={{
+                        fontWeight: "700",
+                        letterSpacing: 0.1,
+                        fontSize: 25,
+                        color: colors.antiBackground,
+                        alignSelf: 'center',
+                    }}
+                >
+                    {userData.firstName} {userData.lastName}{" "}
+                </Text>
+                <MaterialIcons name="verified" size={24.5} color={'#4894e5'} />
+            </View>
             {/* bio */}
             <Text
                 style={{

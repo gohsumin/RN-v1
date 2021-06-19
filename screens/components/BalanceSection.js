@@ -27,9 +27,9 @@ function BalanceSection({ userData }) {
             <View
                 style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}
             >
-                <BalanceItem title={"Available"} amount={userData.available} index={0} />
+                <BalanceItem title={"Available:"} amount={userData.available} index={0} />
                 {/* {renderSeparator()} */}
-                <BalanceItem title={"Pending"} amount={userData.pending} index={1} />
+                <BalanceItem title={"Pending:"} amount={userData.pending} index={1} />
             </View>
         </View>
     )

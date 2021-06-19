@@ -74,24 +74,8 @@ const HomeScreen = ({ navigation }) => {
               width={Dimensions.get("window").width}
             />
           )}
-          /* ListHeaderComponent={
-            <View style={{ height: headerHeight }}>
-              <Image
-                style={{ height: 600, top: (headerHeight - 600), width: "100%" }}
-                source={
-                  theme === "dark"
-                    ? require("../assets/headerbgdark.jpeg")
-                    : require("../assets/headerbglight.jpeg")
-                }
-              />
-            </View>
-          } */
           ListFooterComponent={
             <View style={{ height: 90 }}>
-              {/* <Image
-                style={{ height: 200, bottom: -110, width: "100%" }}
-                source={require("../assets/headerbg.jpeg")}
-              /> */}
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
@@ -106,43 +90,6 @@ const HomeScreen = ({ navigation }) => {
           right: 0,
         }}
       >
-        {/* <BlurView
-          style={{
-            height: headerHeight,
-            width: "100%",
-            position: "absolute",
-          }}
-          intensity={100}
-          blurTint={theme === "dark" ? "dark" : "light"}
-        /> */}
-        {/* <View
-          style={{
-            height: headerHeight,
-            width: "100%",
-            position: "absolute",
-            backgroundColor: colors.background,
-            borderBottomColor: colors.antiBackground,
-            borderBottomWidth: 0.4
-          }}
-        /> */}
-        {/* 
-        <Text
-          style={{
-            color: colors.antiBackground,
-            fontSize: 44,
-            fontWeight: "300",
-            marginTop: (headerHeight - 57),
-            marginLeft: 22,
-            backgroundColor: "transparent",
-            opacity: 1,
-            shadowOffset: { width: 1, height: 1 },
-            shadowColor: colors.background,
-            shadowOpacity: 0.1,
-            letterSpacing: 0.1
-          }}
-        >
-          Home
-        </Text> */}
       </View>
       <BlurView
         style={{
