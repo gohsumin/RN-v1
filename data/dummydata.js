@@ -12,6 +12,7 @@ const images = [
     require("../assets/headerbgdark.jpeg"),
     require("../assets/headerbglight.jpeg"),
     require("../assets/dongsan.jpeg"),
+    require('../assets/SoShNavLogo.png'),
     {
         uri: 'https://www.ikea.com/kr/en/images/products/fejka-artificial-potted-plant-in-outdoor-monstera__0614197_pe686822_s5.jpg',
         cache: 'force-cache'

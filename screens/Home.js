@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FlatList, Text, View, Image, Dimensions } from "react-native";
+import { FlatList, SafeAreaView, View, Dimensions } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
@@ -43,7 +43,7 @@ const HomeScreen = ({ navigation }) => {
 
   /* return for HomeScreen */
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
       }}
@@ -82,15 +82,6 @@ const HomeScreen = ({ navigation }) => {
           keyExtractor={(item) => item.datePosted}
         />
       </View>
-      <View
-        style={{
-          backgroundColor: "transparent",
-          position: "absolute",
-          left: 0,
-          right: 0,
-        }}
-      >
-      </View>
       <BlurView
         style={{
           height: tabBarheight,
@@ -101,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
         intensity={100}
         blurTint={theme === "dark" ? "dark" : "light"}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

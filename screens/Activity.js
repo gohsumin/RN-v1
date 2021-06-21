@@ -26,121 +26,6 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { toggle } from "cli-spinners";
 
-function ActivityScreenNew({ route, navigation }) {
-
-  const users = React.useContext(UsersContext).users;
-  const posts = React.useContext(PostsContext).posts;
-  const [user, setUser] = useState("");
-  const [isUser, setIsUser] = useState(true);
-  const [userData, setUserData] = useState({});
-  const [userFeed, setUserFeed] = useState({});
-  const logger = React.useContext(AppContext).user;
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    console.log("###" + route.params.user + "###");
-    console.log("###" + logger + "###");
-    if ((typeof route.params.user === "string")) {
-      const u = route.params.user;
-      setUser(u);
-      if (u === logger) {
-        console.log("true true");
-        setIsUser(true);
-      }
-      else {
-        setIsUser(false);
-      }
-      setUserData(users[u]);
-      setUserFeed(posts.filter(
-        (post) => post.user === u
-      ));
-      navigation.setOptions({ title: u });
-      setShow(true);
-    }
-  }, [route.params]);
-
-  useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  }, []);
-
-  const theme = React.useContext(AppContext).theme;
-  const colors = React.useContext(ThemeContext).colors[theme];
-  const [flatListWidth, setFlatListWidth] = useState(0);
-  const [toggleRender, setToggleRender] = useState(false);
-  const tabBarheight = useBottomTabBarHeight();
-  const headerHeight = useHeaderHeight();
-  const fullWidth = Dimensions.get("window").width;
-  const fullHeight = Dimensions.get("window").height;
-
-  const [modal, setModal] = useState(false);
-  const [modalInfo, setModalInfo] = useState(null);
-
-  const renderView = () => {
-    return (
-      <ScrollView style={{ flex: 1, backgroundColor: 'black' }}>
-        {isUser &&
-          <View
-            style={isUser ? {
-              flex: 'auto',
-              width: flatListWidth,
-              borderRadius: 9,
-              backgroundColor: colors.foreground4,
-              overflow: "hidden",
-              alignItems: "center",
-              marginBottom: 60,
-            } : {
-              flex: 1,
-              width: fullWidth,
-              borderRadius: 9,
-              backgroundColor: colors.background,
-              overflow: "hidden",
-              alignItems: "center",
-              marginBottom: 60,
-            }}
-          >
-            {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
-            {isUser ?
-              <SelfPosts
-                navigation={navigation}
-                userFeed={userFeed}
-                userData={userData}
-                width={flatListWidth}
-                toggleRender={toggleRender}
-              /> :
-              <OtherUserPosts
-                navigation={navigation}
-                userFeed={userFeed}
-                userData={userData}
-                width={flatListWidth}
-                height={fullHeight}
-                toggleRender={toggleRender}
-                setModal={setModal}
-                setModalInfo={(info) => {
-                  setModalInfo({
-                    ...info,
-                    navigate: navigation,
-                    setModal: setModal,
-                    width: fullWidth * 0.90
-                  });
-                }}
-              />}
-          </View>
-        }
-      </ScrollView>
-    )
-  }
-
-
-  return (
-    <View style={{ flex: 1 }}>
-      {show ? renderView()
-        : <View style={{ flex: 1, backgroundColor: 'blue' }} />
-      }
-    </View>
-
-  )
-}
-
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
   const posts = React.useContext(PostsContext).posts;
@@ -152,13 +37,10 @@ const ActivityScreen = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    console.log("###" + route.params.user + "###");
-    console.log("###" + logger + "###");
     if ((typeof route.params.user === "string")) {
       const u = route.params.user;
       setUser(u);
       if (u === logger) {
-        console.log("true true");
         setIsUser(true);
       }
       else {

@@ -27,7 +27,7 @@ export default class App extends React.Component {
     posts: posts,
     users: users,
     images: images, // make this a context so cached images can keep updating
-    user: "joe",
+    user: "",
     theme: "dark",
   };
 
