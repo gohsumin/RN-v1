@@ -6,6 +6,7 @@ import {
     Animated,
     TouchableOpacity,
     SafeAreaView,
+    KeyboardAvoidingView,
     StyleSheet,
     Button,
     Image
@@ -18,7 +19,8 @@ import "firebase/firestore";
 import "firebase/auth";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { KeycodeInput } from 'react-native-keycode'
+import { KeycodeInput } from 'react-native-keycode';
+import SignUp from './SignUp';
 
 function SignIn({ navigation }) {
 
@@ -52,32 +54,35 @@ function SignIn({ navigation }) {
     );
     const attemptInvisibleVerification = false;
     const [signInButtonOpen, setSignInButtonOpen] = useState(false);
-    const marginHorizontal = 93;
+    const [signUpButtonOpen, setSignUpButtonOpen] = useState(false);
+    const marginHorizontal = 85;
     const buttonFontSize = 20;
-    const buttonHeight = 45;
+    const buttonHeight = 47;
+    const buttonBorderRadius = buttonHeight/2;
     const phoneInputHeight = useRef(new Animated.Value(buttonHeight)).current;
     const inputOpacity = useRef(new Animated.Value(0)).current;
 
     /* verifies phone number and allows sign in with number */
-    async function onSignInSubmit(event) {
+    async function onPhoneNumberSubmit(event) {
+        console.log("sign in submit");
         try {
             const phoneProvider = new firebase.auth.PhoneAuthProvider();
             const verificationId = await phoneProvider.verifyPhoneNumber(
                 number,
                 recaptchaVerifier.current
             ).then((vId) => {
-                //console.log("verificationId:"+vId);
+                console.log("verificationId:"+vId);
                 setVerificationId(vId);
             });
             setMessage({ text: 'Verification code has been sent to your phone.' });
             // show a pop up for entering the verification code
         } catch (err) {
             setMessage({ text: `Error: ${err.message}`, color: 'red' });
+            console.log("error: "+err);
         }
     }
 
     const signInAsync = async () => {
-        console.log("LoginScreen.js 6 | loggin in");
         try {
             const { type, accessToken, user, refreshToken, idToken } = await Google.logInAsync({
                 iosClientId: "342162757131-c1p9md1c4eckqg10u0e1c7dfsdbi9qbf.apps.googleusercontent.com",
@@ -101,6 +106,349 @@ function SignIn({ navigation }) {
             console.log("LoginScreen.js 19 | ---", error);
         }
     };
+
+    return (
+        <KeyboardAvoidingView
+            behavior={'padding'}
+            style={{
+                flex: 1,
+                width: "100%",
+                backgroundColor: 'black'
+        }}>
+
+            <View style={{
+                flex: 1.5,
+                justifyContent: 'flex-end'
+            }}>
+                <Image
+                    source={require('../assets/logo.png')}
+                    style={{
+                        height: "45%",
+                        resizeMode: 'contain',
+                        alignSelf: 'center',
+                        marginBottom: 35
+                    }}
+                />
+                <Text
+                    // fancy text...
+                    style={{
+                        color: 'gray', //#f7d0da',
+                        fontSize: 24,
+                        fontWeight: '200',
+                        marginHorizontal: marginHorizontal,
+                        textAlignVertical: 'bottom',
+                        textAlign: "center",
+                        letterSpacing: 0.3,
+                        lineHeight: 27
+                    }}>
+                    Real purchases
+                    approved by
+                    _____________ .
+                </Text>
+            </View>
+
+
+            <View // buttons
+                style={{
+                    marginTop: 58,
+                    marginHorizontal: marginHorizontal,
+                    justifyContent: 'flex-start',
+                    flex: 1
+                }}>
+
+                <Animated.View // sign up button + phone # input
+                    style={{
+                        //flex: 1
+                    }}>
+
+                    <Animated.View // box that holds !!text input for sign in!!
+                        style={{
+                            opacity: inputOpacity,
+                            width: "100%",
+                            height: phoneInputHeight,
+                            borderRadius: buttonBorderRadius,
+                            backgroundColor: 'rgba(255,255,255,0.8)',
+                        }}>
+
+                        <Animated.View // text input for sign in
+                        style={{
+                            opacity: inputOpacity,
+                            height: 30,
+                            bottom: 0,
+                            position: 'absolute',
+                            width: "76%",
+                            alignSelf: 'center',
+                            padding: 5
+                        }}>
+                            <TextInput
+                                style={{
+                                    borderBottomWidth: 0.2,
+                                    borderBottomColor: 'rgba(0,0,0,0.5)',
+                                    fontSize: 14,
+                                    paddingBottom: 5
+                                }}
+                                // figure out how to show the submit button!
+                                onSubmitEditing={(event) => {
+                                    onPhoneNumberSubmit(event);
+                                }}
+                                // pls check that the state name stayed the same..
+                                onChangeText={setNumber}
+                                value={number}
+                                placeholder="e.g. +1 999 999 9999"
+                                // maybe do something here to show submit button
+                                // and enable hiding the keyboard
+                                autoCompleteType="tel"
+                                keyboardType="phone-pad"
+                                textContentType="telephoneNumber"
+                                returnKeyType="done"
+                            />
+                        </Animated.View>
+
+                    </Animated.View>
+
+                    <TouchableOpacity // button for phone sign in!!!
+                        style={{
+                            position: 'absolute',
+                            width: "100%",
+                        }}
+                        onPress={(event) => {
+                            // trigger the text input to come down
+                            Animated.timing(
+                                phoneInputHeight,
+                                {
+                                    toValue: signInButtonOpen ? buttonHeight : 82,
+                                    duration: 300,
+                                    useNativeDriver: false
+                                }).start();
+                            Animated.timing(inputOpacity,
+                                {
+                                    toValue: signInButtonOpen ? 0 : 1,
+                                    duration: 300,
+                                    useNativeDriver: false
+                                }).start();
+                            setSignInButtonOpen(!signInButtonOpen);
+                        }}>
+                        <View style={{
+                            width: "100%",
+                            height: buttonHeight,
+                            borderRadius: buttonBorderRadius,
+                            justifyContent: 'center',
+                            backgroundColor: 'white',
+                            shadowOpacity: 0.3,
+                            shadowColor: 'black',
+                            shadowOffset: { width: 0, height: 1 },
+                            shadowRadius: 4,
+                            elevation: 3
+                        }}>
+                            <Text style={{
+                                textAlign: 'center',
+                                color: 'black',
+                                fontSize: buttonFontSize,
+                                fontWeight: '300'
+                            }}>
+                                Sign In
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                    <FirebaseRecaptchaVerifierModal
+                        ref={recaptchaVerifier}
+                        firebaseConfig={firebaseConfig}
+                        attemptInvisibleVerification={attemptInvisibleVerification}
+                    />
+                </Animated.View>
+
+
+                <View
+                    // button for SIGN UP
+                >
+                    <TouchableOpacity
+                        // with more user input for user info
+                        onPress={() => {
+                            // trigger sign up page to open
+                            setSignUpButtonOpen(!signUpButtonOpen);
+                        }}>
+                        <View style={{
+                            marginTop: 17,
+                            width: "100%",
+                            height: buttonHeight,
+                            borderRadius: buttonBorderRadius,
+                            justifyContent: 'center',
+                            backgroundColor: '#196DFF',
+                            shadowOpacity: 0.3,
+                            shadowColor: 'black',
+                            shadowOffset: { width: 0, height: 1 },
+                            shadowRadius: 4,
+                            elevation: 3
+                        }}>
+                            <Text style={{
+                                textAlign: 'center',
+                                color: 'white',
+                                fontSize: buttonFontSize, fontWeight: '300'
+                            }}>
+                                Sign Up
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+            
+            {signUpButtonOpen &&
+                <SignUp
+                    setVerificationId={(vid) => {setVerificationId(vid)}}
+                    setVerificationCode={(vco) => {setVerificationCode(vco)}}
+                    onPhoneNumberSubmit={(event) => {onPhoneNumberSubmit(event)}}
+                    setNumber={(number) => {setNumber(number)}}
+                />
+                }
+
+            { // pop up for entering verification id sent to text
+                verificationId &&
+                <View style={{
+                    position: 'absolute',
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    elevation: 5,
+                    shadowColor: 'black',
+                    shadowOpacity: 0.5,
+                    shadowOffset: { width: 2, height: 5 }
+                }}>
+                    <View style={{
+                        marginHorizontal: 20,
+                        backgroundColor: 'white',
+                        width: 310,
+                        height: 450,
+                        borderRadius: 50,
+                        alignItems: 'center',
+                        alignSelf: 'center'
+                    }}>
+                        <Text style={{
+                            flex: 1.2,
+                            fontSize: 18,
+                            color: 'rgba(0,0,0,0.4)',
+                            textAlignVertical: 'center'
+                        }}>
+                            SMS Verification
+                        </Text>
+                        <MaterialCommunityIcons
+                        style={{
+                            flex: 2,
+                            textAlignVertical: 'center'
+                            }}
+                            name="cellphone-message"
+                            size={70} color="rgba(0,0,0,0.4)" />
+                        <Text style={{
+                            flex: 1,
+                            fontSize: 20,
+                            fontWeight: '600',
+                            width: "70%",
+                            color: 'black',
+                            textAlign: 'center',
+                            textAlignVertical: 'center',
+                        }}>
+                            Check your SMS
+                        </Text>
+                        <Text
+                            style={{
+                                flex: 1,
+                                fontSize: 18,
+                                fontWeight: '300',
+                                color: 'rgba(0,0,0,0.5)',
+                                width: "85%",
+                                textAlign: 'center'
+                            }}>
+                            A verification code has been sent to {number}!
+                        </Text>
+                        <KeycodeInput
+                            length={6}
+                            autoFocus={false}
+                            numeric={true}
+                            
+                            onComplete={async (value) => {
+                                // sending verification code
+                                try {
+                                    const credential = firebase.auth.PhoneAuthProvider.credential(
+                                        verificationId,
+                                        verificationCode
+                                    );
+                                    await firebase.auth().signInWithCredential(credential).then((user) => {
+                                        console.log(user);
+                                    });
+                                    const user = firebase.auth().currentUser;
+                                    if (user !== null) {
+                                        const uid = user.uid;
+                                        firestore.collection('UserBase').doc(uid).set({ access_token: "", full_name: "", username: "" })
+
+                                    }
+                                    setMessage({ text: 'Phone authentication successful 👍' });
+                                    // do some other things
+                                    // like set the user context
+                                    // and navigate to the user screen
+                                } catch (err) {
+                                    setMessage({ text: `Error: ${err.message}`, color: 'red' });
+                                }
+                            }}
+                        />
+                        <Text style={{
+                            flex: 0.9,
+                            fontSize: 13,
+                            textAlign: 'center',
+                            textAlignVertical: 'top',
+                            marginTop: 5,
+                            color: 'rgba(0,0,0,0.3)'
+                        }}>
+                            Enter 6-digit verification code
+                        </Text>
+                        <View style={{
+                            flex: 0.7,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <TouchableOpacity>
+                                <Text style={{
+                                    color: '#59a4ff',
+                                    fontSize: 17
+                                    }}>
+                                    Send Again
+                                </Text>
+                            </TouchableOpacity>
+                            <View style={{
+                                width: 0,
+                                height: 25,
+                                borderColor: 'rgba(89, 164, 255, 1)',
+                                borderWidth: 0.4,
+                                marginHorizontal: 15,
+                            }} />
+                            <TouchableOpacity
+                            // cancel button
+                                onPress={() => {
+                                    setVerificationId();
+                                }}
+                            >
+                                <Text style={{
+                                    color: '#59a4ff',
+                                    fontSize: 17,
+                                    }}>
+                                    Cancel
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>}
+
+        </KeyboardAvoidingView>
+    )
+}
+
+
+export default SignIn;
+
+
+
 
     /*     return (
             <View style={{ padding: 20, marginTop: 50 }}>
@@ -195,314 +543,3 @@ function SignIn({ navigation }) {
                 {attemptInvisibleVerification && <FirebaseRecaptchaBanner />}
             </View>
         ) */
-    return (
-        <SafeAreaView style={{
-            flex: 1,
-            width: "100%",
-            backgroundColor: 'black'
-        }}>
-
-            <View style={{
-                flex: 1.3,
-                justifyContent: 'flex-end'
-            }}>
-                <Image
-                    source={require('../assets/logo.png')}
-                    style={{
-                        height: "45%",
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        marginBottom: 40
-                    }}
-                />
-                <Text
-                    // fancy text...
-                    style={{
-                        color: 'gray', //#f7d0da',
-                        fontSize: 24,
-                        fontWeight: '100',
-                        marginHorizontal: marginHorizontal - 10,
-                        textAlignVertical: 'bottom',
-                        textAlign: "center",
-                        letterSpacing: 0.2,
-                        lineHeight: 27
-                    }}>
-                    Real purchases
-                    approved by
-                    _____________ .
-                </Text>
-            </View>
-
-
-            <View // buttons
-                style={{
-                    marginTop: 50,
-                    marginHorizontal: marginHorizontal,
-                    justifyContent: 'flex-start',
-                    flex: 1
-                }}>
-
-                <Animated.View // sign up button + phone # input
-                    style={{
-                        //flex: 1
-                    }}>
-
-                    <Animated.View // box that holds text input for sign in
-                        style={{
-                            width: "100%",
-                            height: phoneInputHeight,
-                            borderRadius: 30,
-                            backgroundColor: 'rgba(255,255,255,0.8)',
-                            padding: 5
-                        }}>
-                        <Animated.View style={{
-                            opacity: inputOpacity,
-                            height: 30,
-                            bottom: 7,
-                            position: 'absolute',
-                            width: "82%",
-                            alignSelf: 'center',
-                        }}>
-                            <TextInput
-                                style={{
-                                    borderBottomWidth: 0.2,
-                                    borderBottomColor: 'rgba(0,0,0,0.5)',
-                                }}
-                                // figure out how to show the submit button!
-                                onSubmitEditing={(event) => {
-                                    onSignInSubmit(event);
-                                }}
-                                // pls check that the state name stayed the same..
-                                onChangeText={setNumber}
-                                value={number}
-                                placeholder="e.g. +1 999 999 9999"
-                                // maybe do something here to show submit button
-                                // and enable hiding the keyboard
-                                autoCompleteType="tel"
-                                keyboardType="phone-pad"
-                                textContentType="telephoneNumber"
-                                returnKeyLabel="Done"
-                            />
-                        </Animated.View>
-
-                    </Animated.View>
-
-                    <TouchableOpacity // button for phone sign in!!!
-                        style={{
-                            position: 'absolute',
-                            width: "100%",
-                        }}
-                        onPress={(event) => {
-                            // trigger the text input to come down
-                            Animated.timing(
-                                phoneInputHeight,
-                                {
-                                    toValue: signInButtonOpen ? buttonHeight : 85,
-                                    duration: 300,
-                                    useNativeDriver: false
-                                }).start();
-                            Animated.timing(inputOpacity,
-                                {
-                                    toValue: signInButtonOpen ? 0 : 1,
-                                    duration: 300,
-                                    useNativeDriver: false
-                                }).start();
-                            setSignInButtonOpen(!signInButtonOpen);
-                        }}>
-                        <View style={{
-                            width: "100%",
-                            height: buttonHeight,
-                            borderRadius: 30,
-                            justifyContent: 'center',
-                            backgroundColor: 'white',
-                            shadowOpacity: 0.3,
-                            shadowColor: 'black',
-                            shadowOffset: { width: 0, height: 1 },
-                            shadowRadius: 4,
-                            elevation: 3
-                        }}>
-                            <Text style={{
-                                textAlign: 'center',
-                                color: 'black',
-                                fontSize: buttonFontSize,
-                                fontWeight: '300'
-                            }}>
-                                Sign In
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <FirebaseRecaptchaVerifierModal
-                        ref={recaptchaVerifier}
-                        firebaseConfig={firebaseConfig}
-                        attemptInvisibleVerification={attemptInvisibleVerification}
-                    />
-                </Animated.View>
-
-                <View
-                    style={{
-                        //flex: 1
-                    }}>
-                    <TouchableOpacity // Not doing google sign in anymore...
-                        // maybe change to sign up, but
-                        // with more user input for user info
-                        onPress={signInAsync}
-                    >
-                        <View style={{
-                            marginTop: 15,
-                            width: "100%",
-                            height: buttonHeight,
-                            borderRadius: 30,
-                            justifyContent: 'center',
-                            backgroundColor: '#196DFF',
-                            shadowOpacity: 0.3,
-                            shadowColor: 'black',
-                            shadowOffset: { width: 0, height: 1 },
-                            shadowRadius: 4,
-                            elevation: 3
-                        }}>
-                            <Text style={{
-                                textAlign: 'center',
-                                color: 'white',
-                                fontSize: buttonFontSize, fontWeight: '300'
-                            }}>
-                                Sign Up
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-
-            </View>
-
-
-            { // pop up for entering verification id sent to text
-                verificationId &&
-                <View style={{
-                    position: 'absolute',
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    elevation: 5,
-                    shadowColor: 'black',
-                    shadowOpacity: 0.5,
-                    shadowOffset: { width: 2, height: 5 }
-                }}>
-                    <View style={{
-                        marginHorizontal: 20,
-                        backgroundColor: 'white',
-                        width: "76%",
-                        height: "65%",
-                        borderRadius: 50,
-                        alignItems: 'center',
-                        alignSelf: 'center'
-                    }}>
-                        <Text style={{
-                            flex: 1.2,
-                            fontSize: 18,
-                            color: 'rgba(0,0,0,0.4)',
-                            textAlignVertical: 'center'
-                        }}>
-                            SMS Verification
-                        </Text>
-                        <MaterialCommunityIcons style={{ flex: 2, textAlignVertical: 'center' }} name="cellphone-message" size={70} color="rgba(0,0,0,0.4)" />
-                        <Text style={{
-                            flex: 1,
-                            fontSize: 20,
-                            fontWeight: '600',
-                            width: "70%",
-                            color: 'black',
-                            textAlign: 'center',
-                            textAlignVertical: 'center',
-                        }}>
-                            Check your SMS
-                        </Text>
-                        <Text
-                            style={{
-                                flex: 1,
-                                fontSize: 18,
-                                fontWeight: '300',
-                                color: 'rgba(0,0,0,0.5)',
-                                width: "85%",
-                                textAlign: 'center'
-                            }}>
-                            A verification code has been sent to {number}!
-                        </Text>
-                        <KeycodeInput
-                            length={6}
-                            autoFocus={false}
-                            numeric={true}
-                            onComplete={async (value) => {
-                                // sending verification code
-                                try {
-                                    const credential = firebase.auth.PhoneAuthProvider.credential(
-                                        verificationId,
-                                        verificationCode
-                                    );
-                                    await firebase.auth().signInWithCredential(credential).then((user) => {
-                                        console.log(user);
-                                    });
-                                    const user = firebase.auth().currentUser;
-                                    if (user !== null) {
-                                        const uid = user.uid;
-                                        firestore.collection('UserBase').doc(uid).set({ access_token: "", full_name: "", username: "" })
-
-                                    }
-                                    setMessage({ text: 'Phone authentication successful 👍' });
-                                    // do some other things
-                                    // like set the user context
-                                    // and navigate to the user screen
-                                } catch (err) {
-                                    setMessage({ text: `Error: ${err.message}`, color: 'red' });
-                                }
-                            }}
-                        />
-                        <Text style={{
-                            flex: 0.8,
-                            fontSize: 13,
-                            textAlign: 'center',
-                            textAlignVertical: 'top',
-                            marginTop: 5,
-                            color: 'rgba(0,0,0,0.3)'
-                        }}>
-                            Enter 6-digit verification code
-                        </Text>
-                        <View style={{
-                            flex: 0.7,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                            <TouchableOpacity>
-                                <Text style={{
-                                    color: '#59a4ff',
-                                    fontSize: 17
-                                    }}>
-                                    Send Again
-                                </Text>
-                            </TouchableOpacity>
-                            <View style={{
-                                width: 0,
-                                height: 25,
-                                borderColor: 'rgba(89, 164, 255, 1)',
-                                borderWidth: 0.4,
-                                marginHorizontal: 15,
-                            }} />
-                            <TouchableOpacity>
-                                <Text style={{
-                                    color: '#59a4ff',
-                                    fontSize: 17,
-                                    }}>
-                                    Cancel
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>}
-
-        </SafeAreaView>
-    )
-}
-
-
-export default SignIn;

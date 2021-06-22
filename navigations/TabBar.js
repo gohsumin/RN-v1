@@ -22,7 +22,7 @@ function TabBar() {
 
   return (
     <Tab.Navigator
-      shifting={true}
+      //shifting={true}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -49,10 +49,11 @@ function TabBar() {
         },
         style: {
           backgroundColor: colors.tabBar,
-          borderTopColor: "transparent",
+          //borderTopColor: "transparent",
+          borderTopColor: "rgba(255, 255, 255, 0.2)",
           position: "absolute",
-          paddingVertical: 10,
-          height: 80
+          /* paddingVertical: 10,
+          height: 80 */
         },
       }}
     >
