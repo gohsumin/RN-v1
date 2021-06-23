@@ -75,23 +75,13 @@ const HomeScreen = ({ navigation }) => {
             />
           )}
           ListFooterComponent={
-            <View style={{ height: 90 }}>
+            <View style={{ height: tabBarheight }}>
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
           keyExtractor={(item) => item.datePosted}
         />
       </View>
-      <BlurView
-        style={{
-          height: tabBarheight,
-          width: "100%",
-          position: "absolute",
-          bottom: 0,
-        }}
-        intensity={100}
-        blurTint={theme === "dark" ? "dark" : "light"}
-      />
     </SafeAreaView>
   );
 };

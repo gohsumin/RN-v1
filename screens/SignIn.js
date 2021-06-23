@@ -9,7 +9,8 @@ import {
     KeyboardAvoidingView,
     StyleSheet,
     Button,
-    Image
+    Image,
+    ScrollView,
 } from 'react-native';
 import AppContext from '../data/AppContext';
 import * as Google from 'expo-google-app-auth';
@@ -18,9 +19,9 @@ import { firebase, firebaseConfig } from '../data/firebase';
 import "firebase/firestore";
 import "firebase/auth";
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { KeycodeInput } from 'react-native-keycode';
 import SignUp from './SignUp';
+import PhoneVerification from './components/PhoneVerification';
+import EmailVerification from './components/EmailVerification';
 
 function SignIn({ navigation }) {
 
@@ -34,15 +35,16 @@ function SignIn({ navigation }) {
     const { user, setUser, theme } = useContext(AppContext);
     const [number, setNumber] = useState();
 
-    //var phoneNumber = "+12027258240";
+    var phoneNumber = "+16501235555";
     var testVerificationCode = "123456";
 
     /* const captcha = '<div id="sign-in-button" />'; */
 
     const recaptchaVerifier = React.useRef(null);
-    const [phoneNumber, setPhoneNumber] = React.useState();
     const [verificationId, setVerificationId] = React.useState();
     const [verificationCode, setVerificationCode] = React.useState();
+    const [isVerified, setIsVerified] = React.useState(false);
+    const [verificationNeeded, setVerificationNeeded] = React.useState(false);
     const firebaseConfig = firebase.apps.length ? firebase.app().options : undefined;
     const [message, setMessage] = React.useState(
         !firebaseConfig || Platform.OS === 'web'
@@ -52,23 +54,27 @@ function SignIn({ navigation }) {
             }
             : undefined
     );
-    const attemptInvisibleVerification = false;
+    const attemptInvisibleVerification = true;
     const [signInButtonOpen, setSignInButtonOpen] = useState(false);
     const [signUpButtonOpen, setSignUpButtonOpen] = useState(false);
+    const [credential, setCredential] = useState();
     const marginHorizontal = 85;
     const buttonFontSize = 20;
     const buttonHeight = 47;
     const buttonBorderRadius = buttonHeight/2;
     const phoneInputHeight = useRef(new Animated.Value(buttonHeight)).current;
     const inputOpacity = useRef(new Animated.Value(0)).current;
+    const [inOrUp, setInOrUp] = useState();
+    const [userInfo, setUserInfo] = useState();
 
     /* verifies phone number and allows sign in with number */
     async function onPhoneNumberSubmit(event) {
-        console.log("sign in submit");
+        console.log("phone #: "+ number);
         try {
             const phoneProvider = new firebase.auth.PhoneAuthProvider();
-            const verificationId = await phoneProvider.verifyPhoneNumber(
-                number,
+            //setVerificationId("123456");
+            await phoneProvider.verifyPhoneNumber(
+                phoneNumber,
                 recaptchaVerifier.current
             ).then((vId) => {
                 console.log("verificationId:"+vId);
@@ -82,6 +88,13 @@ function SignIn({ navigation }) {
         }
     }
 
+    function setUserAndNavigate(userId) {
+        console.log("before setting user");
+        setUser(userId);
+        console.log("before navigating to "+userId+"'s profile");
+        navigation.navigate("Profile", { user: userId });
+    }
+
     const signInAsync = async () => {
         try {
             const { type, accessToken, user, refreshToken, idToken } = await Google.logInAsync({
@@ -93,9 +106,19 @@ function SignIn({ navigation }) {
                 console.log("access token for user with " + user.email + ": " + accessToken);
                 console.log("refreshToken: " + refreshToken);
                 console.log("idToken: " + idToken);
-
-                var yu = firestore.collection("UserBase").doc(auth.uid);
-                yu.set({ "email": user.email, "accessToken": accessToken }).then(() => { return; });
+                data = {gmail_access_token: accessToken, gmail_refresh_token: refreshToken};
+                fetch('https://soshwrld.com/access', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': "application/json",
+                        'Content-Type': 'application/json',
+                        "CSRF-Token": Cookies.get("XSRF-TOKEN")
+                    },
+                    body: JSON.stringify(data),
+                  })
+                  
+                // var yu = firestore.collection("UserBase").doc(auth.uid);
+                // yu.set({ "email": user.email, "accessToken": accessToken }).then(() => { return; });
                 //yu.update({}).then(() =>{return;}).catch(() => {return;});
 
                 const temp = "luka";
@@ -106,6 +129,17 @@ function SignIn({ navigation }) {
             console.log("LoginScreen.js 19 | ---", error);
         }
     };
+
+    const DismissKeyboardHOC = (Comp) => {
+        return ({ children, ...props }) => (
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <Comp {...props}>
+              {children}
+            </Comp>
+          </TouchableWithoutFeedback>
+        );
+      };
+      const DismissKeyboardView = DismissKeyboardHOC(View)
 
     return (
         <KeyboardAvoidingView
@@ -189,6 +223,7 @@ function SignIn({ navigation }) {
                                 }}
                                 // figure out how to show the submit button!
                                 onSubmitEditing={(event) => {
+                                    setInOrUp("in");
                                     onPhoneNumberSubmit(event);
                                 }}
                                 // pls check that the state name stayed the same..
@@ -227,6 +262,7 @@ function SignIn({ navigation }) {
                                     useNativeDriver: false
                                 }).start();
                             setSignInButtonOpen(!signInButtonOpen);
+                            setInOrUp("in");
                         }}>
                         <View style={{
                             width: "100%",
@@ -244,7 +280,7 @@ function SignIn({ navigation }) {
                                 textAlign: 'center',
                                 color: 'black',
                                 fontSize: buttonFontSize,
-                                fontWeight: '300'
+                                fontWeight: '300',
                             }}>
                                 Sign In
                             </Text>
@@ -266,6 +302,7 @@ function SignIn({ navigation }) {
                         onPress={() => {
                             // trigger sign up page to open
                             setSignUpButtonOpen(!signUpButtonOpen);
+                            setInOrUp("up");
                         }}>
                         <View style={{
                             marginTop: 17,
@@ -295,150 +332,37 @@ function SignIn({ navigation }) {
             
             {signUpButtonOpen &&
                 <SignUp
-                    setVerificationId={(vid) => {setVerificationId(vid)}}
+                    // setVerificationId={(vid) => {setVerificationId(vid)}}
                     setVerificationCode={(vco) => {setVerificationCode(vco)}}
-                    onPhoneNumberSubmit={(event) => {onPhoneNumberSubmit(event)}}
                     setNumber={(number) => {setNumber(number)}}
+                    onPhoneNumberSubmit={(event) => {onPhoneNumberSubmit(event)}}
+                    setVerificationId={(event) => {setVerificationId(event)}}
+                    isVerified={isVerified}
+                    verificationNeeded={verificationNeeded}
+                    setVerificationNeeded={setVerificationNeeded}
+                    setUserInfo={setUserInfo}
                 />
                 }
 
-            { // pop up for entering verification id sent to text
-                verificationId &&
-                <View style={{
-                    position: 'absolute',
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    elevation: 5,
-                    shadowColor: 'black',
-                    shadowOpacity: 0.5,
-                    shadowOffset: { width: 2, height: 5 }
-                }}>
-                    <View style={{
-                        marginHorizontal: 20,
-                        backgroundColor: 'white',
-                        width: 310,
-                        height: 450,
-                        borderRadius: 50,
-                        alignItems: 'center',
-                        alignSelf: 'center'
-                    }}>
-                        <Text style={{
-                            flex: 1.2,
-                            fontSize: 18,
-                            color: 'rgba(0,0,0,0.4)',
-                            textAlignVertical: 'center'
-                        }}>
-                            SMS Verification
-                        </Text>
-                        <MaterialCommunityIcons
-                        style={{
-                            flex: 2,
-                            textAlignVertical: 'center'
-                            }}
-                            name="cellphone-message"
-                            size={70} color="rgba(0,0,0,0.4)" />
-                        <Text style={{
-                            flex: 1,
-                            fontSize: 20,
-                            fontWeight: '600',
-                            width: "70%",
-                            color: 'black',
-                            textAlign: 'center',
-                            textAlignVertical: 'center',
-                        }}>
-                            Check your SMS
-                        </Text>
-                        <Text
-                            style={{
-                                flex: 1,
-                                fontSize: 18,
-                                fontWeight: '300',
-                                color: 'rgba(0,0,0,0.5)',
-                                width: "85%",
-                                textAlign: 'center'
-                            }}>
-                            A verification code has been sent to {number}!
-                        </Text>
-                        <KeycodeInput
-                            length={6}
-                            autoFocus={false}
-                            numeric={true}
-                            
-                            onComplete={async (value) => {
-                                // sending verification code
-                                try {
-                                    const credential = firebase.auth.PhoneAuthProvider.credential(
-                                        verificationId,
-                                        verificationCode
-                                    );
-                                    await firebase.auth().signInWithCredential(credential).then((user) => {
-                                        console.log(user);
-                                    });
-                                    const user = firebase.auth().currentUser;
-                                    if (user !== null) {
-                                        const uid = user.uid;
-                                        firestore.collection('UserBase').doc(uid).set({ access_token: "", full_name: "", username: "" })
+             
+                {(verificationId && !isVerified) &&
+                // pop up for entering verification id sent to text
+                // triggered when onPhoneNumberSubmitted is called
+                // and verificationId is set to something other than null
+                <PhoneVerification
+                number={number}
+                setCredential={setCredential}
+                verificationId={verificationId}
+                setVerificationId={setVerificationId}
+                verificationCode={verificationCode}
+                action={inOrUp}
+                setIsVerified={setIsVerified}
+                setUserAndNavigate={(user) => {setUserAndNavigate(user);}}
+                userInfo={userInfo}
+                />}
 
-                                    }
-                                    setMessage({ text: 'Phone authentication successful 👍' });
-                                    // do some other things
-                                    // like set the user context
-                                    // and navigate to the user screen
-                                } catch (err) {
-                                    setMessage({ text: `Error: ${err.message}`, color: 'red' });
-                                }
-                            }}
-                        />
-                        <Text style={{
-                            flex: 0.9,
-                            fontSize: 13,
-                            textAlign: 'center',
-                            textAlignVertical: 'top',
-                            marginTop: 5,
-                            color: 'rgba(0,0,0,0.3)'
-                        }}>
-                            Enter 6-digit verification code
-                        </Text>
-                        <View style={{
-                            flex: 0.7,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                            <TouchableOpacity>
-                                <Text style={{
-                                    color: '#59a4ff',
-                                    fontSize: 17
-                                    }}>
-                                    Send Again
-                                </Text>
-                            </TouchableOpacity>
-                            <View style={{
-                                width: 0,
-                                height: 25,
-                                borderColor: 'rgba(89, 164, 255, 1)',
-                                borderWidth: 0.4,
-                                marginHorizontal: 15,
-                            }} />
-                            <TouchableOpacity
-                            // cancel button
-                                onPress={() => {
-                                    setVerificationId();
-                                }}
-                            >
-                                <Text style={{
-                                    color: '#59a4ff',
-                                    fontSize: 17,
-                                    }}>
-                                    Cancel
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>}
+                {isVerified &&
+                <EmailVerification/>}
 
         </KeyboardAvoidingView>
     )

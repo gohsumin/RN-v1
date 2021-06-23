@@ -1,10 +1,11 @@
 import React from "react";
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import ActivityScreen from "../screens/Activity";
 import SignInScreen from "../screens/SignIn";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
+import { useEffect } from "react/cjs/react.development";
 
 const Stack = createStackNavigator();
 
@@ -24,19 +25,31 @@ const ActivityStackNavigator = () => {
     //headerTransparent: 'true',
   };
 
+  const temp = () => {
+    return (
+      <View style={{ flex: 1, backgroundColor: 'yellow' }} >
+        <Text>
+          Hello
+        </Text>
+      </View>
+    )
+  }
+
   return (
     <Stack.Navigator initialRouteName={user !== "" ? "Profile" : "Sign In"} screenOptions={screenOptionStyle}>
       <Stack.Screen
         name="Sign In"
         component={SignInScreen}
         options={{ headerShown: false }}
-
       >
       </Stack.Screen>
       <Stack.Screen
         name="Profile"
-        component={ActivityScreen}
-        initialParams={{ user: user }}
+        //component={ActivityScreen}
+        component={
+          temp
+        }
+        //initialParams={{ user: "lex" }}
         options={{ headerLeft: null, gestureEnabled: false }}
       ></Stack.Screen>
     </Stack.Navigator>

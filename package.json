@@ -8,7 +8,9 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/picker": "^1.8.1",
     "@react-native-firebase/app": "^12.1.0",
+    "@react-native-picker/picker": "^1.16.1",
     "@react-navigation/bottom-tabs": "^5.11.11",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
@@ -21,6 +23,7 @@
     "expo-status-bar": "~1.0.4",
     "firebase": "^8.6.7",
     "firebase-tools": "^9.13.0",
+    "js-cookie": "^2.2.1",
     "react": "^16.13.1",
     "react-dom": "16.13.1",
     "react-firebase-hooks": "^3.0.4",

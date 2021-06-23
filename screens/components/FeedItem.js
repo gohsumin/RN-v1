@@ -4,6 +4,9 @@ import { EvilIcons } from "@expo/vector-icons";
 import { getElapsedTime } from "../../helpers/postsHelpers";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
+import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 function FeedItem({
   pfpSource,
@@ -19,14 +22,13 @@ function FeedItem({
   width,
 }) {
 
-
   /* refer to ./FeedItemDiagram */
-  const horLeftRatio = 0.15;
+  const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
   const itemImageRatio = 0.71;
   const titleRatio = 1 - itemImageRatio;
 
-  const marginHorizontal = 10;
+  const marginHorizontal = 12;
 
   const [totalWidth, setTotalWidth] = useState(0);
   const [leftGridWidth, setLeftGridWidth] = useState(0);
@@ -83,8 +85,8 @@ function FeedItem({
         >
           <Text
             style={{
-              fontWeight: "400",
-              fontSize: 15,
+              fontWeight: "bold",
+              fontSize: 16,
               color: colors.antiBackground,
             }}
           >
@@ -94,6 +96,7 @@ function FeedItem({
             {getElapsedTime(timePosted)}
           </Text>
         </View>
+
         {/* grid with the picture and the title */}
         <View
           style={{
@@ -104,19 +107,43 @@ function FeedItem({
             paddingTop: 5,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              borderRadius: 23,
+              overflow: 'hidden'
+            }}>
             <Image
               source={imageSource}
               style={{
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,
-                borderRadius: 20,
                 borderWidth: 0.2,
                 alignItems: "center",
                 resizeMode: "contain",
                 backgroundColor: 'white',
               }}
             />
+            <View
+              color="black"
+              style={{
+                position: 'absolute',
+                backgroundColor: 'black',
+                borderRadius: 3,
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: 16,
+                height: 16,
+                top: 9,
+                right: 9,
+              }} >
+              <MaterialCommunityIcons
+                name="arrow-top-right"
+                size={15}
+                color="white"
+                style={{
+                }} />
+            </View>
           </TouchableOpacity>
           <Text
             style={{

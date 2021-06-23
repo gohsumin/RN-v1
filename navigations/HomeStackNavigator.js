@@ -17,16 +17,17 @@ const HomeStackNavigator = () => {
   const screenOptionStyle = {
     headerStyle: {
       backgroundColor: colors.foreground4,
-      height: 100,
-      shadowColor: 'transparent'
+      height: 83,
+      shadowColor: 'transparent',
     },
-    
+    headerTitleStyle: { marginTop: 10, fontSize: 18 },
+    headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,
     headerBackTitle: "Back",
-    //headerTransparent: 'true',
   };
 
   return (
+    
     <HomeStack.Navigator screenOptions={screenOptionStyle}>
       <HomeStack.Screen
         name="Home"
@@ -34,6 +35,7 @@ const HomeStackNavigator = () => {
       />
       <HomeStack.Screen name="Profile" component={ActivityScreen} />
     </HomeStack.Navigator>
+    
   );
 };
 
