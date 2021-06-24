@@ -6,8 +6,13 @@ import {
     Animated,
     TouchableWithoutFeedback,
     PanResponder,
-    Text
+    Text,
+    SafeAreaView,
+    StyleSheet
 } from "react-native";
+import * as Expo from 'expo';
+//import { DangerZone } from "expo";
+import { Interactable } from 'react-native-redash';
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
@@ -15,40 +20,90 @@ import SwipeCardsContext from "../data/SwipeCardsContext";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useHeaderHeight } from '@react-navigation/stack';
 
-/*
-    note: Ideally, setRemaining would get called, and remaining waited on for update.
-          Then, more cards can get added to the end of remaining, and remaining[0]
-          would always be the next card in the queue.
-*/
 function SwipeScreen({ navigation }) {
-    const user = useContext(AppContext).user;
-    const { popRemaining } = useContext(SwipeCardsContext);
-    const [remaining, setRemaining] = useState(useContext(SwipeCardsContext).remaining);
+
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
+
     const SCREEN_HEIGHT = Dimensions.get('window').height;
     const SCREEN_WIDTH = Dimensions.get('window').width;
 
-    const { posts, addPost } = React.useContext(PostsContext);
+    const cardBorderRadius = 10;
 
-    const [key, setKey] = useState("");
+    // source: https://snack.expo.io/EDMIVjbyq
+    const α = Math.PI / 12;
+    const A = SCREEN_WIDTH * Math.cos(α) + SCREEN_HEIGHT * Math.sin(α);
 
-    //const [position, setPosition] = useState(new Animated.ValueXY());
-    const position = useRef(new Animated.ValueXY()).current;
+    const snapThreshhold = 20;
+    const {
+        Value, Extrapolate, concat, interpolate
+    } = Animated;
 
-    const [text, setText] = useState("HELLO");
+    // user object for the current user
+    const user = useContext(AppContext).user;
 
-    let [translateX, translateY] = [position.x, position.y];
+    // function that adds a new post to the posts context
+    const { addPost } = React.useContext(PostsContext);
 
-    const headerHeight = useHeaderHeight();
+    // pops the first item off the remaining array context
+    const { popRemaining } = useContext(SwipeCardsContext);
+
+    // remaining cards context
+    const remaining = useContext(SwipeCardsContext).remaining;
 
     const [index, setIndex] = useState(0);
 
-    const [isTransitioning, setIsTransitioning] = useState(false);
-    const [pendingPush, setPendingPush] = useState(false);
+    useEffect(() => {
+        if (remaining.length === 0) {
+            navigation.goBack();
+        }
+    }, [remaining, popRemaining]);
 
-    function getKey(post) {
-        return post.user + post.datePurchased;
+    // local array of remaining cards
+    /* const [remaining, setRemaining] = useState(remainingContextArray); */
+
+    const x = useRef(new Value(0)).current;
+    const y = useRef(new Value(0)).current;
+    const rotateZ = x.interpolate({
+        inputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
+        outputRange: [(-α + 'rad'), (α + 'rad')],
+        extrapolate: 'clamp'
+    });
+
+    const swipedLeft = () => {
+
+        console.log("swiped left");
+        // pop the top of the context stack
+        popRemaining();
+        setIndex(index + 1);
+        if (index === remaining.length) {
+            navigation.goBack();
+        }
+    }
+
+    const swipedRight = () => {
+        isLastCard = remaining.length === 1;
+        console.log("swiped right");
+        const swipedCard = remaining[0];
+        console.log("...on " + swipedCard.title);
+        // pop the top of the context stack
+        popRemaining();
+        setIndex(index + 1);
+        // post item as prop to addPost
+        const newPost = {
+            user: swipedCard.user,
+            datePurchased: swipedCard.datePurchased,
+            datePosted: (new Date().getTime() / 1000).toString(),
+            likes: 0,
+            title: swipedCard.title,
+            imageSource: { uri: swipedCard.imageURL }
+        }
+        // update the feed context
+        addPost(newPost);
+        if (index === remaining.length) {
+            console.log("it is the last card");
+            navigation.goBack();
+        }
     }
 
     const panResponder = React.useRef(PanResponder.create({
@@ -56,151 +111,156 @@ function SwipeScreen({ navigation }) {
         onMoveShouldSetPanResponder: () => true,
         onStartShouldSetPanResponder: (evt, gestureState) => true,
         onPanResponderGrant: (e, gestureState) => {
-            position.setOffset({ x: position.x, y: position.y });
-            position.setValue({ x: 0, y: 0 });
+            x.setOffset(x._value);
+            y.setOffset(y._value);
         },
         onPanResponderMove: (evt, { dx, dy }) => {
-            const newY = ((-2) * (dx > 0 ? dx : - dx) ** (0.6));
-            position.setValue({
-                x: dx, y: newY
-            });
+            x.setValue(dx);
+            y.setValue(dy);
             return true;
         },
-        onPanResponderRelease: (evt, { moveX }) => {
-            setText("yo");
-            if (moveX > SCREEN_WIDTH * 0.55) {
-                /* post to backend */
-                // <code>
-                /* update posts context */
-                const oldKey = getKey(remaining[0]);
-                popRemaining();
-                if (remaining.length === 1) {
-                    navigation.goBack();
-                }
-                console.log("remaining.slice(1)[0]="+remaining.slice(1)[0].title);
-                setRemaining(remaining.slice(1));
-                //setIsTransitioning(true);
-                pushPost();
-                //while (oldKey === getKey(remaining[0])) { };
-                setKey(getKey(remaining.slice(1)[0]));
-                //setPendingPush(true);
-                position.flattenOffset();
-                position.setValue({
-                    x: 0, y: 0
-                });
-                console.log("new card: "+remaining[0].title);
+        onPanResponderRelease: (evt, { dx }) => {
+            x.flattenOffset();
+            y.flattenOffset();
+            // swiped left
+            if (dx < -snapThreshhold) {
+                swipedLeft();
             }
-            else if (moveX < SCREEN_WIDTH * 0.45) {
-                popRemaining();
-                if (remaining.length === 1) {
-                    navigation.goBack();
-                }
-                setRemaining(remaining.slice(1));
-                //setIsTransitioning(true);
-                setKey(getKey(remaining[0]));
-                position.flattenOffset();
-                position.setValue({
-                    x: 0, y: 0
-                });
+            if (dx > snapThreshhold) {
+                swipedRight();
             }
-            else {
-                position.setValue({
-                    x: 0, y: 0
-                });
-                //Animated.spring(position, {toValue: {x: 0, y: 0}}).start();
-            }
+            x.setValue(0);
+            y.setValue(0);
             return true;
         }
     }));
 
-    function pushPost() {
-        console.log("pushing post: "+remaining[0].title);
-        const top = remaining[0];
-        const newPost = {
-            user: top.user,
-            datePurchased: top.datePurchased,
-            datePosted: new Date().getTime() / 1000,
-            likes: 0,
-            title: top.title,
-            imageSource: { uri: top.imageURL }
-        }
-        addPost(newPost);
-    }
-
-    useEffect(() => {
-        if (remaining.length === 0) {
-            navigation.goBack();
-        }
-    });
-
-    function Card() {
-        return <Animated.View
-            {...panResponder.current.panHandlers}
-            key={key}
-            style={[
-                { transform: [{ translateX }, { translateY }] /* position.getTranslateTransform() */ },
-                {
-                    height: SCREEN_HEIGHT * .6,
-                    width: SCREEN_WIDTH * 0.85,
-                    backgroundColor: "white",
-                    borderRadius: 15,
-                    marginTop: 135,
-                    alignSelf: 'center',
-                    position: 'absolute',
-                }
-            ]}
-        >
-            <TouchableWithoutFeedback onPress={() => { }}>
+    function Card({ item }) {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    alignContent: 'center',
+                    borderRadius: cardBorderRadius,
+                    overflow: 'hidden',
+                    width: "100%",
+                    height: "100%",
+                    position: 'absolute'
+                }}>
                 <Image
                     style={{
-                        flex: 1,
-                        height: null,
-                        width: null,
                         resizeMode: "cover",
-                        borderRadius: 10,
-
+                        width: "100%",
+                        height: "100%",
                     }}
-                    source={{ uri: remaining[0].imageURL }}
+                    source={{ uri: item.imageURL }}
                 />
-            </TouchableWithoutFeedback>
-        </Animated.View>
+                <View
+                    style={{
+                        position: 'absolute',
+                        height: "100%",
+                        width: "100%",
+                        justifyContent: 'flex-end',
+                        paddingHorizontal: 10,
+                        paddingBottom: 15
+                    }}>
+                    <Text
+                        style={{
+                            fontSize: 27,
+                            //fontWeight: 'bold',
+                            color: 'white',
+                            textShadowColor: 'gray',
+                            textShadowOffset: { width: 0.7, height: 0.7 },
+                            textShadowRadius: 4,
+                            marginBottom: 5
+                        }}>
+                        {item.title}
+                    </Text>
+                    <Text
+                        style={{
+                            fontSize: 21,
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            textShadowColor: 'gray',
+                            textShadowOffset: { width: 0.7, height: 0.7 },
+                            textShadowRadius: 2,
+                        }}>
+                        Brand Name
+                    </Text>
+                </View>
+            </View>
+        )
     }
 
     return (
-        <View style={{ flex: 1 }}>
-
-            <View style={{ flex: 1, backgroundColor: colors.background }}>
-                <View
+        <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+            <Text style={{
+                position: 'absolute',
+                color: 'pink',
+                top: 80,
+                fontSize: 20
+            }}>
+                {remaining.length}
+            </Text>
+            {remaining.length > 1 ?
+                (<View
                     style={{
-                        height: headerHeight,
-                        width: "100%",
-                        position: "absolute",
-                        backgroundColor: colors.background,
-                        borderBottomColor: colors.antiBackground,
-                        borderBottomWidth: 0.4
-                    }}
-                />
-                <View style={{ flex: 7 }}>
-                    {(remaining.length !== 0) && <Card />}
-                    <Text style={{ color: "white" }}>{text}</Text>
-                </View>
-                <View style={{
-                    width: "60%",
-                    height: 250,
-                    justifyContent: 'space-between',
-                    alignContent: 'center',
-                    flexDirection: "row",
-                    marginTop: 70,
-                    flex: 2,
-                    alignSelf: 'center'
+                        width: "80%",
+                        height: "65%",
+                        backgroundColor: 'white',
+                        borderRadius: cardBorderRadius,
+                        position: 'absolute'
+                    }}>
+                    <Card item={remaining[1]} />
+                </View>) :
+                (<View
+                    style={{
+                        width: "80%",
+                        height: "65%",
+                        borderColor: 'white',
+                        borderWidth: 0.7,
+                        borderRadius: cardBorderRadius,
+                        position: 'absolute',
+                        alignContent: 'center',
+                        justifyContent: 'center'
+                    }}>
+                    <Text style={{
+                        fontSize: 18,
+                        color: colors.antiBackground
+                    }}>
+                        That's all we got!
+                    </Text>
+                </View>)}
+            {remaining.length > 0 &&
+                <Animated.View
+                    {...panResponder.current.panHandlers}
+                    style={{
+                        width: "80%",
+                        height: "65%",
+                        backgroundColor: 'white',
+                        borderRadius: cardBorderRadius,
+                        transform: [
+                            { rotateZ },
+                            { translateX: x },
+                            { translateY: y },
+                        ]
+                    }}>
+                    <Card item={remaining[0]} />
+                </Animated.View>}
 
-                }}>
-                    <Icon name={"close"} color={colors.antiBackground} size={90}></Icon>
-                    <Icon name={"checkmark"} color={colors.antiBackground} size={90}></Icon>
-                </View>
+            <View style={{
+                position: 'absolute',
+                width: "60%",
+                justifyContent: 'space-between',
+                alignContent: 'center',
+                flexDirection: "row",
+                bottom: 10,
+                alignSelf: 'center'
+
+            }}>
+                <Icon name={"close"} color={colors.antiBackground} size={90}></Icon>
+                <Icon name={"checkmark"} color={colors.antiBackground} size={90}></Icon>
             </View>
-
-        </View>
+        </SafeAreaView>
     )
 }
 

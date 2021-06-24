@@ -10,6 +10,18 @@ import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
 
+function getPosts(){
+
+fetch(`https://soshwrld.com/posts`).then((r) => {return r.json()}).then((d)=>{
+  return d.posts
+}).catch((err)=>{
+  console.log(err)
+})
+
+}
+
+const currentPosts = getPosts();
+
 function cacheImages(images) {
   return images.map((image) => {
     if (typeof image === "string") {

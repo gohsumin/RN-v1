@@ -6,7 +6,8 @@ import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function FeedItem({
   pfpSource,
@@ -78,7 +79,7 @@ function FeedItem({
         {/* texts next to the profile pic: buyer name and date */}
         <View
           style={{
-            height: leftGridWidth,
+            height: leftGridWidth * 0.9,
             justifyContent: "center",
             opacity: 0.9
           }}
@@ -104,7 +105,7 @@ function FeedItem({
             flexDirection: "row",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 5,
+            paddingTop: 2,
           }}
         >
           <TouchableOpacity
@@ -134,8 +135,8 @@ function FeedItem({
                 alignItems: 'center',
                 width: 16,
                 height: 16,
-                top: 9,
-                right: 9,
+                top: 11,
+                right: 11,
               }} >
               <MaterialCommunityIcons
                 name="arrow-top-right"
@@ -147,7 +148,7 @@ function FeedItem({
           </TouchableOpacity>
           <Text
             style={{
-              color: colors.antiBackground,
+              color: colors.foreground1,
               fontWeight: "300",
               fontSize: 13.5,
               paddingLeft: 10,
@@ -160,18 +161,40 @@ function FeedItem({
             {title}
           </Text>
         </View>
+
         {/* grid with the buttons, e.g. number of likes; maybe add share button later */}
         <View
           style={{
             flexDirection: "row",
             alignSelf: "flex-end",
             alignContent: "center",
+            marginTop: 10
           }}
         >
-          <EvilIcons name="heart" size={24} color={colors.antiBackground} />
+          {/* <EvilIcons name="heart" size={24} color={colors.antiBackground} />
           <Text style={{ paddingLeft: 5, color: colors.antiBackground, fontWeight: "200" }}>
             {likes}
-          </Text>
+          </Text> */}
+          <Icon
+            name="cart-arrow-down"
+            size={24}
+            color={colors.green}
+            style={{ marginRight: 3 }} />
+          <View style={{ paddingLeft: 5 }}>
+            <Text style={{
+              fontSize: 13,
+              fontWeight: 'bold',
+              color: colors.green
+            }}>
+              4,356
+            </Text>
+            <Text style={{
+              fontSize: 12.6,
+              color: colors.foreground1,
+            }}>
+              Also Bought
+            </Text>
+          </View>
         </View>
       </View>
     </View>

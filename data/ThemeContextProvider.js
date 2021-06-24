@@ -17,8 +17,9 @@ class ThemeContextProvider extends Component {
             pendingBalance: '#ff7400',
             tabBar: 'black',
             /* tabBar: 'transparent', */
-            tabBarInactiveTint: '#e0e0e0'/* 
+            tabBarInactiveTint: '#e0e0e0',/* 
             tabBarInactiveTint: '#ddd' */
+            green: "#83F52C",
         },
         light: {
             background: 'white',
@@ -32,7 +33,8 @@ class ThemeContextProvider extends Component {
             pendingBalance: '#ff851f',
             /* tabBar: 'rgba(255, 255, 255, 0.9)', */
             tabBar: 'rgba(255, 255, 255, 0.6)',
-            tabBarInactiveTint: '#222'
+            tabBarInactiveTint: '#222',
+            green: "#ADFF2F",
         }
     }
   };
