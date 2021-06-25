@@ -14,7 +14,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/jamesshapiro.png'),
       },
       {
-        user: "luka",
+        user: "luka.doncic",
         datePurchased: "1622766654",
         datePosted: "1622766660",
         likes: 4500,
@@ -30,7 +30,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/annawiener.png'),
       },
       {
-        user: "joe",
+        user: "joe.jonas",
         datePurchased: "1622589049",
         datePosted: "1622592163",
         likes: 2143,
@@ -38,7 +38,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/maggieofarrell.png'),
       },
       {
-        user: "lex",
+        user: "lex.fridman",
         datePurchased: "1622342002",
         datePosted: "1622390711",
         likes: 7489,
@@ -54,7 +54,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/robertkolker.png'),
       },
       {
-        user: "joe",
+        user: "joe.jonas",
         datePurchased: "1621324680",
         datePosted: "1621324682",
         likes: 5673,
@@ -70,7 +70,7 @@ class PostsContextProvider extends Component {
         imageSource: require('../assets/margaretmacmillan.png'),
       },
       {
-        user: "luka",
+        user: "luka.doncic",
         datePurchased: "1619936425",
         datePosted: "1620058856",
         likes: 35746,

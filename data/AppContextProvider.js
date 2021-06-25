@@ -3,7 +3,7 @@ import AppContext from "./AppContext";
 
 class AppContextProvider extends Component {
   state = {
-    user: "joe",
+    user: "joe.jonas",
     theme: "dark",
   };
 

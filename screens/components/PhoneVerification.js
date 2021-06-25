@@ -115,10 +115,10 @@ function PhoneVerification(props) {
                                     console.log("returning user");
                                     if (props.action === "in") {
                                         console.log("logging in");
-                                        const tempUser = "luka";
+                                        const tempUser = "luka.doncic";
                                         props.setUserAndNavigate(tempUser);
                                         //  setTimeout(() => {
-                                        //     const tempUser = "luka";
+                                        //     const tempUser = "luka.doncic";
                                         //     props.setUserAndNavigate(tempUser);
                                         // }, 400); 
                                     }

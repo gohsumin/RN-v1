@@ -5,21 +5,21 @@ import React, { Component } from "react";
 class UsersContextProvider extends Component {
   state = {
     users: {
-      dongsan: {
-        firstName: "Dongsan",
+      "dongsan.goh": {
+        firstName: "dongsan.goh",
         lastName: "Goh",
-        following: ["lex", "joe", "adin", "travis.scott", "luka"],
-        followers: ["lex", "joe", "adin", "travis.scott", "luka"],
+        following: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
+        followers: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
         pfpSource: require("../assets/dongsan.jpeg"),
         bio: "n u t r i t i o n",
         available: "$33,351.12",
         pending: "$1,000,000.00",
       },
-      lex: {
-        firstName: "Lex",
+      "lex.fridman": {
+        firstName: "lex.fridman",
         lastName: "Fridman",
-        following: ["joe", "adin", "travis.scott", "luka"],
-        followers: ["joe", "adin", "luka"],
+        following: ["joe.jonas", "adin", "travis.scott", "luka.doncic"],
+        followers: ["joe.jonas", "adin", "luka.doncic"],
         pfpSource: {
           uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
           cache: "force-cache",
@@ -28,11 +28,11 @@ class UsersContextProvider extends Component {
         available: "$33,351.12",
         pending: "$1,000,000.00",
       },
-      joe: {
-        firstName: "Joe",
+      "joe.jonas": {
+        firstName: "joe.jonas",
         lastName: "Jonas",
-        following: ["lex", "adin", "michelle.obama", "luka", "travis.scott"],
-        followers: ["lex", "luka"],
+        following: ["lex.fridman", "adin", "michelle.obama", "luka.doncic", "travis.scott"],
+        followers: ["lex.fridman", "luka.doncic"],
         pfpSource: {
           uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg",
           cache: "force-cache",
@@ -44,8 +44,8 @@ class UsersContextProvider extends Component {
       "michelle.obama": {
         firstName: "Michelle",
         lastName: "Obama",
-        following: ["lex", "travis.scott"],
-        followers: ["lex", "travis.scott", "joe"],
+        following: ["lex.fridman", "travis.scott"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas"],
         pfpSource: {
           uri: "https://api.time.com/wp-content/uploads/2020/01/Michelle-Obama.jpg",
           cache: "force-cache",
@@ -54,11 +54,11 @@ class UsersContextProvider extends Component {
         available: "$33,351.12",
         pending: "$1,000,000.00",
       },
-      luka: {
-        firstName: "Luka",
+      "luka.doncic": {
+        firstName: "luka.doncic",
         lastName: "Doncic",
-        following: ["lex", "joe"],
-        followers: ["lex", "travis.scott", "joe"],
+        following: ["lex.fridman", "joe.jonas"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas"],
         pfpSource: {
           uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg",
           cache: "force-cache",
@@ -70,8 +70,8 @@ class UsersContextProvider extends Component {
       "travis.scott": {
         firstName: "Travis",
         lastName: "Scott",
-        following: ["luka", "adin"],
-        followers: ["lex", "adin", "joe"],
+        following: ["luka.doncic", "adin"],
+        followers: ["lex.fridman", "adin", "joe.jonas"],
         pfpSource: {
           uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg",
           cache: "force-cache",

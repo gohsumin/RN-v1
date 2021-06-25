@@ -61,7 +61,7 @@ const images = [
 
 const remaining = [
     {
-        "user": "lex",
+        "user": "lex.fridman",
         "datePurchased": "1623733185",
         "title": "Artificial Plant for Decoration",
         "imageURL": "https://api-prod.freedom.com.au/medias/39137-Popular-Category-Deep-etches-Artificial-Plants.png?context=bWFzdGVyfHJvb3R8ODAxMjI4fGltYWdlL3BuZ3xoNjIvaDhhLzg4MDIzMjg4MzgxNzQvMzkxMzcgUG9wdWxhciBDYXRlZ29yeSAtIERlZXAgZXRjaGVzX0FydGlmaWNpYWwgUGxhbnRzLnBuZ3xhYTFjM2U2NzAxNGZkNzE5NjI5MmY4MWM4ODhiNDk5NjM3MWRkYTA0ZjhiOGQwMDk2MTY3MzMzMTcyMDNmNGIz",
@@ -73,6 +73,27 @@ const remaining = [
         "title": "Naviglio Couch",
         "imageURL": "https://www.esperiri.com/wp-content/uploads/prodotti/arf-naviglio-sof/arflex-naviglio.png",
         "itemURL": "https://www.esperiri.com/luxury-italian-furniture/sofas/arflex-naviglio/"
+    },
+    {
+        "user": "luka.doncic",
+        "datePurchased": "1624594478",
+        "title": "Vintage Silver Swirl Crystal Glasses",
+        "imageURL": "https://chairish-prod.freetls.fastly.net/image/product/master/72f58b62-6b17-4774-afed-22e502bec83a/vintage-silver-swirl-crystal-glasses-set-of-6-3029",
+        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chairish.com%2Fproduct%2F591509%2Fvintage-silver-swirl-crystal-glasses-set-of-6&psig=AOvVaw2aG9jFzQ8RgpTEh-hSzS0O&ust=1624681035378000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCKD0o9L2sfECFQAAAAAdAAAAABAE"
+    },
+    {
+        "user": "michelle.obama",
+        "datePurchased": "1624594756",
+        "title": "Original Organic Pearl Couscous",
+        "imageURL": "https://images-na.ssl-images-amazon.com/images/I/91DVUNxvOrL._SL1500_.jpg",
+        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.amazon.com%2FRiceSelect-Organic-Pearl-Couscous-24-5%2Fdp%2FB07F2T9TR3&psig=AOvVaw0Kz_IkjT8ZdzC3fV8nDKJh&ust=1624681112797000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCJCLt_j2sfECFQAAAAAdAAAAABAD"
+    },
+    {
+        "user": "lex.fridman",
+        "datePurchased": "1624594853",
+        "title": "Handmade Vintage Leather Journal",
+        "imageURL": "http://cdn.shopify.com/s/files/1/1658/7771/products/large_book_cover_clipped_rev_1_1024x1024.png?v=1510093178",
+        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fboldhome.com%2Fproducts%2Fkauri-handmade-leather-journal-wrap-genuine-leather-journal-diary-and-notebook-cover&psig=AOvVaw1qXrlfHhu3zOOiFadc44AG&ust=1624681329842000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCPDXwOb3sfECFQAAAAAdAAAAABAl"
     }
 ]
 
@@ -110,7 +131,7 @@ const posts = [
         imageSource: { uri: 'https://cf.shopee.com.my/file/7552d406a037e1f90ad766845a7e7bd1' },
     },
     {
-        user: "luka",
+        user: "luka.doncic",
         datePurchased: "1622766654",
         datePosted: "1622766660",
         likes: 4500,
@@ -127,7 +148,7 @@ const posts = [
         imageSource: require('../assets/annawiener.png'),
     },
     {
-        user: "lex",
+        user: "lex.fridman",
         datePurchased: "1622606180",
         datePosted: "1622606223",
         likes: 870,
@@ -135,7 +156,7 @@ const posts = [
         imageSource: require('../assets/annawiener.png'),
     },
     {
-        user: "joe",
+        user: "joe.jonas",
         datePurchased: "1622589049",
         datePosted: "1622592163",
         likes: 2143,
@@ -151,7 +172,7 @@ const posts = [
         imageSource: { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3bNrKZqCCuyi6Se_-7M6d85i1882HBId9c81kQ9uYY7Af535dxw0ypqbkinIaxjK7uqU&usqp=CAU' },
     },
     {
-        user: "lex",
+        user: "lex.fridman",
         datePurchased: "1622342002",
         datePosted: "1622390711",
         likes: 7489,
@@ -167,7 +188,7 @@ const posts = [
         imageSource: require('../assets/robertkolker.png'),
     },
     {
-        user: "joe",
+        user: "joe.jonas",
         datePurchased: "1621324680",
         datePosted: "1621324682",
         likes: 5673,
@@ -183,7 +204,7 @@ const posts = [
         imageSource: require('../assets/margaretmacmillan.png'),
     },
     {
-        user: "luka",
+        user: "luka.doncic",
         datePurchased: "1619936425",
         datePosted: "1620058856",
         likes: 35746,
@@ -201,21 +222,21 @@ const posts = [
 ];
 
 const users = {
-    dongsan: {
-        firstName: "Dongsan",
+    "dongsan.goh": {
+        firstName: "dongsan.goh",
         lastName: "Goh",
-        following: ["lex", "joe", "adin", "travis.scott", "luka"],
-        followers: ["lex", "joe", "adin", "travis.scott", "luka"],
+        following: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
+        followers: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
         pfpSource: require("../assets/dongsan.jpeg"),
         bio: "n u t r i t i o n",
         available: "$33,351.12",
         pending: "$1,000,000.00",
     },
-    lex: {
-        firstName: "Lex",
+    "lex.fridman": {
+        firstName: "lex.fridman",
         lastName: "Fridman",
-        following: ["joe", "adin", "travis.scott", "luka"],
-        followers: ["joe", "adin", "luka"],
+        following: ["joe.jonas", "adin", "travis.scott", "luka.doncic"],
+        followers: ["joe.jonas", "adin", "luka.doncic"],
         pfpSource: {
             uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
         },
@@ -223,11 +244,11 @@ const users = {
         available: "$33,351.12",
         pending: "$1,000,000.00",
     },
-    joe: {
-        firstName: "Joe",
+    "joe.jonas": {
+        firstName: "joe.jonas",
         lastName: "Jonas",
-        following: ["lex", "adin", "michelle.obama", "luka", "travis.scott"],
-        followers: ["lex", "luka"],
+        following: ["lex.fridman", "adin", "michelle.obama", "luka.doncic", "travis.scott"],
+        followers: ["lex.fridman", "luka.doncic"],
         pfpSource: {
             uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg"
         },
@@ -238,8 +259,8 @@ const users = {
     "michelle.obama": {
         firstName: "Michelle",
         lastName: "Obama",
-        following: ["lex", "travis.scott"],
-        followers: ["lex", "travis.scott", "joe", "luka"],
+        following: ["lex.fridman", "travis.scott"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas", "luka.doncic"],
         pfpSource: {
             uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg"
         },
@@ -247,11 +268,11 @@ const users = {
         available: "$33,351.12",
         pending: "$1,000,000.00",
     },
-    luka: {
-        firstName: "Luka",
+    "luka.doncic": {
+        firstName: "luka.doncic",
         lastName: "Doncic",
-        following: ["lex", "joe", "michelle.obama"],
-        followers: ["lex", "travis.scott", "joe"],
+        following: ["lex.fridman", "joe.jonas", "michelle.obama"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas"],
         pfpSource: {
             uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg"
         },
@@ -262,8 +283,8 @@ const users = {
     "travis.scott": {
         firstName: "Travis",
         lastName: "Scott",
-        following: ["luka", "adin"],
-        followers: ["lex", "adin", "joe"],
+        following: ["luka.doncic", "adin"],
+        followers: ["lex.fridman", "adin", "joe.jonas"],
         pfpSource: {
             uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg"
         },

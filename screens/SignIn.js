@@ -121,7 +121,7 @@ function SignIn({ navigation }) {
                 // yu.set({ "email": user.email, "accessToken": accessToken }).then(() => { return; });
                 //yu.update({}).then(() =>{return;}).catch(() => {return;});
 
-                const temp = "luka";
+                const temp = "luka.doncic";
                 setUser(temp);
                 navigation.navigate("Profile", { user: temp });
             }

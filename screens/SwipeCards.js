@@ -19,6 +19,7 @@ import ThemeContext from "../data/ThemeContext";
 import SwipeCardsContext from "../data/SwipeCardsContext";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useHeaderHeight } from '@react-navigation/stack';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function SwipeScreen({ navigation }) {
 
@@ -34,10 +35,8 @@ function SwipeScreen({ navigation }) {
     const α = Math.PI / 12;
     const A = SCREEN_WIDTH * Math.cos(α) + SCREEN_HEIGHT * Math.sin(α);
 
-    const snapThreshhold = 20;
-    const {
-        Value, Extrapolate, concat, interpolate
-    } = Animated;
+    const snapThreshhold = 220;
+    const { Value } = Animated;
 
     // user object for the current user
     const user = useContext(AppContext).user;
@@ -63,6 +62,8 @@ function SwipeScreen({ navigation }) {
     // local array of remaining cards
     /* const [remaining, setRemaining] = useState(remainingContextArray); */
 
+    const animating = useRef(false);
+
     const x = useRef(new Value(0)).current;
     const y = useRef(new Value(0)).current;
     const rotateZ = x.interpolate({
@@ -82,7 +83,7 @@ function SwipeScreen({ navigation }) {
     }
 
     const swipedRight = () => {
-        console.log("index: "+index.current);
+        console.log("index: " + index.current);
         isLastCard = remaining.length === 1;
         console.log("swiped right");
         const swipedCard = remaining[index.current];
@@ -112,26 +113,70 @@ function SwipeScreen({ navigation }) {
         onMoveShouldSetPanResponder: () => true,
         onStartShouldSetPanResponder: (evt, gestureState) => true,
         onPanResponderGrant: (e, gestureState) => {
-            x.setOffset(x._value);
-            y.setOffset(y._value);
+            if (!animating.current) {
+                x.setOffset(x._value);
+                y.setOffset(y._value);
+            }
         },
         onPanResponderMove: (evt, { dx, dy }) => {
-            x.setValue(dx);
-            y.setValue(dy);
+            if (!animating.current) {
+                x.setValue(dx);
+                y.setValue(dy);
+            }
             return true;
         },
         onPanResponderRelease: (evt, { dx }) => {
             x.flattenOffset();
             y.flattenOffset();
-            // swiped left
             if (dx < -snapThreshhold) {
+                animating.current = true;
+                Animated.spring(x, {
+                    toValue: -SCREEN_WIDTH - 100,
+                    velocity: 2,
+                    useNativeDriver: true
+                }).start(() => {
+                    x.setValue(0);
+                    y.setValue(0);
+                    animating.current = false;
+                });
                 swipedLeft();
             }
             if (dx > snapThreshhold) {
+                animating.current = true;
+                Animated.spring(x, {
+                    toValue: SCREEN_WIDTH + 100,
+                    velocity: 2,
+                    useNativeDriver: true
+                }).start(() => {
+                    x.setValue(0);
+                    y.setValue(0);
+                    animating.current = false;
+                });
                 swipedRight();
             }
-            x.setValue(0);
-            y.setValue(0);
+            else {
+                animating.current = true;
+                Animated.parallel([
+                    Animated.spring(x, {
+                        toValue: 0,
+                        velocity: 1,
+                        restDisplacementThreshold: 0.1,
+                        restSpeedThreshold: 0.1,
+                        useNativeDriver: true
+                    }),
+                    Animated.spring(y, {
+                        toValue: 0,
+                        velocity: 1,
+                        restDisplacementThreshold: 0.1,
+                        restSpeedThreshold: 0.1,
+                        useNativeDriver: true
+                    })
+                ]).start(() => {
+                    x.setValue(0);
+                    y.setValue(0);
+                    animating.current = false;
+                });
+            }
             return true;
         }
     }));
@@ -146,15 +191,25 @@ function SwipeScreen({ navigation }) {
                     overflow: 'hidden',
                     width: "100%",
                     height: "100%",
-                    position: 'absolute'
+                    position: 'absolute',
                 }}>
                 <Image
                     style={{
-                        resizeMode: "cover",
+                        resizeMode: "contain",
                         width: "100%",
-                        height: "100%",
+                        height: "95%",
+                        alignContent: 'flex-start'
                     }}
                     source={{ uri: item.imageURL }}
+                />
+                <LinearGradient
+                    style={{
+                        position: 'absolute',
+                        height: "100%",
+                        width: "100%",
+                    }}
+                    locations={[0.7, 1]}
+                    colors={['transparent', 'rgba(0, 0, 0, 0.4)']}
                 />
                 <View
                     style={{
@@ -163,7 +218,7 @@ function SwipeScreen({ navigation }) {
                         width: "100%",
                         justifyContent: 'flex-end',
                         paddingHorizontal: 10,
-                        paddingBottom: 15
+                        paddingBottom: 12
                     }}>
                     <Text
                         style={{
@@ -192,55 +247,72 @@ function SwipeScreen({ navigation }) {
         )
     }
 
-    return (
-        <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
-            
-            {remaining.length > 1 ?
-                (<View
-                    style={{
-                        width: "80%",
-                        height: "65%",
-                        backgroundColor: 'white',
-                        borderRadius: cardBorderRadius,
-                        position: 'absolute'
-                    }}>
-                    <Card item={remaining[1]} />
-                </View>) :
-                (<View
-                    style={{
-                        width: "80%",
-                        height: "65%",
-                        borderColor: 'white',
-                        borderWidth: 0.7,
-                        borderRadius: cardBorderRadius,
-                        position: 'absolute',
-                        alignContent: 'center',
-                        justifyContent: 'center'
-                    }}>
-                    <Text style={{
-                        fontSize: 18,
-                        color: colors.antiBackground
-                    }}>
-                        That's all we got!
-                    </Text>
-                </View>)}
-            {remaining.length > 0 &&
-                <Animated.View
-                    {...panResponder.current.panHandlers}
-                    style={{
-                        width: "80%",
-                        height: "65%",
-                        backgroundColor: 'white',
-                        borderRadius: cardBorderRadius,
-                        transform: [
-                            { rotateZ },
-                            { translateX: x },
-                            { translateY: y },
-                        ]
-                    }}>
-                    <Card item={remaining[0]} />
-                </Animated.View>}
+    function Stack() {
+        return (
+            <View style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                {remaining.length > 1 ?
+                    (<View
+                        style={{
+                            width: "85%",
+                            height: "70%",
+                            backgroundColor: 'white',
+                            borderRadius: cardBorderRadius,
+                            position: 'absolute'
+                        }}>
+                        <Card item={remaining[1]} />
+                    </View>) :
+                    (<View
+                        style={{
+                            width: "85%",
+                            height: "70%",
+                            borderColor: 'white',
+                            borderWidth: 0.7,
+                            borderRadius: cardBorderRadius,
+                            position: 'absolute',
+                            alignContent: 'center',
+                            justifyContent: 'center'
+                        }}>
+                        <Text style={{
+                            fontSize: 18,
+                            color: colors.antiBackground
+                        }}>
+                            That's all we got!
+                        </Text>
+                    </View>)}
+                {remaining.length > 0 &&
+                    <Animated.View
+                        {...panResponder.current.panHandlers}
+                        style={{
+                            width: "85%",
+                            height: "70%",
+                            backgroundColor: 'white',
+                            borderRadius: cardBorderRadius,
+                            transform: [
+                                { rotateZ },
+                                { translateX: x },
+                                { translateY: y },
+                            ]
+                        }}>
+                        <Card item={remaining[0]} />
+                    </Animated.View>}
+            </View>
+        )
+    }
 
+    return (
+        <SafeAreaView
+            style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.background
+            }}>
+            <Stack />
             <View style={{
                 position: 'absolute',
                 width: "60%",

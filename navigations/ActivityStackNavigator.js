@@ -49,7 +49,7 @@ const ActivityStackNavigator = () => {
         component={
           temp
         }
-        //initialParams={{ user: "lex" }}
+        //initialParams={{ user: "lex.fridman" }}
         options={{ headerLeft: null, gestureEnabled: false }}
       ></Stack.Screen>
     </Stack.Navigator>
