@@ -51,7 +51,8 @@ function SwipeScreen({ navigation }) {
     // remaining cards context
     const remaining = useContext(SwipeCardsContext).remaining;
 
-    const [index, setIndex] = useState(0);
+    //const [index, setIndex] = useState(0);
+    const index = useRef(0);
 
     useEffect(() => {
         if (remaining.length === 0) {
@@ -71,24 +72,24 @@ function SwipeScreen({ navigation }) {
     });
 
     const swipedLeft = () => {
-
         console.log("swiped left");
         // pop the top of the context stack
         popRemaining();
-        setIndex(index + 1);
+        index.current++;
         if (index === remaining.length) {
             navigation.goBack();
         }
     }
 
     const swipedRight = () => {
+        console.log("index: "+index.current);
         isLastCard = remaining.length === 1;
         console.log("swiped right");
-        const swipedCard = remaining[0];
+        const swipedCard = remaining[index.current];
         console.log("...on " + swipedCard.title);
         // pop the top of the context stack
         popRemaining();
-        setIndex(index + 1);
+        index.current++;
         // post item as prop to addPost
         const newPost = {
             user: swipedCard.user,
@@ -193,14 +194,7 @@ function SwipeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
-            <Text style={{
-                position: 'absolute',
-                color: 'pink',
-                top: 80,
-                fontSize: 20
-            }}>
-                {remaining.length}
-            </Text>
+            
             {remaining.length > 1 ?
                 (<View
                     style={{
