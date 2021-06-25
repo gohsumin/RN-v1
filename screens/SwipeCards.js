@@ -29,6 +29,9 @@ function SwipeScreen({ navigation }) {
     const SCREEN_HEIGHT = Dimensions.get('window').height;
     const SCREEN_WIDTH = Dimensions.get('window').width;
 
+    const cardHeight = "65%";
+    const cardWidth = "80%";
+
     const cardBorderRadius = 10;
 
     // source: https://snack.expo.io/EDMIVjbyq
@@ -129,30 +132,36 @@ function SwipeScreen({ navigation }) {
             x.flattenOffset();
             y.flattenOffset();
             if (dx < -snapThreshhold) {
-                animating.current = true;
+                /* animating.current = true;
                 Animated.spring(x, {
-                    toValue: -SCREEN_WIDTH - 100,
-                    velocity: 2,
+                    toValue: -SCREEN_WIDTH,
+                    velocity: 0.1,
                     useNativeDriver: true
                 }).start(() => {
                     x.setValue(0);
                     y.setValue(0);
                     animating.current = false;
-                });
+                }); */
+                x.setValue(0);
+                y.setValue(0);
                 swipedLeft();
+                
             }
             if (dx > snapThreshhold) {
-                animating.current = true;
+                /* animating.current = true;
                 Animated.spring(x, {
-                    toValue: SCREEN_WIDTH + 100,
-                    velocity: 2,
+                    toValue: SCREEN_WIDTH + 50,
+                    velocity: 0.1,
                     useNativeDriver: true
                 }).start(() => {
                     x.setValue(0);
                     y.setValue(0);
                     animating.current = false;
-                });
+                }); */
+                x.setValue(0);
+                y.setValue(0);
                 swipedRight();
+                
             }
             else {
                 animating.current = true;
@@ -194,6 +203,7 @@ function SwipeScreen({ navigation }) {
                     position: 'absolute',
                 }}>
                 <Image
+                    fadeDuration={0}
                     style={{
                         resizeMode: "contain",
                         width: "100%",
@@ -255,41 +265,23 @@ function SwipeScreen({ navigation }) {
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                {remaining.length > 1 ?
-                    (<View
+                {(remaining.length > 1) &&
+                    <View
                         style={{
-                            width: "85%",
-                            height: "70%",
+                            width: cardWidth,
+                            height: cardHeight,
                             backgroundColor: 'white',
                             borderRadius: cardBorderRadius,
                             position: 'absolute'
                         }}>
                         <Card item={remaining[1]} />
-                    </View>) :
-                    (<View
-                        style={{
-                            width: "85%",
-                            height: "70%",
-                            borderColor: 'white',
-                            borderWidth: 0.7,
-                            borderRadius: cardBorderRadius,
-                            position: 'absolute',
-                            alignContent: 'center',
-                            justifyContent: 'center'
-                        }}>
-                        <Text style={{
-                            fontSize: 18,
-                            color: colors.antiBackground
-                        }}>
-                            That's all we got!
-                        </Text>
-                    </View>)}
+                    </View>}
                 {remaining.length > 0 &&
                     <Animated.View
                         {...panResponder.current.panHandlers}
                         style={{
-                            width: "85%",
-                            height: "70%",
+                            width: cardWidth,
+                            height: cardHeight,
                             backgroundColor: 'white',
                             borderRadius: cardBorderRadius,
                             transform: [
@@ -312,19 +304,44 @@ function SwipeScreen({ navigation }) {
                 justifyContent: 'center',
                 backgroundColor: colors.background
             }}>
+            <View
+                style={{
+                    width: cardWidth,
+                    height: cardHeight,
+                    borderColor: 'white',
+                    borderWidth: 0.7,
+                    borderRadius: cardBorderRadius,
+                    position: 'absolute',
+                    alignContent: 'center',
+                    justifyContent: 'center'
+                }}>
+                <Text style={{
+                    fontSize: 18,
+                    color: colors.antiBackground
+                }}>
+                    That's all we got!
+                </Text>
+            </View>
             <Stack />
             <View style={{
                 position: 'absolute',
-                width: "60%",
+                width: "75%",
                 justifyContent: 'space-between',
                 alignContent: 'center',
                 flexDirection: "row",
-                bottom: 10,
+                bottom: 15,
                 alignSelf: 'center'
 
             }}>
-                <Icon name={"close"} color={colors.antiBackground} size={90}></Icon>
-                <Icon name={"checkmark"} color={colors.antiBackground} size={90}></Icon>
+                <Image source={require('../assets/pass.png')} resizeMode='contain' style={{
+                    width: 80, height: 80
+                }}></Image>
+                <Image source={require('../assets/checkall.png')} resizeMode='contain' style={{
+                    width: 80, height: 80
+                }}></Image>
+                <Image source={require('../assets/check.png')} resizeMode='contain' style={{
+                    width: 80, height: 80
+                }}></Image>
             </View>
         </SafeAreaView>
     )
