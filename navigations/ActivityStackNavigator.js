@@ -17,13 +17,17 @@ const ActivityStackNavigator = () => {
   const screenOptionStyle = {
     headerStyle: {
       backgroundColor: colors.foreground4,
-      height: 100,
-      shadowColor: 'transparent'
+      height: 83,
+      shadowColor: 'transparent',
     },
+    cardStyle: {
+      backgroundColor: colors.background
+    },
+    headerTitleStyle: { marginTop: 10, fontSize: 18 },
+    headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,
     headerBackTitle: "Back",
-    //headerTransparent: 'true',
-  };
+    };
 
   const temp = () => {
     return (

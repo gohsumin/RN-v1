@@ -20,6 +20,9 @@ const HomeStackNavigator = () => {
       height: 83,
       shadowColor: 'transparent',
     },
+    cardStyle: {
+      backgroundColor: colors.background
+    },
     headerTitleStyle: { marginTop: 10, fontSize: 18 },
     headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,

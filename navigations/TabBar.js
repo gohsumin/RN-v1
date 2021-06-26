@@ -23,12 +23,15 @@ function TabBar() {
   const colors = React.useContext(ThemeContext).colors[theme];
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <FlashMessage position="top" />
       <Tab.Navigator
-        //shifting={true}
+        sceneContainerStyle={{backgroundColor: colors.background}}
         screenOptions={({ route }) => ({
+          cardStyle: {
+            backgroundColor: colors.background,
+          },
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
@@ -41,7 +44,8 @@ function TabBar() {
             }
             return <Icon name={iconName} size={size} color={color} />;
           },
-        })}
+        })
+        }
         tabBarOptions={{
           activeTintColor: colors.blue,
           inactiveTintColor: colors.tabBarInactiveTint,

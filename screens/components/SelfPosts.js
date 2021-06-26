@@ -35,6 +35,7 @@ function SelfPosts({ navigation, userFeed, userName, userData, width, toggleRend
                     navigation={navigation}
                     key={item.datePosted}
                     width={width}
+                    setting={'self'}
                 />
             }
             extraData={toggleRender}

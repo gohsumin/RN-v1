@@ -61,6 +61,13 @@ export default class App extends React.Component {
 
   /* To-do: get a list of file names in the assets folder */
   async _loadAssetsAsync() {
+    // TO-DO 1: grab these images from the posts and user data that's grabbed
+    // TO-DO 2: when new posts are loaded ("new posts available" button) or the
+    //          user pulls down for refresh, grab new images and user data
+    //          again from backend and cache them
+    // TO-D0 3: when some post data, images, and user data are out of view after
+    //          a reload and it's no longer necessary to have them around,
+    //          empty that cache
     const imageAssets = cacheImages(images);
 
     await Promise.all([...imageAssets]);

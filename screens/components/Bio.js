@@ -12,7 +12,7 @@ import { useEffect } from 'react/cjs/react.development';
 
 function Bio({ userData }) {
 
-    
+
 
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
@@ -21,6 +21,7 @@ function Bio({ userData }) {
         <View style={{ alignItems: 'center' }}>
             {/* profile image */}
             <Image
+                fadeDuration={0}
                 source={userData.pfpSource}
                 style={{ width: 160, height: 160, borderRadius: 12 }}
             />

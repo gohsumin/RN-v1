@@ -14,14 +14,18 @@ const RootStackNavigator = () => {
     const colors = React.useContext(ThemeContext).colors[theme];
 
     const screenOptionStyle = {
-        headerStyle: {
-          backgroundColor: 'transparent',
-          height: 100
-        },
-        
-        headerTintColor: colors.antiBackground,
-        headerBackTitle: "Back",
-        headerTransparent: 'true',
+      headerStyle: {
+        backgroundColor: colors.foreground4,
+        height: 83,
+        shadowColor: 'transparent',
+      },
+      cardStyle: {
+        backgroundColor: colors.background
+      },
+      headerTitleStyle: { marginTop: 10, fontSize: 18 },
+      headerTitleAlign: 'center',
+      headerTintColor: colors.antiBackground,
+      headerBackTitle: "Back",
       };
 
     return (

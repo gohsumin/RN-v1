@@ -7,7 +7,7 @@ class ThemeContextProvider extends Component {
         dark: {
             background: 'black',
             antiBackground: 'white',
-            foreground1: '#848486',
+            foreground1: '#908f96',
             foreground2: '#303030',
             foreground3: '#2c2c2e',
             foreground4: '#121111',
@@ -19,7 +19,7 @@ class ThemeContextProvider extends Component {
             /* tabBar: 'transparent', */
             tabBarInactiveTint: '#e0e0e0',/* 
             tabBarInactiveTint: '#ddd' */
-            green: "#83F52C",
+            green: "#75fa4d",
         },
         light: {
             background: 'white',

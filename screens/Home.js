@@ -72,6 +72,7 @@ const HomeScreen = ({ navigation }) => {
               }}
               key={item.key}
               width={Dimensions.get("window").width}
+              setting={'feed'}
             />
           )}
           ListFooterComponent={

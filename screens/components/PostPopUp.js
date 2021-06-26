@@ -106,6 +106,7 @@ function PostPopUp({ info }) {
                     navigate={navigate}
                     key={key}
                     width={width}
+                    setting={'popup'}
                 />
             </Animated.View>
         </Animated.View >

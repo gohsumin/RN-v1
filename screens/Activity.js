@@ -16,7 +16,6 @@ import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { BlurView } from "expo-blur";
 import Bio from './components/Bio';
-import FeedItem from "./components/FeedItem";
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
@@ -33,13 +32,12 @@ const ActivityScreen = ({ route, navigation }) => {
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState({});
-  const logger = React.useContext(AppContext).user;
+  const logger = "michelle.obama"; //React.useContext(AppContext).user;
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     console.log("useEffect");
     console.log("route.params.user: "+route.params.user);
-    console.log("navigation.params.user: "+navigation.params);
     if ((typeof route.params.user === "string")) {
       const u = route.params.user;
       console.log("user: "+u);
@@ -77,7 +75,9 @@ const ActivityScreen = ({ route, navigation }) => {
 
   const renderView = () => {
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+      >
         <View
           style={{
             flex: 1,
