@@ -37,8 +37,12 @@ const ActivityScreen = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
+    console.log("useEffect");
+    console.log("route.params.user: "+route.params.user);
+    console.log("navigation.params.user: "+navigation.params);
     if ((typeof route.params.user === "string")) {
       const u = route.params.user;
+      console.log("user: "+u);
       setUser(u);
       if (u === logger) {
         setIsUser(true);

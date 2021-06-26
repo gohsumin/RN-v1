@@ -13,6 +13,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { BlurView } from "expo-blur";
+import FlashMessage from "react-native-flash-message";
 
 const Tab = createBottomTabNavigator();
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
@@ -24,6 +25,7 @@ function TabBar() {
   return (
     <View style={{ flex: 1 }}>
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <FlashMessage position="top" />
       <Tab.Navigator
         //shifting={true}
         screenOptions={({ route }) => ({

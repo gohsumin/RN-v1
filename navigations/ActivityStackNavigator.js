@@ -45,10 +45,8 @@ const ActivityStackNavigator = () => {
       </Stack.Screen>
       <Stack.Screen
         name="Profile"
-        //component={ActivityScreen}
-        component={
-          temp
-        }
+        component={ActivityScreen}
+        //component={temp}
         //initialParams={{ user: "lex.fridman" }}
         options={{ headerLeft: null, gestureEnabled: false }}
       ></Stack.Screen>
