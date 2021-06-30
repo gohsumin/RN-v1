@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Image, TouchableOpacity } from "react-native";
-import { EvilIcons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import { getElapsedTime } from "../../helpers/postsHelpers";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
 
@@ -58,7 +56,7 @@ function FeedItem({
       {/* profile pic */}
       <TouchableOpacity
         onPress={() => {
-          navigate(userName);
+          // navigate(userName);
         }}
         style={{
           width: leftGridWidth,
@@ -68,7 +66,7 @@ function FeedItem({
       >
         <Image
           fadeDuration={0}
-          source={pfpSource}
+          source={{uri: pfpSource}}
           style={{
             width: leftGridWidth * 0.8,
             height: leftGridWidth * 0.8,
@@ -117,7 +115,7 @@ function FeedItem({
             }}>
             <Image
               fadeDuration={0}
-              source={imageSource}
+              source={{uri: imageSource}}
               style={{
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,

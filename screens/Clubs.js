@@ -1,10 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
+import AppContext from '../data/AppContext';
 
 const ClubsScreen = ({ navigation }) => {
+
+    const { user } = useContext(AppContext);
+
     return (
         <View style={styles.container}>
-            <TouchableOpacity
+            {user !== "" && <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('Approve Purchases');
                 }}>
@@ -21,7 +25,7 @@ const ClubsScreen = ({ navigation }) => {
                         Show me the modal
                     </Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity>}
         </View>
     )
 }

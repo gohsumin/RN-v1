@@ -6,13 +6,9 @@ import {
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
-import { Octicons } from "@expo/vector-icons";
 import { MaterialIcons } from '@expo/vector-icons';
-import { useEffect } from 'react/cjs/react.development';
 
 function Bio({ userData }) {
-
-
 
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];

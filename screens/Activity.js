@@ -24,6 +24,8 @@ import OtherUserPosts from "./components/OtherUserPosts";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { toggle } from "cli-spinners";
+import { getUserData } from "../helpers/postsHelpers";
+const stream = require('getstream'); 
 
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
@@ -32,15 +34,17 @@ const ActivityScreen = ({ route, navigation }) => {
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState({});
-  const logger = "michelle.obama"; //React.useContext(AppContext).user;
+  const logger = React.useContext(AppContext).user;
+  //const userToken = React.useContext(AppContext).userToken;
+  const uid = React.useContext(AppContext).uid;
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     console.log("useEffect");
-    console.log("route.params.user: "+route.params.user);
+    console.log("route.params.user: " + route.params.user);
     if ((typeof route.params.user === "string")) {
       const u = route.params.user;
-      console.log("user: "+u);
+      console.log("user: " + u);
       setUser(u);
       if (u === logger) {
         setIsUser(true);
@@ -48,10 +52,28 @@ const ActivityScreen = ({ route, navigation }) => {
       else {
         setIsUser(false);
       }
+      /////
+      // instead of getting it from 'users',
+      // grab it from:
+      /* const client = stream.connect(
+        't6d6x66485xc',
+        userToken,
+        '1130088'
+      ); */
+      // now somehow get the feed aka timeline
+      // also grab user's pfp, bio, etc. from firestore
+      
+      // scratch everything before and after the following
+      // const userData = getUserData(uid);
+
+      // const feed = client.feed('timeline', 'jack');
+      // setUserFeed(feed);
       setUserData(users[u]);
+
       setUserFeed(posts.filter(
         (post) => post.user === u
       ));
+      /////
       navigation.setOptions({ title: u });
       setShow(true);
     }

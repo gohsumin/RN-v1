@@ -11,14 +11,11 @@ class ThemeContextProvider extends Component {
             foreground2: '#303030',
             foreground3: '#2c2c2e',
             foreground4: '#121111',
-            blue: '#349af4',/* 
-            blue: 'white', */
+            blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
             tabBar: 'black',
-            /* tabBar: 'transparent', */
-            tabBarInactiveTint: '#e0e0e0',/* 
-            tabBarInactiveTint: '#ddd' */
+            tabBarInactiveTint: '#e0e0e0',
             green: "#75fa4d",
         },
         light: {
@@ -31,7 +28,6 @@ class ThemeContextProvider extends Component {
             blue: '#539dfc',
             availableBalance: '#1cc96b',
             pendingBalance: '#ff851f',
-            /* tabBar: 'rgba(255, 255, 255, 0.9)', */
             tabBar: 'rgba(255, 255, 255, 0.6)',
             tabBarInactiveTint: '#222',
             green: "#ADFF2F",

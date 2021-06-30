@@ -8,18 +8,19 @@ import {
     PanResponder,
     Text,
     SafeAreaView,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from "react-native";
 import * as Expo from 'expo';
 //import { DangerZone } from "expo";
 import { Interactable } from 'react-native-redash';
 import PostsContext from "../data/PostsContext";
-import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import SwipeCardsContext from "../data/SwipeCardsContext";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
+import AppContext from '../data/AppContext';
 
 function SwipeScreen({ navigation }) {
 
@@ -29,14 +30,13 @@ function SwipeScreen({ navigation }) {
     const SCREEN_HEIGHT = Dimensions.get('window').height;
     const SCREEN_WIDTH = Dimensions.get('window').width;
 
-    const cardHeight = "65%";
+    const cardHeight = "75%";
     const cardWidth = "80%";
 
     const cardBorderRadius = 10;
 
     // source: https://snack.expo.io/EDMIVjbyq
     const α = Math.PI / 12;
-    const A = SCREEN_WIDTH * Math.cos(α) + SCREEN_HEIGHT * Math.sin(α);
 
     const snapThreshhold = 220;
     const { Value } = Animated;
@@ -87,7 +87,6 @@ function SwipeScreen({ navigation }) {
 
     const swipedRight = () => {
         console.log("index: " + index.current);
-        isLastCard = remaining.length === 1;
         console.log("swiped right");
         const swipedCard = remaining[index.current];
         console.log("...on " + swipedCard.title);
@@ -96,7 +95,7 @@ function SwipeScreen({ navigation }) {
         index.current++;
         // post item as prop to addPost
         const newPost = {
-            user: swipedCard.user,
+            user: user,
             datePurchased: swipedCard.datePurchased,
             datePosted: (new Date().getTime() / 1000).toString(),
             likes: 0,
@@ -132,36 +131,14 @@ function SwipeScreen({ navigation }) {
             x.flattenOffset();
             y.flattenOffset();
             if (dx < -snapThreshhold) {
-                /* animating.current = true;
-                Animated.spring(x, {
-                    toValue: -SCREEN_WIDTH,
-                    velocity: 0.1,
-                    useNativeDriver: true
-                }).start(() => {
-                    x.setValue(0);
-                    y.setValue(0);
-                    animating.current = false;
-                }); */
                 x.setValue(0);
                 y.setValue(0);
                 swipedLeft();
-                
             }
             if (dx > snapThreshhold) {
-                /* animating.current = true;
-                Animated.spring(x, {
-                    toValue: SCREEN_WIDTH + 50,
-                    velocity: 0.1,
-                    useNativeDriver: true
-                }).start(() => {
-                    x.setValue(0);
-                    y.setValue(0);
-                    animating.current = false;
-                }); */
                 x.setValue(0);
                 y.setValue(0);
                 swipedRight();
-                
             }
             else {
                 animating.current = true;
@@ -263,7 +240,7 @@ function SwipeScreen({ navigation }) {
                 width: '100%',
                 height: '100%',
                 alignItems: 'center',
-                justifyContent: 'center'
+                //justifyContent: 'center'
             }}>
                 {(remaining.length > 1) &&
                     <View
@@ -301,7 +278,8 @@ function SwipeScreen({ navigation }) {
             style={{
                 flex: 1,
                 alignItems: 'center',
-                justifyContent: 'center',
+                marginTop: 40,
+                //justifyContent: 'center',
                 backgroundColor: colors.background
             }}>
             <View
@@ -329,19 +307,25 @@ function SwipeScreen({ navigation }) {
                 justifyContent: 'space-between',
                 alignContent: 'center',
                 flexDirection: "row",
-                bottom: 15,
+                bottom: 30,
                 alignSelf: 'center'
 
             }}>
-                <Image source={require('../assets/pass.png')} resizeMode='contain' style={{
-                    width: 80, height: 80
-                }}></Image>
+                <TouchableOpacity
+                    onPress={swipedLeft}>
+                    <Image source={require('../assets/pass.png')} resizeMode='contain' style={{
+                        width: 80, height: 80
+                    }} />
+                </TouchableOpacity>
                 <Image source={require('../assets/checkall.png')} resizeMode='contain' style={{
                     width: 80, height: 80
-                }}></Image>
-                <Image source={require('../assets/check.png')} resizeMode='contain' style={{
-                    width: 80, height: 80
-                }}></Image>
+                }} />
+                <TouchableOpacity
+                    onPress={swipedRight}>
+                    <Image source={require('../assets/check.png')} resizeMode='contain' style={{
+                        width: 80, height: 80
+                    }} />
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

@@ -1,18 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View, Platform, StatusBar } from "react-native";
+import { View, Platform, StatusBar } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../screens/Home.js";
 import ClubsScreen from "../screens/Clubs.js";
-import ActivityScreen from "../screens/Activity.js";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import { ActivityStackNavigator } from "./ActivityStackNavigator";
-import ActivityModalNavigator from "./ActivityModalNavigator";
-import { Entypo } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
-import { BlurView } from "expo-blur";
 import FlashMessage from "react-native-flash-message";
 
 const Tab = createBottomTabNavigator();

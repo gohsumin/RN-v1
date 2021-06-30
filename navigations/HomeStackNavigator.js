@@ -6,6 +6,7 @@ import ActivityScreen from "../screens/Activity";
 import ActivityModalNavigator from "./ActivityModalNavigator";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
+import { StreamApp, FlatFeed } from 'expo-activity-feed';
 
 const HomeStack = createStackNavigator();
 
@@ -30,7 +31,7 @@ const HomeStackNavigator = () => {
   };
 
   return (
-    
+
     <HomeStack.Navigator screenOptions={screenOptionStyle}>
       <HomeStack.Screen
         name="Home"
@@ -38,7 +39,7 @@ const HomeStackNavigator = () => {
       />
       <HomeStack.Screen name="Profile" component={ActivityScreen} />
     </HomeStack.Navigator>
-    
+
   );
 };
 

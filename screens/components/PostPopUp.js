@@ -37,10 +37,6 @@ function PostPopUp({ info }) {
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        LogBox.ignoreAllLogs();
-    }, []);
-
-    useEffect(() => {
         Animated.timing(
             fadeAnim,
             {

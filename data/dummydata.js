@@ -13,6 +13,10 @@ const images = [
     require("../assets/headerbglight.jpeg"),
     require("../assets/dongsan.jpeg"),
     require('../assets/SoShNavLogo.png'),
+    require("../assets/check.png"),
+    require("../assets/checkall.png"),
+    require("../assets/pass.png"),
+    require("../assets/logo.png"),
     'https://www.ikea.com/kr/en/images/products/fejka-artificial-potted-plant-in-outdoor-monstera__0614197_pe686822_s5.jpg',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3bNrKZqCCuyi6Se_-7M6d85i1882HBId9c81kQ9uYY7Af535dxw0ypqbkinIaxjK7uqU&usqp=CAU',
     'https://cf.shopee.com.my/file/7552d406a037e1f90ad766845a7e7bd1',
@@ -28,40 +32,35 @@ const images = [
 
 const remaining = [
     {
-        "user": "lex.fridman",
+        "datePurchased": "1624594901",
+        "title": "Kate Banazi - Celestial Bodies",
+        "imageURL": "https://curatorialandco.com/wp-content/uploads/2019/10/KB43-Celestial-Bodies3-main.jpg",
+        "itemURL": "https://curatorialandco.com/product/celestial-bodies-3/"
+    },
+    {
         "datePurchased": "1623733185",
         "title": "Artificial Plant for Decoration",
         "imageURL": "https://api-prod.freedom.com.au/medias/39137-Popular-Category-Deep-etches-Artificial-Plants.png?context=bWFzdGVyfHJvb3R8ODAxMjI4fGltYWdlL3BuZ3xoNjIvaDhhLzg4MDIzMjg4MzgxNzQvMzkxMzcgUG9wdWxhciBDYXRlZ29yeSAtIERlZXAgZXRjaGVzX0FydGlmaWNpYWwgUGxhbnRzLnBuZ3xhYTFjM2U2NzAxNGZkNzE5NjI5MmY4MWM4ODhiNDk5NjM3MWRkYTA0ZjhiOGQwMDk2MTY3MzMzMTcyMDNmNGIz",
         "itemURL": "https://www.freedomfurniture.co.nz/cushions-throws-and-decor/c/artificial-foliage"
     },
     {
-        "user": "travis.scott",
         "datePurchased": "1623733200",
         "title": "Naviglio Couch",
         "imageURL": "https://www.esperiri.com/wp-content/uploads/prodotti/arf-naviglio-sof/arflex-naviglio.png",
         "itemURL": "https://www.esperiri.com/luxury-italian-furniture/sofas/arflex-naviglio/"
     },
     {
-        "user": "luka.doncic",
         "datePurchased": "1624594478",
         "title": "Vintage Silver Swirl Crystal Glasses",
         "imageURL": "https://chairish-prod.freetls.fastly.net/image/product/master/72f58b62-6b17-4774-afed-22e502bec83a/vintage-silver-swirl-crystal-glasses-set-of-6-3029",
         "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chairish.com%2Fproduct%2F591509%2Fvintage-silver-swirl-crystal-glasses-set-of-6&psig=AOvVaw2aG9jFzQ8RgpTEh-hSzS0O&ust=1624681035378000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCKD0o9L2sfECFQAAAAAdAAAAABAE"
     },
     {
-        "user": "michelle.obama",
-        "datePurchased": "1624594756",
-        "title": "Original Organic Pearl Couscous",
-        "imageURL": "https://images-na.ssl-images-amazon.com/images/I/91DVUNxvOrL._SL1500_.jpg",
-        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.amazon.com%2FRiceSelect-Organic-Pearl-Couscous-24-5%2Fdp%2FB07F2T9TR3&psig=AOvVaw0Kz_IkjT8ZdzC3fV8nDKJh&ust=1624681112797000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCJCLt_j2sfECFQAAAAAdAAAAABAD"
-    },
-    {
-        "user": "lex.fridman",
         "datePurchased": "1624594853",
         "title": "Handmade Vintage Leather Journal",
         "imageURL": "http://cdn.shopify.com/s/files/1/1658/7771/products/large_book_cover_clipped_rev_1_1024x1024.png?v=1510093178",
         "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fboldhome.com%2Fproducts%2Fkauri-handmade-leather-journal-wrap-genuine-leather-journal-diary-and-notebook-cover&psig=AOvVaw1qXrlfHhu3zOOiFadc44AG&ust=1624681329842000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCPDXwOb3sfECFQAAAAAdAAAAABAl"
-    }
+    },
 ]
 
 const posts = [
@@ -171,6 +170,14 @@ const posts = [
         imageSource: {uri: 'https://cdn.substack.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2Fdf62cc46-e47c-429a-b60e-23618743090a_1439x2048.png'},
     },
     {
+        user: "the.rihanna",
+        datePurchased: "1620000052",
+        datePosted: "1620116970",
+        likes: 200000,
+        title: "Juniper Berry and Cedar Candles",
+        imageSource: {uri: 'https://www.homeandgiftemporium.co.uk/pub/media/catalog/product/cache/image/655x655/e9c3970ab036de70892d86c6d221abfe/j/u/juniper_berry_cedar_cracker_gift_set_-_sto-6745o_-_final.png'},
+    },
+    {
         user: "luka.doncic",
         datePurchased: "1619936425",
         datePosted: "1620058856",
@@ -189,11 +196,23 @@ const posts = [
 ];
 
 const users = {
+    "the.rihanna": {
+        firstName: "Rihanna",
+        lastName: "Fenty",
+        following: ["dongsan.goh", "lex.fridman", "joe.jonas", "michelle.obama", "luka.doncic", "travis.scott"],
+        followers: ["dongsan.goh", "lex.fridman", "joe.jonas", "michelle.obama", "luka.doncic", "travis.scott"],
+        pfpSource: {
+            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8hXkg6cGi92vNdVHziVAyYDShiPFfGvJQNg&usqp=CAU",
+        },
+        bio: "People always want what you have, and you always want what they have - no one is ever 100 per cent like, 'Yes, I'm the bomb dot com - from head to toe!'",
+        available: "$503,025.56",
+        pending: "$830,114.93"
+    },
     "dongsan.goh": {
         firstName: "Dongsan",
         lastName: "Goh",
-        following: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
-        followers: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic"],
+        following: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic", "the.rihanna"],
+        followers: ["lex.fridman", "joe.jonas", "adin", "travis.scott", "luka.doncic", "the.rihanna"],
         pfpSource: require("../assets/dongsan.jpeg"),
         bio: "n u t r i t i o n",
         available: "$33,351.12",
@@ -202,8 +221,8 @@ const users = {
     "lex.fridman": {
         firstName: "Lex",
         lastName: "Fridman",
-        following: ["joe.jonas", "adin", "travis.scott", "luka.doncic"],
-        followers: ["joe.jonas", "adin", "luka.doncic"],
+        following: ["joe.jonas", "adin", "travis.scott", "luka.doncic", "the.rihanna"],
+        followers: ["joe.jonas", "adin", "luka.doncic", "the.rihanna"],
         pfpSource: {
             uri: "https://lexfridman.com/wordpress/wp-content/uploads/2019/03/lex_zoomed_out_cropped.jpg",
         },
@@ -214,8 +233,8 @@ const users = {
     "joe.jonas": {
         firstName: "Joe",
         lastName: "Jonas",
-        following: ["lex.fridman", "adin", "michelle.obama", "luka.doncic", "travis.scott"],
-        followers: ["lex.fridman", "luka.doncic"],
+        following: ["lex.fridman", "adin", "michelle.obama", "luka.doncic", "travis.scott", "the.rihanna"],
+        followers: ["lex.fridman", "luka.doncic", "the.rihanna"],
         pfpSource: {
             uri: "https://static.onecms.io/wp-content/uploads/sites/20/2020/09/20/new-dad-joe-jonas.jpg"
         },
@@ -226,8 +245,8 @@ const users = {
     "michelle.obama": {
         firstName: "Michelle",
         lastName: "Obama",
-        following: ["lex.fridman", "travis.scott"],
-        followers: ["lex.fridman", "travis.scott", "joe.jonas", "luka.doncic"],
+        following: ["lex.fridman", "travis.scott", "the.rihanna"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas", "luka.doncic", "the.rihanna"],
         pfpSource: {
             uri: "https://cdn.britannica.com/83/130983-050-82EE4ECC/Michelle-Obama-portrait-first-lady-Blue-Room-2009.jpg"
         },
@@ -238,8 +257,8 @@ const users = {
     "luka.doncic": {
         firstName: "Luka",
         lastName: "Doncic",
-        following: ["lex.fridman", "joe.jonas", "michelle.obama"],
-        followers: ["lex.fridman", "travis.scott", "joe.jonas"],
+        following: ["lex.fridman", "joe.jonas", "michelle.obama", "the.rihanna"],
+        followers: ["lex.fridman", "travis.scott", "joe.jonas", "the.rihanna"],
         pfpSource: {
             uri: "https://thesmokingcuban.com/wp-content/uploads/getty-images/2017/07/1185327461.jpeg"
         },
@@ -250,8 +269,8 @@ const users = {
     "travis.scott": {
         firstName: "Travis",
         lastName: "Scott",
-        following: ["luka.doncic", "adin"],
-        followers: ["lex.fridman", "adin", "joe.jonas"],
+        following: ["luka.doncic", "adin", "the.rihanna"],
+        followers: ["lex.fridman", "adin", "joe.jonas", "the.rihanna"],
         pfpSource: {
             uri: "https://pbs.twimg.com/media/DsIRXVIX4AAlQlj.jpg"
         },
