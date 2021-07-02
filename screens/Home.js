@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FlatList, SafeAreaView, View, Dimensions, Text } from "react-native";
+import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
@@ -18,24 +18,27 @@ const HomeScreen = ({ navigation }) => {
   const uid = useContext(AppContext).uid;
   const users = useContext(UsersContext).users;
   const feed = useContext(PostsContext).posts;
-
-  // const feed = user === "" ? useContext(PostsContext).posts
-  //   : useContext(PostsContext).posts.filter((post) =>
-  //     users[user].following.concat(user).includes(post.user)
-  //   );
-  // const client = stream.connect(
-  //   't6d6x66485xc',
-  //   userToken,
-  //   '1130088'
-  // );
-  //const testingFeed = client.feed('timeline', user, userToken);
-  //console.log(testingFeed);
+  const loadMoreFeed = useContext(PostsContext).loadMoreFeed;
+  const setLoaded = useContext(PostsContext).setLoaded;
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadRequested, setLoadRequested] = useState(false);
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
   const tabBarheight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
 
   const renderSeparator = () => {
     return (
@@ -88,6 +91,22 @@ const HomeScreen = ({ navigation }) => {
               setting={'feed'}
             />
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          onEndReachedThreshold={0.01}
+          onEndReached={info => {
+            console.log("end reached");
+            if (!loadRequested) {
+              setLoadRequested(true);
+              loadMoreFeed(info).then(() => {
+                setLoadRequested(false);
+              });
+            }
+          }}
           ListFooterComponent={
             <View style={{ height: tabBarheight, borderColor: 'red', borderWidth: 1 }}>
             </View>

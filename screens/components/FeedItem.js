@@ -48,7 +48,7 @@ function FeedItem({
       style={{
         width: totalWidth,
         flexDirection: "row",
-        marginVertical: 10,
+        marginVertical: 15,
         paddingHorizontal: marginHorizontal,
         justifyContent: "center",
       }}
@@ -61,26 +61,33 @@ function FeedItem({
         style={{
           width: leftGridWidth,
           height: leftGridWidth,
-          justifyContent: "center",
+          // borderWidth: 1,
+          // borderColor: 'red'
         }}
       >
         <Image
           fadeDuration={0}
-          source={{uri: pfpSource}}
+          source={{ uri: pfpSource }}
           style={{
             width: leftGridWidth * 0.8,
             height: leftGridWidth * 0.8,
+            marginTop: -4,
             borderRadius: leftGridWidth / 2,
             alignSelf: "flex-start",
+            // borderWidth: 1,
+            // borderColor: 'red'
           }}
         />
       </TouchableOpacity>
-      <View style={{ width: rightGridWidth }}>
+      <View style={{
+        width: rightGridWidth,
+        // borderWidth: 1,
+        // borderColor: 'red'
+      }}>
         {/* texts next to the profile pic: buyer name and date */}
         <View
           style={{
-            height: leftGridWidth * 0.9,
-            justifyContent: "center",
+            height: leftGridWidth * 0.74,
             opacity: 0.9
           }}
         >
@@ -94,7 +101,7 @@ function FeedItem({
             {firstName} {lastName} bought:
           </Text>
           <Text style={{ fontSize: 13.5, color: colors.foreground1, opacity: 0.9 }}>
-            {getElapsedTime(timePosted)}
+            {getElapsedTime(timePosted.seconds)}
           </Text>
         </View>
 
@@ -115,7 +122,7 @@ function FeedItem({
             }}>
             <Image
               fadeDuration={0}
-              source={{uri: imageSource}}
+              source={{ uri: imageSource }}
               style={{
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,
@@ -166,7 +173,7 @@ function FeedItem({
         {/* grid with the buttons, e.g. number of likes; maybe add share button later */}
         {setting === 'feed' && <FeedBottomBar />}
 
-        {/* two-side view with the number of purchases as a result of the post and the total payout */ }
+        {/* two-side view with the number of purchases as a result of the post and the total payout */}
         {setting === 'self' && <CommissionsBar width={rightGridWidth * itemImageRatio} />}
       </View>
     </View>

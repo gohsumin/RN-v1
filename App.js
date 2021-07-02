@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { LogBox } from "react-native";
+import { LogBox, AsyncStorageStatic } from "react-native";
 import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
@@ -38,7 +38,12 @@ export default class App extends React.Component {
     userToken: "",
     uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
     theme: "dark",
+    loadingMore: false,
+    cursor: 0,
+    postCount: 0,
   };
+
+  loadSize = 5;
 
   /* grabs freshly-approved posts with type: 0 */
   getPosts() {
@@ -58,16 +63,49 @@ export default class App extends React.Component {
     })
   }
 
-  /* grabs the posts for the timeline of the existing user */
-  getTimeline() {
+  async refreshTimeline() {
+    const cursor = this.state.cursor;
+    let db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
     let ret = {};
-    firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').onSnapshot((snapshot) => {
+    db.limit(this.loadSize + this.state.postCount).onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
         const documentName = doc.id;
         ret[documentName] = doc.data();
-      });
+      })
+      const newCursor = snapshot.docs[snapshot.docs.length - 1];
+      this.setState({ postCount: Object.keys(ret).length });
+      this.setState({ cursor: newCursor });
       this.setState({ posts: ret });
+    })
+  }
+
+  /* grabs the posts for the timeline of the existing user */
+  async getTimeline() {
+    console.log("getTimeline; cursor: " + this.state.cursor);
+    const cursor = this.state.cursor;
+    let db = null;
+    if (this.state.cursor === undefined) {
+      return false;
+    }
+    if (this.state.cursor === 0) {
+      db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
+    }
+    else {
+      db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc").startAfter(cursor);
+    }
+    let ret = {};
+    db.limit(this.loadSize).onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        console.log(doc.data().dateApproved);
+        const documentName = doc.id;
+        ret[documentName] = doc.data();
+      });
+      const newCursor = snapshot.docs[snapshot.docs.length - 1];
+      this.setState({ postCount: this.state.postCount + Object.keys(ret).length });
+      this.setState({ cursor: newCursor });
+      this.setState({ posts: { ...this.state.posts, ...ret } });
     });
+    return true;
   }
 
   componentDidMount() {
@@ -99,7 +137,28 @@ export default class App extends React.Component {
   }
 
   setUID = uid => {
-    this.setState({ uid: uid })
+    this.setState({ uid: uid });
+  }
+
+  /* updates the feed context by grabbing more from firestore */
+  loadMoreFeed = async info => {
+    console.log("loadMoreFeed");
+    if (this.state.loadingMore) {
+      console.log("true that: loadingMore || loaded");
+      return;
+    }
+    this.setState({ loadingMore: true });
+
+    this.getTimeline().then((res) => {
+      if(!res) {
+        // there were no more
+
+      }
+    });
+
+    this.setState({ loadingMore: false });
+
+    return true;
   }
 
   async _loadAssetsAsync() {
@@ -127,7 +186,10 @@ export default class App extends React.Component {
 
     return (
       /* Contexts can be composed later into a single component. */
-      <SwipeCardsContext.Provider value={{ remaining: this.state.remaining, popRemaining: this.popRemaining }}>
+      <SwipeCardsContext.Provider value={{
+        remaining: this.state.remaining,
+        popRemaining: this.popRemaining
+      }}>
         <AppContext.Provider value={{
           user: this.state.user,
           //userToken: this.state.userToken,
@@ -138,7 +200,11 @@ export default class App extends React.Component {
         }}>
           <ThemeContextProvider>
             <UsersContext.Provider value={{ users: this.state.users }}>
-              <PostsContext.Provider value={{ posts: this.state.posts, /* addPost: this.addPost */ }}>
+              <PostsContext.Provider value={{
+                posts: this.state.posts,
+                loadMoreFeed: this.loadMoreFeed,
+                /* addPost: this.addPost */
+              }}>
                 <NavigationContainer>
                   <RootStackNavigator />
                 </NavigationContainer>

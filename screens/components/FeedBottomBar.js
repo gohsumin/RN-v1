@@ -14,9 +14,13 @@ function FeedBottomBar() {
         <View
             style={{
                 flexDirection: "row",
-                alignSelf: "flex-end",
-                alignContent: "center",
-                marginTop: 10
+                alignSelf: "flex-start",
+                alignItems: "center",
+                marginTop: 14.5,
+                paddingVertical: 3,
+                paddingHorizontal: 8,
+                borderRadius: 8,
+                backgroundColor: colors.foreground3
             }}
         >
             {/* <EvilIcons name="heart" size={24} color={colors.antiBackground} />
@@ -25,22 +29,23 @@ function FeedBottomBar() {
           </Text> */}
             <Icon
                 name="cart-arrow-down"
-                size={24}
+                size={18}
                 color={colors.green}
                 style={{ marginRight: 3 }} />
             <View style={{ paddingLeft: 5 }}>
                 <Text style={{
-                    fontSize: 13,
+                    fontSize: 17.5,
                     fontWeight: 'bold',
-                    color: colors.green
+                    color: colors.green,
+                    marginBottom: -2
                 }}>
                     4,356
                 </Text>
                 <Text style={{
-                    fontSize: 12.6,
+                    fontSize: 12.3,
                     color: colors.foreground1,
                 }}>
-                    Also Bought
+                    Followers Bought
                 </Text>
             </View>
         </View>
