@@ -69,9 +69,6 @@ const HomeScreen = ({ navigation }) => {
       <View
         style={{ backgroundColor: colors.background, alignItems: "center" }}
       >
-        <Text style={{color: 'white'}}>
-          {feed.length}
-        </Text>
         <FlatList
           data={Object.keys(feed)}
           renderItem={({ item }) => ( // 'item' has fields 'dateApproved', 'dateBought', 'itemImageURL', 'itemName', 'itemURL', 'numBought', 'storeName', 'userImageURL', 'userName'
@@ -87,17 +84,16 @@ const HomeScreen = ({ navigation }) => {
               navigate={(user) => {
                 navigate("Profile", "somehow get uid");
               }}
-              key={feed[item].dateApproved+feed[item].userName}
               width={Dimensions.get("window").width}
               setting={'feed'}
             />
           )}
           ListFooterComponent={
-            <View style={{ height: tabBarheight }}>
+            <View style={{ height: tabBarheight, borderColor: 'red', borderWidth: 1 }}>
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
-          keyExtractor={(item) => feed[item].dateApproved}
+          keyExtractor={(item) => item}
         />
       </View>
     </SafeAreaView>

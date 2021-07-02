@@ -1,26 +1,22 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {
     View,
     Image,
     Dimensions,
     Animated,
-    TouchableWithoutFeedback,
     PanResponder,
     Text,
     SafeAreaView,
-    StyleSheet,
     TouchableOpacity
 } from "react-native";
-import * as Expo from 'expo';
-//import { DangerZone } from "expo";
-import { Interactable } from 'react-native-redash';
 import PostsContext from "../data/PostsContext";
 import ThemeContext from "../data/ThemeContext";
 import SwipeCardsContext from "../data/SwipeCardsContext";
-import Icon from "react-native-vector-icons/Ionicons";
-import { useHeaderHeight } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppContext from '../data/AppContext';
+import { useHeaderHeight } from '@react-navigation/stack';
+import { firebase } from '../data/firebase';
+import "firebase/firestore";
 
 function SwipeScreen({ navigation }) {
 
@@ -29,10 +25,15 @@ function SwipeScreen({ navigation }) {
 
     const SCREEN_HEIGHT = Dimensions.get('window').height;
     const SCREEN_WIDTH = Dimensions.get('window').width;
+    const headerHeight = useHeaderHeight();
 
-    const cardHeight = "75%";
-    const cardWidth = "80%";
+    const margin = 15;
 
+    const iconWidth = (SCREEN_WIDTH - margin * 4) / 3;
+    const iconHeight = 60;
+
+    const cardHeight = SCREEN_HEIGHT - headerHeight - 3 * margin - iconHeight;
+    const cardWidth = SCREEN_WIDTH - margin * 2;
     const cardBorderRadius = 10;
 
     // source: https://snack.expo.io/EDMIVjbyq
@@ -45,10 +46,10 @@ function SwipeScreen({ navigation }) {
     const user = useContext(AppContext).user;
 
     // function that adds a new post to the posts context
-    const { addPost } = React.useContext(PostsContext);
+    //const { addPost } = React.useContext(PostsContext);
 
     // pops the first item off the remaining array context
-    const { popRemaining } = useContext(SwipeCardsContext);
+    const popRemaining = useContext(SwipeCardsContext).popRemaining;
 
     // remaining cards context
     const remaining = useContext(SwipeCardsContext).remaining;
@@ -57,7 +58,11 @@ function SwipeScreen({ navigation }) {
     const index = useRef(0);
 
     useEffect(() => {
-        if (remaining.length === 0) {
+        console.log("remaining['test001']['itemName']: " + (remaining['test001']['itemName']));
+    })
+
+    useEffect(() => {
+        if (Object.keys(remaining).length === 0) {
             navigation.goBack();
         }
     }, [remaining, popRemaining]);
@@ -76,22 +81,24 @@ function SwipeScreen({ navigation }) {
     });
 
     const swipedLeft = () => {
-        console.log("swiped left");
+        const key = Object.keys(remaining)[index.current];
+        const swipedCard = remaining[key];
         // pop the top of the context stack
-        popRemaining();
+        popRemaining(key);
+        firestore.collection('Posts').doc(swipedCard.id).update({
+            type: 2
+        })
         index.current++;
-        if (index === remaining.length) {
+        if (index === Object.keys(remaining).length) {
             navigation.goBack();
         }
     }
 
     const swipedRight = () => {
-        console.log("index: " + index.current);
-        console.log("swiped right");
-        const swipedCard = remaining[index.current];
-        console.log("...on " + swipedCard.title);
+        const key = Object.keys(remaining)[index.current];
+        const swipedCard = remaining[key];
         // pop the top of the context stack
-        popRemaining();
+        popRemaining(key);
         index.current++;
         // post item as prop to addPost
         const newPost = {
@@ -103,8 +110,11 @@ function SwipeScreen({ navigation }) {
             imageSource: { uri: swipedCard.imageURL }
         }
         // update the feed context
-        addPost(newPost);
-        if (index === remaining.length) {
+        //addPost(newPost);
+        firestore.collection('Posts').doc(swipedCard.id).update({
+            type: 1
+        })
+        if (index === Object.keys(remaining).length) {
             console.log("it is the last card");
             navigation.goBack();
         }
@@ -184,10 +194,10 @@ function SwipeScreen({ navigation }) {
                     style={{
                         resizeMode: "contain",
                         width: "100%",
-                        height: "95%",
+                        height: "90%",
                         alignContent: 'flex-start'
                     }}
-                    source={{ uri: item.imageURL }}
+                    source={{ uri: item.itemImageURL }}
                 />
                 <LinearGradient
                     style={{
@@ -196,7 +206,7 @@ function SwipeScreen({ navigation }) {
                         width: "100%",
                     }}
                     locations={[0.7, 1]}
-                    colors={['transparent', 'rgba(0, 0, 0, 0.4)']}
+                    colors={['transparent', 'rgba(15, 0, 0, 0.5)']}
                 />
                 <View
                     style={{
@@ -209,15 +219,15 @@ function SwipeScreen({ navigation }) {
                     }}>
                     <Text
                         style={{
-                            fontSize: 27,
+                            fontSize: 28,
                             //fontWeight: 'bold',
                             color: 'white',
                             textShadowColor: 'gray',
                             textShadowOffset: { width: 0.7, height: 0.7 },
                             textShadowRadius: 4,
-                            marginBottom: 5
+                            marginBottom: 4
                         }}>
-                        {item.title}
+                        {item.itemName}
                     </Text>
                     <Text
                         style={{
@@ -227,7 +237,7 @@ function SwipeScreen({ navigation }) {
                             textShadowOffset: { width: 0.7, height: 0.7 },
                             textShadowRadius: 2,
                         }}>
-                        Brand Name
+                        {item.storeName}
                     </Text>
                 </View>
             </View>
@@ -242,21 +252,11 @@ function SwipeScreen({ navigation }) {
                 alignItems: 'center',
                 //justifyContent: 'center'
             }}>
-                {(remaining.length > 1) &&
-                    <View
-                        style={{
-                            width: cardWidth,
-                            height: cardHeight,
-                            backgroundColor: 'white',
-                            borderRadius: cardBorderRadius,
-                            position: 'absolute'
-                        }}>
-                        <Card item={remaining[1]} />
-                    </View>}
-                {remaining.length > 0 &&
-                    <Animated.View
+                {Object.keys(remaining).slice(0).reverse().map((key, index) => {
+                    return (<Animated.View
                         {...panResponder.current.panHandlers}
                         style={{
+                            position: 'absolute',
                             width: cardWidth,
                             height: cardHeight,
                             backgroundColor: 'white',
@@ -267,8 +267,9 @@ function SwipeScreen({ navigation }) {
                                 { translateY: y },
                             ]
                         }}>
-                        <Card item={remaining[0]} />
-                    </Animated.View>}
+                        <Card item={remaining[key]} />
+                    </Animated.View>)
+                })}
             </View>
         )
     }
@@ -278,7 +279,7 @@ function SwipeScreen({ navigation }) {
             style={{
                 flex: 1,
                 alignItems: 'center',
-                marginTop: 40,
+                marginTop: margin,
                 //justifyContent: 'center',
                 backgroundColor: colors.background
             }}>
@@ -293,37 +294,39 @@ function SwipeScreen({ navigation }) {
                     alignContent: 'center',
                     justifyContent: 'center'
                 }}>
-                <Text style={{
-                    fontSize: 18,
-                    color: colors.antiBackground
+                {/* <Text style={{
+                    fontSize: 22,
+                    color: colors.foreground1,
+                    textAlign: 'center',
+
                 }}>
-                    That's all we got!
-                </Text>
+                    {remaining['test001']['type']}
+                </Text> */}
             </View>
             <Stack />
             <View style={{
                 position: 'absolute',
-                width: "75%",
+                width: SCREEN_WIDTH - margin * 2,
                 justifyContent: 'space-between',
                 alignContent: 'center',
                 flexDirection: "row",
-                bottom: 30,
-                alignSelf: 'center'
+                bottom: margin,
+                alignSelf: 'center',
 
             }}>
                 <TouchableOpacity
                     onPress={swipedLeft}>
                     <Image source={require('../assets/pass.png')} resizeMode='contain' style={{
-                        width: 80, height: 80
+                        width: iconWidth, height: iconHeight,
                     }} />
                 </TouchableOpacity>
                 <Image source={require('../assets/checkall.png')} resizeMode='contain' style={{
-                    width: 80, height: 80
+                    width: iconWidth, height: iconHeight,
                 }} />
                 <TouchableOpacity
                     onPress={swipedRight}>
                     <Image source={require('../assets/check.png')} resizeMode='contain' style={{
-                        width: 80, height: 80
+                        width: iconWidth, height: iconHeight,
                     }} />
                 </TouchableOpacity>
             </View>

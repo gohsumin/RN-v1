@@ -32,34 +32,49 @@ const images = [
 
 const remaining = [
     {
-        "datePurchased": "1624594901",
-        "title": "Kate Banazi - Celestial Bodies",
-        "imageURL": "https://curatorialandco.com/wp-content/uploads/2019/10/KB43-Celestial-Bodies3-main.jpg",
-        "itemURL": "https://curatorialandco.com/product/celestial-bodies-3/"
+        "dateBought": "1624594901",
+        "itemName": "Celestial Bodies",
+        "itemImageURL": "https://curatorialandco.com/wp-content/uploads/2019/10/KB43-Celestial-Bodies3-main.jpg",
+        "itemURL": "https://curatorialandco.com/product/celestial-bodies-3/",
+        "storeName": "Kate Banazi",
+        "type": 0,
+        "userID": "b5aU5qla3eVPqX1asJviRcpYuDq1",
     },
     {
-        "datePurchased": "1623733185",
-        "title": "Artificial Plant for Decoration",
-        "imageURL": "https://api-prod.freedom.com.au/medias/39137-Popular-Category-Deep-etches-Artificial-Plants.png?context=bWFzdGVyfHJvb3R8ODAxMjI4fGltYWdlL3BuZ3xoNjIvaDhhLzg4MDIzMjg4MzgxNzQvMzkxMzcgUG9wdWxhciBDYXRlZ29yeSAtIERlZXAgZXRjaGVzX0FydGlmaWNpYWwgUGxhbnRzLnBuZ3xhYTFjM2U2NzAxNGZkNzE5NjI5MmY4MWM4ODhiNDk5NjM3MWRkYTA0ZjhiOGQwMDk2MTY3MzMzMTcyMDNmNGIz",
-        "itemURL": "https://www.freedomfurniture.co.nz/cushions-throws-and-decor/c/artificial-foliage"
+        "dateBought": "1623733185",
+        "itemName": "Artificial Plant for Decoration",
+        "itemImageURL": "https://api-prod.freedom.com.au/medias/39137-Popular-Category-Deep-etches-Artificial-Plants.png?context=bWFzdGVyfHJvb3R8ODAxMjI4fGltYWdlL3BuZ3xoNjIvaDhhLzg4MDIzMjg4MzgxNzQvMzkxMzcgUG9wdWxhciBDYXRlZ29yeSAtIERlZXAgZXRjaGVzX0FydGlmaWNpYWwgUGxhbnRzLnBuZ3xhYTFjM2U2NzAxNGZkNzE5NjI5MmY4MWM4ODhiNDk5NjM3MWRkYTA0ZjhiOGQwMDk2MTY3MzMzMTcyMDNmNGIz",
+        "itemURL": "https://www.freedomfurniture.co.nz/cushions-throws-and-decor/c/artificial-foliage",
+        "storeName": "Freedom Furniture",
+        "type": 0,
+        "userID": "b5aU5qla3eVPqX1asJviRcpYuDq1",
     },
     {
-        "datePurchased": "1623733200",
-        "title": "Naviglio Couch",
-        "imageURL": "https://www.esperiri.com/wp-content/uploads/prodotti/arf-naviglio-sof/arflex-naviglio.png",
-        "itemURL": "https://www.esperiri.com/luxury-italian-furniture/sofas/arflex-naviglio/"
+        "dateBought": "1623733200",
+        "itemName": "Naviglio Couch",
+        "itemImageURL": "https://www.esperiri.com/wp-content/uploads/prodotti/arf-naviglio-sof/arflex-naviglio.png",
+        "itemURL": "https://www.esperiri.com/luxury-italian-furniture/sofas/arflex-naviglio/",
+        "storeName": "Esperiri",
+        "type": 0,
+        "userID": "b5aU5qla3eVPqX1asJviRcpYuDq1",
     },
     {
-        "datePurchased": "1624594478",
-        "title": "Vintage Silver Swirl Crystal Glasses",
-        "imageURL": "https://chairish-prod.freetls.fastly.net/image/product/master/72f58b62-6b17-4774-afed-22e502bec83a/vintage-silver-swirl-crystal-glasses-set-of-6-3029",
-        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chairish.com%2Fproduct%2F591509%2Fvintage-silver-swirl-crystal-glasses-set-of-6&psig=AOvVaw2aG9jFzQ8RgpTEh-hSzS0O&ust=1624681035378000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCKD0o9L2sfECFQAAAAAdAAAAABAE"
+        "dateBought": "1624594478",
+        "itemName": "Vintage Silver Swirl Crystal Glasses",
+        "itemImageURL": "https://chairish-prod.freetls.fastly.net/image/product/master/72f58b62-6b17-4774-afed-22e502bec83a/vintage-silver-swirl-crystal-glasses-set-of-6-3029",
+        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.chairish.com%2Fproduct%2F591509%2Fvintage-silver-swirl-crystal-glasses-set-of-6&psig=AOvVaw2aG9jFzQ8RgpTEh-hSzS0O&ust=1624681035378000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCKD0o9L2sfECFQAAAAAdAAAAABAE",
+        "storeName": "Chairish",
+        "type": 0,
+        "userID": "b5aU5qla3eVPqX1asJviRcpYuDq1",
     },
     {
-        "datePurchased": "1624594853",
-        "title": "Handmade Vintage Leather Journal",
-        "imageURL": "http://cdn.shopify.com/s/files/1/1658/7771/products/large_book_cover_clipped_rev_1_1024x1024.png?v=1510093178",
-        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fboldhome.com%2Fproducts%2Fkauri-handmade-leather-journal-wrap-genuine-leather-journal-diary-and-notebook-cover&psig=AOvVaw1qXrlfHhu3zOOiFadc44AG&ust=1624681329842000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCPDXwOb3sfECFQAAAAAdAAAAABAl"
+        "dateBought": "1624594853",
+        "itemName": "Handmade Vintage Leather Journal",
+        "itemImageURL": "http://cdn.shopify.com/s/files/1/1658/7771/products/large_book_cover_clipped_rev_1_1024x1024.png?v=1510093178",
+        "itemURL": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fboldhome.com%2Fproducts%2Fkauri-handmade-leather-journal-wrap-genuine-leather-journal-diary-and-notebook-cover&psig=AOvVaw1qXrlfHhu3zOOiFadc44AG&ust=1624681329842000&source=images&cd=vfe&ved=0CAoQjRxqFwoTCPDXwOb3sfECFQAAAAAdAAAAABAl",
+        "storeName": "Shopify",
+        "type": 0,
+        "userID": "b5aU5qla3eVPqX1asJviRcpYuDq1",
     },
 ]
 

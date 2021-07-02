@@ -11,7 +11,6 @@ function getTimeline(uid) {
       ret[documentName] = doc.data();
     });
   });
-  console.log(ret);
   return ret;
 }
 

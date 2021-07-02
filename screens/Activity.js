@@ -3,12 +3,7 @@ import { LogBox, Dimensions } from "react-native";
 import {
   Text,
   View,
-  Image,
-  TouchableOpacity,
-  FlatList,
   ScrollView,
-  Animated,
-  Easing
 } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
@@ -25,27 +20,25 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { toggle } from "cli-spinners";
 import { getUserData } from "../helpers/postsHelpers";
-const stream = require('getstream'); 
 
 const ActivityScreen = ({ route, navigation }) => {
   const users = React.useContext(UsersContext).users;
   const posts = React.useContext(PostsContext).posts;
-  const [user, setUser] = useState("");
+  const [uid, setUID] = useState("");
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState({});
-  const logger = React.useContext(AppContext).user;
+  const logger = React.useContext(AppContext).uid;
   //const userToken = React.useContext(AppContext).userToken;
-  const uid = React.useContext(AppContext).uid;
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     console.log("useEffect");
-    console.log("route.params.user: " + route.params.user);
-    if ((typeof route.params.user === "string")) {
-      const u = route.params.user;
-      console.log("user: " + u);
-      setUser(u);
+    console.log("route.params.uid: " + route.params.uid);
+    if ((typeof route.params.uid === "string")) {
+      const u = route.params.uid;
+      console.log("uid: " + u);
+      setUID(u);
       if (u === logger) {
         setIsUser(true);
       }

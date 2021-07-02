@@ -10,20 +10,9 @@ import SwipeCardsContext from "./data/SwipeCardsContext";
 import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
-import { StreamApp } from 'expo-activity-feed';
-import { getTimeline } from "./helpers/postsHelpers";
 import { firebase } from './data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
-
-function getPosts() {
-
-  fetch(`https://soshwrld.com/posts`).then((r) => { return r.json() }).then((d) => {
-    return d.posts
-  }).catch((err) => {
-    console.log(err)
-  })
-}
 
 //const currentPosts = getPosts();
 
@@ -41,7 +30,7 @@ export default class App extends React.Component {
 
   state = {
     isReady: false,
-    remaining: remaining,
+    remaining: [],
     posts: [], // call getPosts whenever the user opens the app!
     users: users,
     images: images, // make this a context so cached images can keep updating
@@ -51,34 +40,51 @@ export default class App extends React.Component {
     theme: "dark",
   };
 
+  /* grabs freshly-approved posts with type: 0 */
+  getPosts() {
+    // TO-DO: filter by user name: only the ones that match the current signed in user
+    // fetch(`https://soshwrld.com/posts`).then((r) => { return r.json() }).then((d) => {
+    //   return d.posts;
+    // }).catch((err) => {
+    //   console.log(err);
+    // })
+    let ret = {};
+    firestore.collection('Posts').where("type", "==", 0).get().then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const documentName = doc.id;
+        ret[documentName] = doc.data();
+      })
+      this.setState({ remaining: ret });
+    })
+  }
+
+  /* grabs the posts for the timeline of the existing user */
   getTimeline() {
-    console.log("from getTimeline");
     let ret = {};
     firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
         const documentName = doc.id;
-        console.log("document id: "+documentName);
         ret[documentName] = doc.data();
       });
-      console.log("ret[\"WhpI89vUtVrYrwZURb7R\"]: "+ret["WhpI89vUtVrYrwZURb7R"]);
-      this.setState({posts: ret});
+      this.setState({ posts: ret });
     });
   }
 
-
   componentDidMount() {
-    console.log("from componentDidMount");
+    this.getPosts();
     this.getTimeline();
     LogBox.ignoreAllLogs(true);
   }
 
-  popRemaining = () => {
-    this.setState(prev => ({ remaining: prev.remaining.slice(1) }));
+  popRemaining = (key) => {
+    const newRemaining = this.state.remaining;
+    delete newRemaining[key];
+    this.setState(prev => ({ remaining: newRemaining }));
   }
 
-  addPost = newPost => {
+  /* addPost = newPost => {
     this.setState(prev => ({ posts: [newPost, ...prev.posts] }));
-  }
+  } */
 
   setImages = images => {
     this.images.setState({ images });
@@ -132,7 +138,7 @@ export default class App extends React.Component {
         }}>
           <ThemeContextProvider>
             <UsersContext.Provider value={{ users: this.state.users }}>
-              <PostsContext.Provider value={{ posts: this.state.posts, addPost: this.addPost }}>
+              <PostsContext.Provider value={{ posts: this.state.posts, /* addPost: this.addPost */ }}>
                 <NavigationContainer>
                   <RootStackNavigator />
                 </NavigationContainer>
