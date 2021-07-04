@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl } from "react-native";
+import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
@@ -8,7 +8,7 @@ import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
-//import { StreamApp, FlatFeed } from 'expo-activity-feed';
+import { AntDesign } from '@expo/vector-icons';
 const stream = require('getstream');
 import { getTimeline } from "../helpers/postsHelpers";
 
@@ -20,6 +20,7 @@ const HomeScreen = ({ navigation }) => {
   const feed = useContext(PostsContext).posts;
   const loadMoreFeed = useContext(PostsContext).loadMoreFeed;
   const setLoaded = useContext(PostsContext).setLoaded;
+  const addRandomPost = useContext(PostsContext).addRandomPost;
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
   const [flatListWidth, setFlatListWidth] = useState(0);
@@ -54,6 +55,24 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
+  const renderItem = ({ item }) => ( // 'item' has fields 'dateApproved', 'dateBought', 'itemImageURL', 'itemName', 'itemURL', 'numBought', 'storeName', 'userImageURL', 'userName'
+    <FeedItem
+      pfpSource={item.userImageURL}
+      userName={item.userName}
+      firstName={"First Name"}
+      lastName={"Last Name"}
+      title={item.itemName}
+      timePosted={item.dateApproved}
+      imageSource={item.itemImageURL}
+      likes={"no likes"}
+      navigate={(user) => {
+        navigate("Profile", "somehow get uid");
+      }}
+      width={Dimensions.get("window").width}
+      setting={'feed'}
+    />
+  )
+
   function navigate(screen, user) {
     navigation.navigate(screen, { user: user });
   }
@@ -73,24 +92,9 @@ const HomeScreen = ({ navigation }) => {
         style={{ backgroundColor: colors.background, alignItems: "center" }}
       >
         <FlatList
-          data={Object.keys(feed)}
-          renderItem={({ item }) => ( // 'item' has fields 'dateApproved', 'dateBought', 'itemImageURL', 'itemName', 'itemURL', 'numBought', 'storeName', 'userImageURL', 'userName'
-            <FeedItem
-              pfpSource={feed[item].userImageURL}
-              userName={feed[item].userName}
-              firstName={"First Name"}
-              lastName={"Last Name"}
-              title={feed[item].itemName}
-              timePosted={feed[item].dateApproved}
-              imageSource={feed[item].itemImageURL}
-              likes={"no likes"}
-              navigate={(user) => {
-                navigate("Profile", "somehow get uid");
-              }}
-              width={Dimensions.get("window").width}
-              setting={'feed'}
-            />
-          )}
+          // feed: only the value of each object in timeline
+          data={feed}
+          renderItem={renderItem}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -112,8 +116,31 @@ const HomeScreen = ({ navigation }) => {
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.dateApproved+item.userName}
         />
+
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            bottom: tabBarheight + 20,
+            right: 20,
+          }}
+          onPress={addRandomPost}>
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              borderRadius: 30,
+              backgroundColor: 'rgba(170, 70, 170, 1)',
+              borderWidth: 3,
+              borderColor: 'rgba(150, 80, 160, 0.8)',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <AntDesign name="addfile" size={24} color='rgba(200, 180, 200, 1)' />
+          </View>
+        </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
