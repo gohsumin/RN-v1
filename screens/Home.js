@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity, ActivityIndicator } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
@@ -55,20 +55,18 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = useCallback(({ item }) => (
     <FeedItem
       item={item}
       navigate={(user) => {
-        navigate("Profile", "somehow get uid");
+        navigation.navigate("Profile", item.uid);
       }}
       width={Dimensions.get("window").width}
       setting={'feed'}
     />
-  )
+  ), []);
 
-  function navigate(screen, user) {
-    navigation.navigate(screen, { user: user });
-  }
+  const keyExtractor = useCallback((item) => item.id, []);
 
   /* return for HomeScreen */
   return (
@@ -94,7 +92,6 @@ const HomeScreen = ({ navigation }) => {
               onRefresh={onRefresh}
             />
           }
-          scrollEnabled={!loadRequested}
           onEndReachedThreshold={0.01}
           onEndReached={info => {
             console.log("end reached");
@@ -110,7 +107,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
-          keyExtractor={(item) => item.id}
+          keyExtractor={keyExtractor}
         />
 
         <TouchableOpacity

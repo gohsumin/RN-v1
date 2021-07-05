@@ -48,9 +48,7 @@ function FeedItem({
     >
       {/* profile pic */}
       <TouchableOpacity
-        onPress={() => {
-          // navigate(userName);
-        }}
+        onPress={navigate}
         style={{
           width: leftGridWidth,
           height: leftGridWidth,
