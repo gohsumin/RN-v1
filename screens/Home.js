@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from "react";
+import React, { useState, useContext, useRef, useEffect, useCallback } from "react";
 import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity, ActivityIndicator } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
@@ -17,10 +17,7 @@ const HomeScreen = ({ navigation }) => {
   //const userToken = useContext(AppContext).userToken;
   const uid = useContext(AppContext).uid;
   const users = useContext(UsersContext).users;
-  const feed = useContext(PostsContext).posts;
-  const loadMoreFeed = useContext(PostsContext).loadMoreFeed;
-  const setLoaded = useContext(PostsContext).setLoaded;
-  const addRandomPost = useContext(PostsContext).addRandomPost;
+  const { posts, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
   const [flatListWidth, setFlatListWidth] = useState(0);
@@ -29,6 +26,7 @@ const HomeScreen = ({ navigation }) => {
   const colors = React.useContext(ThemeContext).colors[theme];
   const tabBarheight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
+  const flatlistRef = useRef();
 
   const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -36,10 +34,30 @@ const HomeScreen = ({ navigation }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => {
-      setRefreshing(false);
+    refreshTimeline(() => {
+      wait(100).then(() => {
+        setRefreshing(false);
+      });
     });
   }, []);
+
+  const onNewPostView = React.useCallback(() => {
+    setRefreshing(true);
+    refreshTimeline(() => {
+      wait(100).then(() => {
+        setRefreshing(false);
+        flatlistRef.current.scrollToIndex({ index: 0 });
+      });
+    });
+  }, []);
+
+  const onEndReached = () => {
+    console.log("end reached");
+    if (!loadRequested) {
+      setLoadRequested(true);
+      loadMoreFeed(() => { wait(200).then(setLoadRequested(false)) });
+    }
+  }
 
   const renderSeparator = () => {
     return (
@@ -83,8 +101,8 @@ const HomeScreen = ({ navigation }) => {
         style={{ backgroundColor: colors.background, alignItems: "center" }}
       >
         <FlatList
-          // feed: only the value of each object in timeline
-          data={feed}
+          ref={flatlistRef}
+          data={posts}
           renderItem={renderItem}
           refreshControl={
             <RefreshControl
@@ -93,15 +111,7 @@ const HomeScreen = ({ navigation }) => {
             />
           }
           onEndReachedThreshold={0.01}
-          onEndReached={info => {
-            console.log("end reached");
-            if (!loadRequested) {
-              setLoadRequested(true);
-              loadMoreFeed(info).then(() => {
-                wait(500).then(() => { setLoadRequested(false) });
-              });
-            }
-          }}
+          onEndReached={onEndReached}
           ListFooterComponent={
             <View style={{ height: tabBarheight }}>
             </View>
@@ -135,6 +145,32 @@ const HomeScreen = ({ navigation }) => {
           <View style={{ position: 'absolute', alignItems: 'center', bottom: tabBarheight + 10 }}>
             <ActivityIndicator size="small" color="white" />
           </View>}
+        {newPostExists &&
+          <TouchableOpacity
+            onPress={onNewPostView}
+            style={{
+              position: 'absolute',
+              paddingVertical: 10,
+              paddingHorizontal: 12,
+              borderRadius: 25,
+              backgroundColor: colors.blue,
+              alignSelf: 'center',
+              top: 19,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            <Text style={{
+              textAlign: 'center',
+              fontSize: 15.5,
+              color: 'white',
+              fontWeight: 'bold',
+              marginRight: 3
+            }}>
+              New Posts
+            </Text>
+            <AntDesign name="arrowup" size={17} color="white" />
+          </TouchableOpacity>}
       </View>
     </SafeAreaView>
   );

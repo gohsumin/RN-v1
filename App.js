@@ -14,8 +14,6 @@ import { firebase } from './data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
 
-//const currentPosts = getPosts();
-
 function cacheImages(images) {
   return images.map((image) => {
     if (typeof image === "string") {
@@ -28,23 +26,30 @@ function cacheImages(images) {
 
 export default class App extends React.Component {
 
-  state = {
-    isReady: false,
-    remaining: [],
-    posts: [], // call getPosts whenever the user opens the app!
-    users: users,
-    images: images, // make this a context so cached images can keep updating
-    user: "jack.jack",
-    userToken: "",
-    uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
-    theme: "dark",
-    loadingMore: false,
-    cursor: 0,
-    loadList: [],
-    loadThreshhold: 5,
-  };
-
-  loadSize = 5;
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false,
+      remaining: [],
+      posts: [], // call getPosts whenever the user opens the app!
+      users: users,
+      images: images, // make this a context so cached images can keep updating
+      user: "jack.jack",
+      userToken: "",
+      uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
+      theme: "dark",
+      loadingMore: false,
+      cursor: 0,
+      loadThreshhold: 8,
+      snapshotListener: null,
+      newPostExists: false,
+      isManualTrigger: false,
+    };
+    this.loadSize = 8;
+    this.getTimeline = this.getTimeline.bind(this);
+    this.refreshTimeline = this.refreshTimeline.bind(this);
+    this.loadMoreFeed = this.loadMoreFeed.bind(this);
+  }
 
   /* grabs freshly-approved posts with type: 0 */
   getSwipeCards() {
@@ -64,42 +69,27 @@ export default class App extends React.Component {
     })
   }
 
-  async refreshTimeline() {
-    this.setState({ cursor: 0 });
-    this.getTimeline();
-  }
-
-  async addRandomPost() {
+  addRandomPost() {
     const dateApproved = { seconds: new Date().getTime() / 1000, nanoseconds: 0 };
     const dateBought = { seconds: new Date().getTime() / 1000 - Math.random() * 6048000, nanoseconds: 0 };
     // add post
     firestore.collection('Posts').add({
       dateApproved: dateApproved,
       dateBought: dateBought,
-      itemImageURL: 'https://picsum.photos/800',
-      itemName: 'New Item',
-      itemURL: 'https://picsum.photos/',
+      itemImageURL: 'https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1612995602-df-34_gal-large1_35ce02b1-99d5-48ee-901f-f21d8f9d5f2f_345x@2x.jpg?crop=1xw:1xh;center,top&resize=768:*',
+      itemName: 'Time Cube',
+      itemURL: 'https://datexx.com/collections/timers/products/df-34',
       numBought: 0,
-      storeName: 'Picsum',
-      type: 0,
+      storeName: 'Datexx',
+      type: 1,
       userID: 'tqsjujBkrYfzwAqgpd2mE1ic0gn2',
-      userImageURL: 'https://pbs.twimg.com/profile_images/634514155261833216/czgYrPLQ.jpg',
-      userName: 'Travis Scott414'
+      userImageURL: 'https://static.wikia.nocookie.net/disney/images/7/7f/Rihanna.jpg/revision/latest/top-crop/width/360/height/450?cb=20200201173202',
+      userName: 'Rihanna'
     }).then((docRef) => {
-      // get the list of followers of tqsjujBkrYfzwAqgpd2mE1ic0gn2
-      firestore.collection('User-Profile').doc('tqsjujBkrYfzwAqgpd2mE1ic0gn2').collection('Followers').onSnapshot((snapshot) => {
-        const followers = [];
-        snapshot.forEach((doc) => {
-          followers.push(doc.id);
-        })
-        console.log("followers.length: " + followers.length);
-        // what should happen: add to timelines that follow the poster tqsjujBkrYfzwAqgpd2mE1ic0gn2
-        // instead: 
-        firestore.collection('Feeds').doc('b5aU5qla3eVPqX1asJviRcpYuDq1').collection('Timeline').doc(docRef.id).set({
-          dateApproved: dateApproved,
-          dateBought: dateBought
-        });
-      })
+      firestore.collection('Feeds').doc('b5aU5qla3eVPqX1asJviRcpYuDq1').collection('Timeline').doc(docRef.id).set({
+        dateApproved: dateApproved,
+        dateBought: dateBought
+      });
     })
   }
 
@@ -138,7 +128,6 @@ export default class App extends React.Component {
           const newObj = doc.data();
           newObj.id = documentId;
           ret.push(newObj);
-          //this.setState({ loadList: [...this.state.loadList, newObj] });
         })
         resolve(ret);
         // reject??
@@ -147,24 +136,47 @@ export default class App extends React.Component {
   }
 
   /* grabs the posts for the timeline of the existing user */
-  async getTimeline() {
-    console.log("from getTimeline")
-    const cursor = this.state.cursor;
-    let db = null;
+  getTimeline(trigger, callback) {
+    console.log("getTimeline with loadThreshhold " + this.state.loadThreshhold);
 
-    // !!! if there were new posts on firestore, just go on
-    // if cursor is undefined, there were no more posts
-    if (this.state.cursor === undefined) {
-      return false;
+    // unsubscribes to the previous listener
+    if (this.state.snapshotListener !== null) {
+      this.state.snapshotListener();
     }
 
     // the timeline collection
-    db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
+    let db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
 
     let refs = [];
     // getting the post IDs for the user's timeline
-    db.limit(this.state.loadThreshhold).onSnapshot((snapshot) => {
-      console.log("getting refs");
+    const listener = db.limit(this.state.loadThreshhold).onSnapshot({
+      includeMetadataChanges: true
+    }, (snapshot) => {
+
+      this.setState({ snapshotListener: listener });
+
+      // triggered by an update in firestore feed
+      if (!this.state.isManualTrigger) {
+        let newPostsCount = 0;
+        snapshot.docChanges().forEach((change) => {
+          console.log("change.type: "+change.type);
+          if (change.type === "removed") {
+            console.log("deleted change object keys: "+Object.keys(change.doc.data()));
+          }
+          if (change.type === "added") {
+            console.log("added change object keys: "+Object.keys(change.doc.data()));
+            newPostsCount++;
+          }
+        });
+        if (newPostsCount > 0) {
+          this.setState({ newPostExists: true });
+          if (newPostsCount > this.state.loadThreshhold) {
+            this.setState({ loadThreshhold: newPostsCount });
+          }
+        }
+        return false;
+      }
+
       snapshot.forEach((doc) => {
         refs.push(doc.id);
       });
@@ -179,7 +191,7 @@ export default class App extends React.Component {
       // the 'in' query for the 'where' clause takes max 10 items
       let batch = refs.splice(0, 10);
 
-      // array of promises, each of which would return an array of max 10 feed items
+      // array of promises, each of which would return an array of max 10 feed items (because the where clause with the 'in' query only works with up to 10 items!!)
       let batchPromises = [];
       while (batch.length > 0) {
         batchPromises.push(this.getPostsbyIds(batch));
@@ -189,42 +201,53 @@ export default class App extends React.Component {
       Promise.all(batchPromises).then(res => {
         const ret = res.reduce((a, b) => a.concat(b));
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
-        console.log("after sort");
-        ret.forEach((item) => {
-          console.log(item.dateApproved.seconds);
-        })
         this.setState({ posts: ret });
         this.setState({ loadThreshhold: this.state.loadThreshhold + this.loadSize });
         this.setState({ isReady: true });
-        return true;
+        console.log("right before callback");
+        callback();
       })
-    }); // closing onSnapshot for Feeds
+    });
   }
 
   /* updates the feed context by grabbing more from firestore */
-  loadMoreFeed = async info => {
+  async loadMoreFeed(callback) {
     console.log("loadMoreFeed");
     if (this.state.loadingMore) {
-      console.log("true that: loadingMore || loaded");
-      return;
+      console.log("true that: loadingMore");
+      callback();
     }
     this.setState({ loadingMore: true });
-
-    this.getTimeline().then((res) => {
-      if (!res) {
-        // there were no more
-      }
+    this.setState({ isManualTrigger: true }, () => {
+      this.getTimeline('loadMoreFeed', () => {
+        this.setState({ loadingMore: false });
+        this.setState({ isManualTrigger: false });
+        console.log("ALL DONE!!!!!!");
+        callback();
+      });
     });
+  }
 
-    this.setState({ loadingMore: false });
-
-    return true;
+  refreshTimeline(callback) {
+    console.log("refreshing");
+    this.setState({ loadThreshhold: this.loadSize, isManualTrigger: true, newPostExists: false }, () => {
+      setTimeout(() => {
+        this.getTimeline('refreshTimeline', () => {
+          this.setState({ isManualTrigger: false });
+          callback();
+        })
+      }, 100);
+    });
   }
 
   componentDidMount() {
     console.log("componentDidMount");
     this.getSwipeCards();
-    this.getTimeline();
+    this.setState({ isManualTrigger: true }, () => {
+      this.getTimeline('componentDidMount', () => {
+        this.setState({ isManualTrigger: false });
+      });
+    });
     LogBox.ignoreAllLogs(true);
   }
 
@@ -233,10 +256,6 @@ export default class App extends React.Component {
     delete newRemaining[key];
     this.setState(prev => ({ remaining: newRemaining }));
   }
-
-  /* addPost = newPost => {
-    this.setState(prev => ({ posts: [newPost, ...prev.posts] }));
-  } */
 
   setImages = images => {
     this.images.setState({ images });
@@ -283,10 +302,8 @@ export default class App extends React.Component {
       }}>
         <AppContext.Provider value={{
           user: this.state.user,
-          //userToken: this.state.userToken,
           uid: this.state.uid, theme: this.state.theme,
           setUser: this.setUser,
-          //setUserToken: this.setUserToken,
           setUID: this.setUID
         }}>
           <ThemeContextProvider>
@@ -295,7 +312,8 @@ export default class App extends React.Component {
                 posts: this.state.posts,
                 loadMoreFeed: this.loadMoreFeed,
                 addRandomPost: this.addRandomPost,
-                /* addPost: this.addPost */
+                refreshTimeline: this.refreshTimeline,
+                newPostExists: this.state.newPostExists,
               }}>
                 <NavigationContainer>
                   <RootStackNavigator />
