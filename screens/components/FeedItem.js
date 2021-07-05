@@ -8,14 +8,7 @@ import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
 
 function FeedItem({
-  pfpSource,
-  userName,
-  firstName,
-  lastName,
-  title,
-  timePosted,
-  imageSource,
-  likes,
+  item,
   navigate,
   key,
   width,
@@ -67,7 +60,7 @@ function FeedItem({
       >
         <Image
           fadeDuration={0}
-          source={{ uri: pfpSource }}
+          source={{ uri: item.userImageURL }}
           style={{
             width: leftGridWidth * 0.8,
             height: leftGridWidth * 0.8,
@@ -98,10 +91,10 @@ function FeedItem({
               color: colors.antiBackground,
             }}
           >
-            {firstName} {lastName} bought:
+            {item.userName} bought:
           </Text>
           <Text style={{ fontSize: 13.5, color: colors.foreground1, opacity: 0.9 }}>
-            {getElapsedTime(timePosted.seconds)}
+            {getElapsedTime(item.dateApproved.seconds)}
           </Text>
         </View>
 
@@ -122,7 +115,7 @@ function FeedItem({
             }}>
             <Image
               fadeDuration={0}
-              source={{ uri: imageSource }}
+              source={{ uri: item.itemImageURL }}
               style={{
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,
@@ -166,12 +159,12 @@ function FeedItem({
               flexShrink: 1,
             }}
           >
-            {title}
+            {item.itemName}
           </Text>
         </View>
 
         {/* grid with the buttons, e.g. number of likes; maybe add share button later */}
-        {setting === 'feed' && <FeedBottomBar />}
+        {setting === 'feed' && <FeedBottomBar numBought={item.numBought} />}
 
         {/* two-side view with the number of purchases as a result of the post and the total payout */}
         {setting === 'self' && <CommissionsBar width={rightGridWidth * itemImageRatio} />}

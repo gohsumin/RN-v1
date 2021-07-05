@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 
-function FeedBottomBar() {
+function FeedBottomBar(props) {
 
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
@@ -39,7 +39,7 @@ function FeedBottomBar() {
                     color: colors.green,
                     marginBottom: -2
                 }}>
-                    4,356
+                    {props.numBought}
                 </Text>
                 <Text style={{
                     fontSize: 12.3,

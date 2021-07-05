@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity } from "react-native";
+import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity, ActivityIndicator } from "react-native";
 import UsersContext from "../data/UsersContext";
 import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
@@ -55,16 +55,9 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderItem = ({ item }) => ( // 'item' has fields 'dateApproved', 'dateBought', 'itemImageURL', 'itemName', 'itemURL', 'numBought', 'storeName', 'userImageURL', 'userName'
+  const renderItem = ({ item }) => (
     <FeedItem
-      pfpSource={item.userImageURL}
-      userName={item.userName}
-      firstName={"First Name"}
-      lastName={"Last Name"}
-      title={item.itemName}
-      timePosted={item.dateApproved}
-      imageSource={item.itemImageURL}
-      likes={"no likes"}
+      item={item}
       navigate={(user) => {
         navigate("Profile", "somehow get uid");
       }}
@@ -101,22 +94,23 @@ const HomeScreen = ({ navigation }) => {
               onRefresh={onRefresh}
             />
           }
+          scrollEnabled={!loadRequested}
           onEndReachedThreshold={0.01}
           onEndReached={info => {
             console.log("end reached");
             if (!loadRequested) {
               setLoadRequested(true);
               loadMoreFeed(info).then(() => {
-                setLoadRequested(false);
+                wait(500).then(() => { setLoadRequested(false) });
               });
             }
           }}
           ListFooterComponent={
-            <View style={{ height: tabBarheight, borderColor: 'red', borderWidth: 1 }}>
+            <View style={{ height: tabBarheight }}>
             </View>
           }
           ItemSeparatorComponent={renderSeparator}
-          keyExtractor={(item) => item.dateApproved+item.userName}
+          keyExtractor={(item) => item.id}
         />
 
         <TouchableOpacity
@@ -140,7 +134,10 @@ const HomeScreen = ({ navigation }) => {
             <AntDesign name="addfile" size={24} color='rgba(200, 180, 200, 1)' />
           </View>
         </TouchableOpacity>
-
+        {loadRequested &&
+          <View style={{ position: 'absolute', alignItems: 'center', bottom: tabBarheight + 10 }}>
+            <ActivityIndicator size="small" color="white" />
+          </View>}
       </View>
     </SafeAreaView>
   );
