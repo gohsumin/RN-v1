@@ -17,7 +17,8 @@ function FeedBottomBar(props) {
                 alignSelf: "flex-start",
                 alignItems: "center",
                 marginTop: 14.5,
-                paddingVertical: 3,
+                height: 43,
+                width: 130,
                 paddingHorizontal: 8,
                 borderRadius: 8,
                 backgroundColor: colors.foreground3
@@ -32,17 +33,20 @@ function FeedBottomBar(props) {
                 size={18}
                 color={colors.green}
                 style={{ marginRight: 3 }} />
-            <View style={{ paddingLeft: 5 }}>
+            <View style={{
+                paddingLeft: 5,
+                justifyContent: 'center',
+            }}>
                 <Text style={{
                     fontSize: 17.5,
                     fontWeight: 'bold',
                     color: colors.green,
-                    marginBottom: -2
                 }}>
                     {props.numBought}
                 </Text>
                 <Text style={{
                     fontSize: 12.3,
+                    marginTop: -2.5,
                     color: colors.foreground1,
                 }}>
                     Followers Bought
