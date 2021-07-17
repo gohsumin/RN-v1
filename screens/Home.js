@@ -112,19 +112,6 @@ const HomeScreen = ({ navigation }) => {
               onRefresh={onRefresh}
             />
           }
-          onTouchStart={(e) => {
-            // console.log("\n");
-            // console.log("Object.keys(e):\n"+ Object.keys(e));
-            // console.log("---*---");
-            // console.log("Object.keys(e.nativeEvent):\n"+ Object.keys(e.nativeEvent));
-            // console.log("---*---");
-            // console.log("e.nativeEvent.target:\n"+ e.nativeEvent.target);
-            // console.log("---*---");
-            // console.log("e.nativeEvent.locationY:\n"+e.nativeEvent.locationY);
-            // console.log("---*---");
-            // console.log("e.nativeEvent.pageY:\n"+e.nativeEvent.pageY);
-            // console.log("\n");
-          }}
           disableIntervalMomentum={true}
           scrollEnabled={scrollEnabled}
           onEndReachedThreshold={0.05}

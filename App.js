@@ -131,18 +131,21 @@ export default class App extends React.Component {
     // the timeline collection
     let db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
 
-    let refs = [];
     // getting the post IDs for the user's timeline
     const listener = db.limit(this.state.loadThreshhold).onSnapshot({
       includeMetadataChanges: true
     }, (snapshot) => {
 
       console.log("right inside onSnapshot");
+      console.log("number of doc changes: "+snapshot.docChanges().length);
 
       this.setState({ snapshotListener: listener });
 
-      // triggered by an update in firestore feed
-      if (!this.state.isManualTrigger && snapshot.docChanges().length > 0) {
+      // triggered by an update in firestore feed because there were changes
+      if (!this.state.isManualTrigger) {
+        if(snapshot.docChanges().length === 0) {
+          return false;
+        }
         let newPostsCount = 0;
         if (snapshot.docChanges()[0].type === "removed") {
           return false;
@@ -154,6 +157,8 @@ export default class App extends React.Component {
           }
           if (change.type === "added") {
             console.log("added item with object keys: " + Object.keys(change.doc.data()));
+            console.log("this.state.posts[0].dateApproved.seconds: "+this.state.posts[0].dateApproved.seconds);
+            console.log("change.doc.data().dateApproved.seconds: "+change.doc.data().dateApproved.seconds);
             if (change.doc.data().dateApproved.seconds > this.state.posts[0].dateApproved.seconds) {
               newPostsCount++;
             }
@@ -169,13 +174,20 @@ export default class App extends React.Component {
       }
 
       console.log("right before getting each document id");
+
+      // list of post ids to include in the timeline
+      let refs = [];
+
       snapshot.forEach((doc) => {
         console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
 
-      if (refs.length === 0) {
-        return false;
+      console.log("refs.length: "+refs.length);
+      console.log("this.state.posts.length: "+this.state.posts.length);
+
+      if (refs.length === this.state.posts.length) {
+        callback();
       }
 
       const newCursor = snapshot.docs[snapshot.docs.length - 1];
