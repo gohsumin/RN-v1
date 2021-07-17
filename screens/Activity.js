@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { LogBox, Dimensions } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import { LogBox, Dimensions, RefreshControl } from "react-native";
 import {
   Text,
   View,
@@ -18,66 +18,43 @@ import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
-import { toggle } from "cli-spinners";
-import { getUserData } from "../helpers/postsHelpers";
 
 const ActivityScreen = ({ route, navigation }) => {
-  const users = React.useContext(UsersContext).users;
-  const posts = React.useContext(PostsContext).posts;
-  const [uid, setUID] = useState("");
+  const { getUserData, getUserFeed } = useContext(UsersContext);
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState({});
-  const logger = React.useContext(AppContext).uid;
-  //const userToken = React.useContext(AppContext).userToken;
+  const logger = useContext(AppContext).uid;
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    console.log("useEffect");
-    console.log("route.params.uid: " + route.params.uid);
-    if ((typeof route.params.uid === "string")) {
-      const u = route.params.uid;
-      console.log("uid: " + u);
-      setUID(u);
-      if (u === logger) {
-        setIsUser(true);
-      }
-      else {
+    var uid = "";
+    if (route.params === undefined) {
+      console.log("this is how we know it's a user's me page");
+      uid = logger;
+    }
+    else if (route.params.uid !== undefined) {
+      uid = route.params.uid;
+      if (uid !== logger) {
         setIsUser(false);
       }
-      /////
-      // instead of getting it from 'users',
-      // grab it from:
-      /* const client = stream.connect(
-        't6d6x66485xc',
-        userToken,
-        '1130088'
-      ); */
-      // now somehow get the feed aka timeline
-      // also grab user's pfp, bio, etc. from firestore
-      
-      // scratch everything before and after the following
-      // const userData = getUserData(uid);
-
-      // const feed = client.feed('timeline', 'jack');
-      // setUserFeed(feed);
-      setUserData(users[u]);
-
-      setUserFeed(posts.filter(
-        (post) => post.user === u
-      ));
-      /////
-      navigation.setOptions({ title: u });
-      setShow(true);
     }
+    else {
+      console.log("user not found");
+      return;
+    }
+    getUserData(uid, (userData) => {
+      setUserData(userData);
+    })
+    getUserFeed(uid, (userFeed) => {
+      setUserFeed(userFeed);
+    })
+    navigation.setOptions({ title: userData.userName });
+    setShow(true);
   }, [route.params]);
 
-  useEffect(() => {
-    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
-  }, []);
-
-  const theme = React.useContext(AppContext).theme;
-  const colors = React.useContext(ThemeContext).colors[theme];
+  const theme = useContext(AppContext).theme;
+  const colors = useContext(ThemeContext).colors[theme];
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
   const tabBarheight = useBottomTabBarHeight();
@@ -88,10 +65,49 @@ const ActivityScreen = ({ route, navigation }) => {
   const [modal, setModal] = useState(false);
   const [modalInfo, setModalInfo] = useState(null);
 
+  const [refreshing, setRefreshing] = useState(false);
+  const { refreshUserPage } = useContext(UsersContext);
+
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    if (route.params === undefined) {
+      refreshUserPage(logger, ({ userData, userFeed }) => {
+        wait(100).then(() => {
+          setUserData(userData);
+          setUserFeed(userFeed);
+          setRefreshing(false);
+        });
+      });
+    }
+    else if (route.params.uid !== undefined) {
+      refreshUserPage(route.params.uid, ({ userData, userFeed }) => {
+        wait(100).then(() => {
+          setUserData(userData);
+          setUserFeed(userFeed);
+          setRefreshing(false);
+        });
+      });
+    }
+    else {
+      console.log("user not found");
+      setRefreshing(false);
+    }
+  }, []);
+
   const renderView = () => {
     return (
       <ScrollView
         style={{ flex: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       >
         <View
           style={{
@@ -117,7 +133,12 @@ const ActivityScreen = ({ route, navigation }) => {
           {/* profile pic, name, bio */}
           <Bio userData={userData} />
           {/* following | followers | edit/follow */}
-          <UserInfoBar userData={userData} isUser={isUser} />
+          <UserInfoBar
+            userData={userData}
+            isUser={isUser}
+            setUserData={setUserData}
+            navigate={navigation.navigate}
+          />
           { /* balance information */
             isUser && <BalanceSection userData={userData} />}
           <View style={{ marginVertical: 30 }}>

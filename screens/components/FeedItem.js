@@ -21,7 +21,8 @@ function FeedItem({
   const itemImageRatio = 0.71;
   const titleRatio = 1 - itemImageRatio;
 
-  const marginHorizontal = 12;
+  const marginVertical = setting === 'popup' ? 17 : 15;
+  const marginHorizontal = setting === 'popup' ? 14 : 12;
 
   const [totalWidth, setTotalWidth] = useState(0);
   const [leftGridWidth, setLeftGridWidth] = useState(0);
@@ -41,7 +42,7 @@ function FeedItem({
       style={{
         width: totalWidth,
         flexDirection: "row",
-        marginVertical: 15,
+        marginVertical: marginVertical,
         paddingHorizontal: marginHorizontal,
         justifyContent: "center",
       }}
@@ -171,4 +172,8 @@ function FeedItem({
   );
 }
 
-export default FeedItem;
+function areEqual(prevProps, newProps) {
+  return prevProps.key === newProps.key;
+}
+
+export default React.memo(FeedItem, areEqual);

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity, Image, Text } from "react-native";
-import PostPopUp from "./PostPopUp";
 
 function OtherUserPosts({ navigation, userFeed, userName, userData, width, height, toggleRender, setModal, setModalInfo }) {
 
@@ -32,25 +31,13 @@ function OtherUserPosts({ navigation, userFeed, userName, userData, width, heigh
                         alignItems: 'center',
                     }}
                         onPress={() => {
-                            const pfpSource = userData.pfpSource;
-                            const firstName = userData.firstName;
-                            const lastName = userData.lastName;
-                            const title = item.title;
-                            const timePosted = item.datePurchased;
-                            const imageSource = item.imageSource;
-                            const likes = item.likes;
-                            const key = item.user + item.datePurchased;
                             setModalInfo(
                                 {
-                                    pfpSource: pfpSource,
-                                    user: userName,
-                                    firstName: firstName,
-                                    lastName: lastName,
-                                    title: title,
-                                    timePosted: timePosted,
-                                    imageSource: imageSource,
-                                    likes: likes,
-                                    key: key,
+                                    item: item,
+                                    navigate: navigation.navigate,
+                                    setModal: setModal,
+                                    key: item.id,
+                                    width: width,
                                 }
                             );
                             setModal(true);
@@ -70,12 +57,12 @@ function OtherUserPosts({ navigation, userFeed, userName, userData, width, heigh
                                     height: '100%',
                                     resizeMode: 'contain',
                                 }}
-                                source={item.imageSource} />
+                                source={{ uri: item.itemImageURL }} />
                         </View>
                     </TouchableOpacity>
                 }
                 extraData={toggleRender}
-                keyExtractor={(item, index) => index.toString()}
+                keyExtractor={(item, index) => item.id}
             />
         </View>
     )

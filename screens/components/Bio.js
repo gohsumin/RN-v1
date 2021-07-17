@@ -18,7 +18,7 @@ function Bio({ userData }) {
             {/* profile image */}
             <Image
                 fadeDuration={0}
-                source={userData.pfpSource}
+                source={{uri: userData.userImageURL}}
                 style={{ width: 160, height: 160, borderRadius: 12 }}
             />
             {/* user name and verified icon */}
@@ -35,7 +35,7 @@ function Bio({ userData }) {
                         alignSelf: 'center',
                     }}
                 >
-                    {userData.firstName} {userData.lastName}{" "}
+                    {userData.userName}{" "}
                 </Text>
                 <MaterialIcons name="verified" size={24.5} color={'#4894e5'} />
             </View>
@@ -52,7 +52,7 @@ function Bio({ userData }) {
                     lineHeight: 18,
                 }}
             >
-                {userData.bio}
+                {userData.userDescription}
             </Text>
         </View>
     )

@@ -10,16 +10,16 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { AntDesign } from '@expo/vector-icons';
 const stream = require('getstream');
-import { getTimeline } from "../helpers/postsHelpers";
 
 const HomeScreen = ({ navigation }) => {
   const user = useContext(AppContext).user;
   //const userToken = useContext(AppContext).userToken;
   const uid = useContext(AppContext).uid;
   const users = useContext(UsersContext).users;
-  const { posts, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
+  const { posts, getTimeline, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
   const theme = React.useContext(AppContext).theme;
@@ -52,10 +52,11 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const onEndReached = () => {
-    console.log("end reached");
     if (!loadRequested) {
       setLoadRequested(true);
-      loadMoreFeed(() => { wait(200).then(setLoadRequested(false)) });
+      loadMoreFeed(() => {
+        wait(200).then(setLoadRequested(false)).then(setScrollEnabled(true));
+      });
     }
   }
 
@@ -77,8 +78,9 @@ const HomeScreen = ({ navigation }) => {
     <FeedItem
       item={item}
       navigate={(user) => {
-        navigation.navigate("Profile", item.uid);
+        navigation.navigate("Profile", { uid: item.userID });
       }}
+      key={item.key}
       width={Dimensions.get("window").width}
       setting={'feed'}
     />
@@ -110,8 +112,26 @@ const HomeScreen = ({ navigation }) => {
               onRefresh={onRefresh}
             />
           }
-          onEndReachedThreshold={0.01}
-          onEndReached={onEndReached}
+          onTouchStart={(e) => {
+            // console.log("\n");
+            // console.log("Object.keys(e):\n"+ Object.keys(e));
+            // console.log("---*---");
+            // console.log("Object.keys(e.nativeEvent):\n"+ Object.keys(e.nativeEvent));
+            // console.log("---*---");
+            // console.log("e.nativeEvent.target:\n"+ e.nativeEvent.target);
+            // console.log("---*---");
+            // console.log("e.nativeEvent.locationY:\n"+e.nativeEvent.locationY);
+            // console.log("---*---");
+            // console.log("e.nativeEvent.pageY:\n"+e.nativeEvent.pageY);
+            // console.log("\n");
+          }}
+          disableIntervalMomentum={true}
+          scrollEnabled={scrollEnabled}
+          onEndReachedThreshold={0.05}
+          onEndReached={() => {
+            setScrollEnabled(false);
+            onEndReached();
+          }}
           ListFooterComponent={
             <View style={{ height: tabBarheight }}>
             </View>

@@ -29,26 +29,30 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isReady: false,
+      isReady: true,
       remaining: [],
       posts: [], // call getPosts whenever the user opens the app!
       users: users,
       images: images, // make this a context so cached images can keep updating
-      user: "jack.jack",
-      userToken: "",
-      uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
+      user: "gohsumin",
+      uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
       theme: "dark",
       loadingMore: false,
       cursor: 0,
       loadThreshhold: 8,
       snapshotListener: null,
-      newPostExists: false,
-      isManualTrigger: false,
+      newPostExists: false, // true -> shows "New Posts" button
+      isManualTrigger: false, // true from when getTimeline/refreshTimeline/loadMoreFeed are called until the call is over
     };
     this.loadSize = 8;
     this.getTimeline = this.getTimeline.bind(this);
     this.refreshTimeline = this.refreshTimeline.bind(this);
     this.loadMoreFeed = this.loadMoreFeed.bind(this);
+    this.getUserData = this.getUserData.bind(this);
+    this.getUserFeed = this.getUserFeed.bind(this);
+    this.refreshUserPage = this.refreshUserPage.bind(this);
+    this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
+    this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
   }
 
   /* grabs freshly-approved posts with type: 0 */
@@ -60,8 +64,9 @@ export default class App extends React.Component {
     //   console.log(err);
     // })
     let ret = {};
-    firestore.collection('Posts').where("type", "==", 0).get().then((snapshot) => {
+    firestore.collection('Posts').where("type", "==", 0).where("userID", "==", this.state.uid).get().then((snapshot) => {
       snapshot.forEach((doc) => {
+        console.log("swipe card id : " + doc.id);
         const documentName = doc.id;
         ret[documentName] = doc.data();
       })
@@ -82,42 +87,21 @@ export default class App extends React.Component {
       numBought: 0,
       storeName: 'Datexx',
       type: 1,
-      userID: 'tqsjujBkrYfzwAqgpd2mE1ic0gn2',
+      userID: 'yZdwQLMTvgT1nvCwJFyzLUnfvX83',
       userImageURL: 'https://static.wikia.nocookie.net/disney/images/7/7f/Rihanna.jpg/revision/latest/top-crop/width/360/height/450?cb=20200201173202',
       userName: 'Rihanna'
-    }).then((docRef) => {
-      firestore.collection('Feeds').doc('b5aU5qla3eVPqX1asJviRcpYuDq1').collection('Timeline').doc(docRef.id).set({
+    }).then((post) => {
+      // for now, just add post to the user's own timeline
+      firestore.collection('Feeds').doc('yZdwQLMTvgT1nvCwJFyzLUnfvX83').collection('Timeline').doc(post.id).set({
+        dateApproved: dateApproved,
+        dateBought: dateBought
+      });
+      firestore.collection('Feeds').doc('yZdwQLMTvgT1nvCwJFyzLUnfvX83').collection('User').doc(post.id).set({
         dateApproved: dateApproved,
         dateBought: dateBought
       });
     })
   }
-
-  /*  getPostsbyIds = async (refs, ret) => {
-   const batch = refs.splice(0, 10);
-   if (batch.length > 0) {
-     return new Promise(function (resolve, reject) {
-       firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', batch).onSnapshot((postSnapshot) => {
-         postSnapshot.forEach((doc) => {
-           const documentId = doc.id;
-           const newObj = doc.data();
-           newObj.id = documentId;
-           ret.push(newObj);
-         })
-         const res = await this.getPostsbyIds(refs, ret);
-         ret.concat(res);
-         resolve(ret);
-         // reject??
-       });
-     })
-   }
-   else {
-     return new Promise(function (resolve, reject) {
-       resolve([]);
-       // reject??
-     })
-   }
- } */
 
   async getPostsbyIds(batch) {
     return new Promise(function (resolve, reject) {
@@ -153,19 +137,26 @@ export default class App extends React.Component {
       includeMetadataChanges: true
     }, (snapshot) => {
 
+      console.log("right inside onSnapshot");
+
       this.setState({ snapshotListener: listener });
 
       // triggered by an update in firestore feed
-      if (!this.state.isManualTrigger) {
+      if (!this.state.isManualTrigger && snapshot.docChanges().length > 0) {
         let newPostsCount = 0;
+        if (snapshot.docChanges()[0].type === "removed") {
+          return false;
+        }
         snapshot.docChanges().forEach((change) => {
-          console.log("change.type: "+change.type);
+          console.log("change.type: " + change.type);
           if (change.type === "removed") {
-            console.log("deleted change object keys: "+Object.keys(change.doc.data()));
+            console.log("deleted item with object keys: " + Object.keys(change.doc.data()));
           }
           if (change.type === "added") {
-            console.log("added change object keys: "+Object.keys(change.doc.data()));
-            newPostsCount++;
+            console.log("added item with object keys: " + Object.keys(change.doc.data()));
+            if (change.doc.data().dateApproved.seconds > this.state.posts[0].dateApproved.seconds) {
+              newPostsCount++;
+            }
           }
         });
         if (newPostsCount > 0) {
@@ -177,7 +168,9 @@ export default class App extends React.Component {
         return false;
       }
 
+      console.log("right before getting each document id");
       snapshot.forEach((doc) => {
+        console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
 
@@ -210,6 +203,43 @@ export default class App extends React.Component {
     });
   }
 
+  updateTimelineAfterFollowing(followingUID) {
+    console.log("updateTimelineAfterFollowing");
+    if (this.state.uid === "") {
+      return;
+    }
+    // reference to logged in user's timeline
+    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
+
+    // followingUID's posts
+    const posts = firestore.collection('Posts').where('type', '==', 1).where('userID', '==', followingUID);
+    posts.get().then((docs) => {
+      //console.log(docs);
+      docs.forEach((doc) => {
+        console.log("post id: " + doc.id);
+        db.doc(doc.id).set({
+          dateApproved: doc.data().dateApproved,
+          dateBought: doc.data().dateBought
+        }).then(() => { }).catch((error) => { console.log(error) });
+      })
+    }).catch((error) => console.log(error));
+  }
+
+  updateTimelineAfterUnfollowing(unfollowingUID) {
+    if (this.state.uid === "") {
+      return;
+    }
+    // reference to logged in user's timeline
+    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
+    // followingUID's posts
+    const posts = firestore.collection('Posts').where('type', '==', 1).where('userID', '==', unfollowingUID);
+    posts.get().then((docs) => {
+      docs.forEach((doc) => {
+        db.doc(doc.id).delete().then(() => { }).catch((error) => { console.log(error) });
+      })
+    }).catch((error) => console.log(error));
+  }
+
   /* updates the feed context by grabbing more from firestore */
   async loadMoreFeed(callback) {
     console.log("loadMoreFeed");
@@ -219,6 +249,7 @@ export default class App extends React.Component {
     }
     this.setState({ loadingMore: true });
     this.setState({ isManualTrigger: true }, () => {
+      console.log("about to call getTimeline from loadMoreFeed");
       this.getTimeline('loadMoreFeed', () => {
         this.setState({ loadingMore: false });
         this.setState({ isManualTrigger: false });
@@ -231,6 +262,7 @@ export default class App extends React.Component {
   refreshTimeline(callback) {
     console.log("refreshing");
     this.setState({ loadThreshhold: this.loadSize, isManualTrigger: true, newPostExists: false }, () => {
+      console.log("about to call getTimeline from refreshTimeline");
       setTimeout(() => {
         this.getTimeline('refreshTimeline', () => {
           this.setState({ isManualTrigger: false });
@@ -240,15 +272,89 @@ export default class App extends React.Component {
     });
   }
 
+  getUserData(uid, callback) {
+    console.log("getUserData for user " + uid);
+
+    // the user data collection
+    const db = firestore.collection('User-Profile').doc(uid);
+
+    db.get().then((doc) => {
+      // TO-DO: also get the folollowing list from 'Following' collection
+      const following = db.collection('Following');
+      const followers = db.collection('Followers');
+      following.get().then((following) => {
+        followers.get().then((followers) => {
+          let ret = doc.data();
+          ret.following = [];
+          ret.followers = [];
+          following.forEach((followingDoc) => {
+            ret.following.push(followingDoc.id);
+          })
+          followers.forEach((followersDoc) => {
+            ret.followers.push(followersDoc.id);
+          })
+          callback(doc.data());
+        })
+      })
+    }).catch((error) => { console.log(error) });
+  }
+
+  getUserFeed(uid, callback) {
+    console.log("getUserFeed for user " + uid);
+
+    let db = firestore.collection('Feeds').doc(uid).collection('User');
+
+    db.get().then((snapshot) => {
+
+      let refs = [];
+
+      snapshot.forEach((doc) => {
+        refs.push(doc.id);
+      })
+
+      let batch = refs.splice(0, 10);
+      let batchPromises = [];
+
+      while (batch.length > 0) {
+        batchPromises.push(this.getPostsbyIds(batch));
+        batch = refs.splice(0, 10);
+      }
+
+      Promise.all(batchPromises).then(res => {
+        const ret = res.reduce((a, b) => a.concat(b));
+        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : -1);
+        callback(ret);
+      })
+    })
+  }
+
+  refreshUserPage(uid, callback) {
+    let ret = {};
+    this.getUserData(uid, (userData) => {
+      ret.userData = userData;
+      this.getUserFeed(uid, (userFeed) => {
+        ret.userFeed = userFeed;
+        callback(ret);
+      });
+    });
+  }
+
   componentDidMount() {
     console.log("componentDidMount");
     this.getSwipeCards();
-    this.setState({ isManualTrigger: true }, () => {
-      this.getTimeline('componentDidMount', () => {
-        this.setState({ isManualTrigger: false });
+    if (this.state.uid !== "") {
+      console.log("componentDidMount called getTimeline");
+      this.setState({ isManualTrigger: true, isReady: false }, () => {
+        this.getTimeline('componentDidMount', () => {
+          this.setState({ isManualTrigger: false, isReady: true });
+        });
       });
-    });
+    }
     LogBox.ignoreAllLogs(true);
+  }
+
+  componentWillUnmount() {
+    console.log("COMPONENT WILL UNMOUNT");
   }
 
   popRemaining = (key) => {
@@ -287,13 +393,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    if (!this.state.isReady) {
-      return (
-        <AppLoading
-        />
-      );
-    }
-
     return (
       /* Contexts can be composed later into a single component. */
       <SwipeCardsContext.Provider value={{
@@ -307,9 +406,24 @@ export default class App extends React.Component {
           setUID: this.setUID
         }}>
           <ThemeContextProvider>
-            <UsersContext.Provider value={{ users: this.state.users }}>
+            <UsersContext.Provider value={{
+              users: this.state.users,
+              getUserData: this.getUserData,
+              getUserFeed: this.getUserFeed,
+              refreshUserPage: this.refreshUserPage,
+            }}>
               <PostsContext.Provider value={{
                 posts: this.state.posts,
+                getTimeline: () => {
+                  console.log("postsContext called getTimeline");
+                  this.setState({ isManualTrigger: true }, () => {
+                    this.getTimeline('function calling PostsContext', () => {
+                      this.setState({ isManualTrigger: false });
+                    });
+                  });
+                },
+                updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
+                updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
                 loadMoreFeed: this.loadMoreFeed,
                 addRandomPost: this.addRandomPost,
                 refreshTimeline: this.refreshTimeline,
@@ -317,6 +431,7 @@ export default class App extends React.Component {
               }}>
                 <NavigationContainer>
                   <RootStackNavigator />
+                  {!this.state.isReady && <AppLoading />}
                 </NavigationContainer>
               </PostsContext.Provider>
             </UsersContext.Provider>

@@ -24,16 +24,8 @@ function SelfPosts({ navigation, userFeed, userName, userData, width, toggleRend
             numColumns={1}
             renderItem={({ item }) =>
                 <FeedItem
-                    pfpSource={userData.pfpSource}
-                    userName={userName}
-                    firstName={userData.firstName}
-                    lastName={userData.lastName}
-                    title={item.title}
-                    timePosted={item.datePosted}
-                    imageSource={item.imageSource}
-                    likes={item.likes}
-                    navigation={navigation}
-                    key={item.datePosted}
+                    item={item}
+                    navigate={() => {}}
                     width={width}
                     setting={'self'}
                 />

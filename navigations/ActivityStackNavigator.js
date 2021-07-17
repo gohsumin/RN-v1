@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import ActivityScreen from "../screens/Activity";
-import SignInScreen from "../screens/SignIn";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { useEffect } from "react/cjs/react.development";
+import UpdateUser from '../screens/components/UpdateUser';
 
 const Stack = createStackNavigator();
 
@@ -27,33 +27,23 @@ const ActivityStackNavigator = () => {
     headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,
     headerBackTitle: "Back",
-    };
-
-  const temp = () => {
-    return (
-      <View style={{ flex: 1, backgroundColor: 'yellow' }} >
-        <Text>
-          Hello
-        </Text>
-      </View>
-    )
-  }
-
+  };
+  
   return (
-    <Stack.Navigator initialRouteName={user !== "" ? "Profile" : "Sign In"} screenOptions={screenOptionStyle}>
-      <Stack.Screen
-        name="Sign In"
-        component={SignInScreen}
-        options={{ headerShown: false }}
-      >
-      </Stack.Screen>
+    <Stack.Navigator initialRouteName={"Profile"} screenOptions={screenOptionStyle}>
       <Stack.Screen
         name="Profile"
         component={ActivityScreen}
         //component={temp}
         //initialParams={{ user: "lex.fridman" }}
         options={{ headerLeft: null, gestureEnabled: false }}
-      ></Stack.Screen>
+      >
+      </Stack.Screen>
+      <Stack.Screen
+        name="Edit Profile"
+        component={UpdateUser}
+      >
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

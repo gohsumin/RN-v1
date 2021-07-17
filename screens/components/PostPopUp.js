@@ -17,14 +17,7 @@ import { useEffect } from 'react/cjs/react.development';
 function PostPopUp({ info }) {
 
     const {
-        pfpSource,
-        user,
-        firstName,
-        lastName,
-        title,
-        timePosted,
-        imageSource,
-        likes,
+        item,
         navigate,
         setModal,
         key,
@@ -91,14 +84,7 @@ function PostPopUp({ info }) {
             }}
             >
                 <FeedItem
-                    pfpSource={pfpSource}
-                    user={user}
-                    firstName={firstName}
-                    lastName={lastName}
-                    title={title}
-                    timePosted={timePosted}
-                    imageSource={imageSource}
-                    likes={likes}
+                    item={item}
                     navigate={navigate}
                     key={key}
                     width={width}

@@ -58,10 +58,6 @@ function SwipeScreen({ navigation }) {
     const index = useRef(0);
 
     useEffect(() => {
-        console.log("remaining['test001']['itemName']: " + (remaining['test001']['itemName']));
-    })
-
-    useEffect(() => {
         if (Object.keys(remaining).length === 0) {
             navigation.goBack();
         }
@@ -294,14 +290,6 @@ function SwipeScreen({ navigation }) {
                     alignContent: 'center',
                     justifyContent: 'center'
                 }}>
-                {/* <Text style={{
-                    fontSize: 22,
-                    color: colors.foreground1,
-                    textAlign: 'center',
-
-                }}>
-                    {remaining['test001']['type']}
-                </Text> */}
             </View>
             <Stack />
             <View style={{

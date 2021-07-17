@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import {
     Text,
     View,
@@ -7,9 +7,11 @@ import {
     Image,
     ScrollView,
     Dimensions,
+    StatusBar,
     Alert
 } from 'react-native';
 import AppContext from '../data/AppContext';
+import PostsContext from '../data/PostsContext';
 import * as Google from 'expo-google-app-auth';
 import { firebase } from '../data/firebase';
 import "firebase/firestore";
@@ -30,7 +32,7 @@ function SignIn({ navigation }) {
     const [signUpButtonOpen, setSignUpButtonOpen] = useState(false);
     const [emailAuthOpen, setEmailAuthOpen] = useState(false);
 
-    const windowHeight = Dimensions.get('window').height;
+    const windowHeight = Dimensions.get('window').height - StatusBar.currentHeight;
     const windowWidth = Dimensions.get('window').width;
 
     const buttonFontSize = 23;
@@ -40,28 +42,34 @@ function SignIn({ navigation }) {
     const smallTextHeight = 30;
     const itemHeight = 45;
 
-    const popUpBackground = "#202f35";
+    const popUpBackground = "#202225";
 
-    const [name, setName] = useState("");
     const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [currentTextInput, setCurrentTextInput] = useState();
 
+    const inEmailRef = useRef();
+    const inPasswordRef = useRef();
+    const upUserNameRef = useRef();
+    const upEmailRef = useRef();
+    const upPasswordRef = useRef();
+
     const [selected, setSelected] = useState('Gmail');
 
-    const { setUser, setUserToken, setUID } = useContext(AppContext);
+    const { setUser, setUID } = useContext(AppContext);
+
     const labelSources = {
         Gmail: "gmail",
         Yahoo: "yahoo",
         Outlook: "microsoft-outlook"
     }
+    const { getTimeline } = useContext(PostsContext);
 
     function PopupWrapper({ children }) {
         return (
             <View
-                //behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{
                     flex: 1,
                     position: 'absolute',
@@ -82,7 +90,6 @@ function SignIn({ navigation }) {
                         setSignInButtonOpen(false);
                         setSignUpButtonOpen(false);
                         setEmailAuthOpen(false);
-                        setName("");
                         setUserName("");
                         setEmail("");
                         setPassword("");
@@ -90,12 +97,24 @@ function SignIn({ navigation }) {
                 />
                 <View
                     style={{
+                        position: 'absolute',
                         alignContent: 'center',
-                        justifyContent: 'center',
                         width: "85%",
                         backgroundColor: popUpBackground,
-                        borderRadius: 30
+                        borderRadius: 30,
+                        paddingBottom: 20
                     }}>
+                    <Image
+                        style={{
+                            alignSelf: 'center',
+                            marginTop: 10,
+                            marginBottom: 15,
+                            height: 40,
+                            borderWidth: 1,
+                        }}
+                        resizeMode={'contain'}
+                        fadeDuration={0}
+                        source={(require("../assets/SoShNavLogo.png"))} />
                     {children}
                 </View>
             </View>
@@ -103,18 +122,19 @@ function SignIn({ navigation }) {
     }
 
     function loginUser() {
+        console.log("loginUser");
         console.log("email: ###" + email + "###");
         console.log("password: ###" + password + "###  type: " + (typeof password));
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 console.log("logged in");
                 var uid = userCredential.user.uid;
-                firestore.collection('UserBase').doc(uid).get().then((doc) => {
+                firestore.collection('User-Profile').doc(uid).get().then((doc) => {
                     if (doc.exists) {
                         setUser(doc.data().userName);
-                        //setUserToken(doc.data().userToken);
                         setUID(uid);
-                        navigation.navigate("Profile", { user: userName });
+                        getTimeline();
+                        navigation.navigate("Main", { uid: uid });
                     }
                     else {
                         console.log("No such document!");
@@ -144,126 +164,123 @@ function SignIn({ navigation }) {
             });
     }
 
-    function In() {
+    const renderInInputs = () => {
         return (
             <View
                 style={{
-                    flex: 1,
                     position: 'absolute',
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    marginTop: 65,
+                    alignSelf: 'center',
+                    alignContent: 'center',
+                    width: "80%",
                 }}>
-                <TouchableOpacity
+                <TextInput
+                    ref={inEmailRef}
                     style={{
-                        position: 'absolute',
-                        width: "100%",
-                        height: "100%",
-                    }}
-                    onPress={() => {
-                        setSignInButtonOpen(false);
-                        setEmail("");
-                        setPassword("");
-                    }} />
-                <View
-                    style={{
-                        alignContent: 'center',
+                        fontSize: 18,
+                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
+                        color: 'white',
                         justifyContent: 'center',
-                        width: "85%",
-                        backgroundColor: popUpBackground,
-                        borderRadius: 30
-                    }}>
-                    <Text
-                        style={{
-                            fontSize: 25,
-                            color: 'white',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            marginTop: 15,
-                            marginBottom: 10
-                        }}>
-                        SoSh WRLD
-                    </Text>
-                    <View
-                        // email box
-                        style={{
-                            marginHorizontal: 30,
-                            marginVertical: 5,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            onFocus={() => { setCurrentTextInput("inEmail") }}
-                            autoFocus={currentTextInput === "inEmail"}
-                            onChangeText={setEmail}
-                            value={email}
-                            placeholder="Your Email"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            marginHorizontal: 30,
-                            marginTop: 5,
-                            marginBottom: 15,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            secureTextEntry={true}
-                            onFocus={() => { setCurrentTextInput("inPassword") }}
-                            autoFocus={currentTextInput === "inPassword"}
-                            onChangeText={setPassword}
-                            value={password}
-                            placeholder="Password"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={loginUser}
-                        style={{
-                            marginHorizontal: 30,
-                            marginTop: 5,
-                            marginBottom: 15,
-                            backgroundColor: "#83F52C",
-                            borderRadius: 10
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                textAlign: 'center',
-                                fontWeight: 'bold',
-                                marginVertical: 10
-                            }}>
-                            Login
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                        paddingHorizontal: 13,
+                        height: 40,
+                    }}
+                    onEndEditing={(e) => {
+                        console.log("onEndEditing; ");
+                        const txt = e.nativeEvent.text;
+                        setEmail(txt);
+                        setTimeout(() => {
+                            console.log("in setTimeout");
+                            inEmailRef.current.setNativeProps({
+                                text: txt
+                            });
+                        }, 10);
+                    }}
+                    placeholder="Email"
+                    placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
+                    keyboardType="email-address"
+                />
+                <TextInput
+                    ref={inPasswordRef}
+                    style={{
+                        fontSize: 18,
+                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
+                        color: 'white',
+                        justifyContent: 'center',
+                        paddingHorizontal: 13,
+                        height: 40,
+                        marginTop: 10,
+                    }}
+                    secureTextEntry={true}
+                    onEndEditing={(e) => {
+                        console.log("onEndEditing; ");
+                        const txt = e.nativeEvent.text;
+                        setPassword(txt);
+                        setTimeout(() => {
+                            console.log("in setTimeout");
+                            inPasswordRef.current.setNativeProps({
+                                text: txt
+                            });
+                        }, 10);
+                    }}
+                    placeholder="Password"
+                    placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
+                />
             </View>
         )
     }
 
+    function In() {
+        return (
+            <PopupWrapper>
+                <View
+                    // email box
+                    style={{
+                        alignSelf: 'center',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 10,
+                        width: "80%",
+                        height: 40
+                    }} />
+                <View
+                    // password box
+                    style={{
+                        alignSelf: 'center',
+                        marginTop: 10,
+                        marginBottom: 15,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 10,
+                        width: "80%",
+                        height: 40
+                    }} />
+                {renderInInputs()}
+                <TouchableOpacity
+                    onPress={() => {
+                        setTimeout(() => {
+                            loginUser();
+                        }, 30);
+                    }}
+                    style={{
+                        marginHorizontal: 30,
+                        marginTop: 5,
+                        backgroundColor: "#83F52C",
+                        borderRadius: 10
+                    }}>
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                            marginVertical: 10
+                        }}>
+                        Login
+                    </Text>
+                </TouchableOpacity>
+            </PopupWrapper>
+        )
+    }
+
     const googleAuth = async () => {
+        console.log("googleAuth");
         try {
             const { type, accessToken, refreshToken } = await Google.logInAsync({
                 iosClientId: "342162757131-c1p9md1c4eckqg10u0e1c7dfsdbi9qbf.apps.googleusercontent.com",
@@ -273,6 +290,7 @@ function SignIn({ navigation }) {
             if (type === 'success') {
                 console.log("success authenticating");
                 const data = { gmail_access_token: accessToken, gmail_refresh_token: refreshToken };
+                // is the bottom actually working??
                 fetch('https://soshwrld.com/access', {
                     method: 'POST',
                     headers: {
@@ -282,34 +300,39 @@ function SignIn({ navigation }) {
                     },
                     body: JSON.stringify(data),
                 });
-                firestore.collection('UserBase').doc(firebase.auth().currentUser.uid).get().then((doc) => {
-                    if (doc.exists) {
+                /////
 
-                        // user ID
-                        const userName = doc.data().userName;
-
-                        // userToken for Stream
-                        //const userToken = doc.data().userToken;
-
-                        // FINALLY logging in after sign-up
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        console.log("user created");
+                        var data = {
+                            userName: userName,
+                            email: email,
+                            password: password,
+                            followersCount: 0,
+                            followingCount: 0,
+                            timestamp: new Date() / 1000,
+                            userDescription: "🌱",
+                            userImageURL: "https://pbs.twimg.com/profile_images/634514155261833216/czgYrPLQ_400x400.jpg",
+                        }
+                        console.log("!!!signed in currently with uid: " + firebase.auth().currentUser.uid + " === " + userCredential.user.uid);
+                        firestore.collection("User-Profile").doc(userCredential.user.uid).set(data).then(() => { });
                         setUser(userName);
-                        //setUserToken(userToken);
-                        navigation.navigate("Profile", { user: userName });
-                    }
-                    else {
-                        console.log("No such document!");
-                    }
-                }).catch((error) => {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    Alert.alert(
-                        "Please try again:",
-                        errorMessage,
-                        [{
-                            text: "Okay",
-                            onPress: () => { }
-                        }])
-                });
+                        setUID(firebase.auth().currentUser.uid);
+                        getTimeline();
+                        navigation.navigate("Main", { user: userName });
+                    })
+                    .catch((error) => {
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        Alert.alert(
+                            "Please try again:",
+                            errorMessage,
+                            [{
+                                text: "Okay",
+                                onPress: () => { }
+                            }])
+                    });
             }
         } catch (error) {
             var errorCode = error.code;
@@ -327,17 +350,6 @@ function SignIn({ navigation }) {
     function EmailAuth() {
         return (
             <PopupWrapper>
-                <Text
-                    style={{
-                        fontSize: 25,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        marginTop: 15,
-                        marginBottom: 10
-                    }}>
-                    SoSh WRLD
-                </Text>
                 <Text
                     style={{
                         fontSize: 19,
@@ -412,205 +424,157 @@ function SignIn({ navigation }) {
     }
 
     function createUser() {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                console.log("user created");
+        setSignUpButtonOpen(false);
+        setEmailAuthOpen(true);
+    }
 
-                // STREAM (wait can I do this from my end?)
-                //const userToken = client.createUserToken(userName);
-                //const userToken = "getUserTokenSomehow";
-                var data = {
-                    name: name,
-                    userName: userName,
-                    email: email,
-                    password: password,
-                    uid: userCredential.user.uid,
-                    // each user's feed can be retrieved using userToken
-                    //userToken: userToken
-                }
-                console.log("!!!signed in currently with uid: " + firebase.auth().currentUser.uid);
-                firestore.collection("UserBase").doc(userCredential.user.uid).set(data).then(() => { });
-                setSignUpButtonOpen(false);
-                setEmailAuthOpen(true);
-            })
-            .catch((error) => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                Alert.alert(
-                    "Please try again:",
-                    errorMessage,
-                    [{
-                        text: "Okay",
-                        onPress: () => { }
-                    }])
-            });
+    const renderUpInputs = () => {
+        return (
+            <View
+                style={{
+                    position: 'absolute',
+                    marginTop: 65,
+                    alignSelf: 'center',
+                    alignContent: 'center',
+                    width: "80%",
+                }}>
+                <TextInput
+                    ref={upUserNameRef}
+                    style={{
+                        fontSize: 18,
+                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
+                        color: 'white',
+                        justifyContent: 'center',
+                        paddingHorizontal: 13,
+                        height: 40,
+                    }}
+                    onEndEditing={(e) => {
+                        console.log("onEndEditing; ");
+                        const txt = e.nativeEvent.text;
+                        setUserName(txt);
+                        setTimeout(() => {
+                            console.log("in setTimeout");
+                            upUserNameRef.current.setNativeProps({
+                                text: txt
+                            });
+                        }, 10);
+                    }}
+                    placeholder="Username"
+                    placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
+                />
+                <TextInput
+                    ref={upEmailRef}
+                    style={{
+                        fontSize: 18,
+                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
+                        color: 'white',
+                        justifyContent: 'center',
+                        paddingHorizontal: 13,
+                        height: 40,
+                        marginTop: 10,
+                    }}
+                    onEndEditing={(e) => {
+                        console.log("onEndEditing; ");
+                        const txt = e.nativeEvent.text;
+                        setEmail(txt);
+                        setTimeout(() => {
+                            console.log("in setTimeout");
+                            upEmailRef.current.setNativeProps({
+                                text: txt
+                            });
+                        }, 10);
+                    }}
+                    placeholder="Email"
+                    placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
+                    keyboardType="email-address"
+                />
+                <TextInput
+                    style={{
+                        fontSize: 18,
+                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
+                        color: 'white',
+                        justifyContent: 'center',
+                        paddingHorizontal: 13,
+                        height: 40,
+                        marginTop: 10,
+                    }}
+                    secureTextEntry={true}
+                    onEndEditing={(e) => {
+                        console.log("onEndEditing; ");
+                        const txt = e.nativeEvent.text;
+                        setPassword(txt);
+                        setTimeout(() => {
+                            console.log("in setTimeout");
+                            upPasswordRef.current.setNativeProps({
+                                text: txt
+                            });
+                        }, 10);
+                    }}
+                    placeholder="Password"
+                    placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
+                />
+            </View>
+        )
     }
 
     function Up() {
         return (
-            <View
-                style={{
-                    flex: 1,
-                    position: 'absolute',
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                <TouchableOpacity
+
+            <PopupWrapper>
+                <View
+                    // user name box
                     style={{
-                        position: 'absolute',
-                        width: "100%",
-                        height: "100%",
-                    }}
-                    onPress={() => {
-                        setSignUpButtonOpen(false);
-                        setName("");
-                        setUserName("");
-                        setEmail("");
-                        setPassword("");
+                        alignSelf: 'center',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 10,
+                        width: "80%",
+                        height: 40
                     }} />
                 <View
+                    // email box
                     style={{
-                        width: "85%",
-                        backgroundColor: popUpBackground,
-                        borderRadius: 30
+                        alignSelf: 'center',
+                        marginTop: 10,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 10,
+                        width: "80%",
+                        height: 40
+                    }} />
+                <View
+                    // password box
+                    style={{
+                        alignSelf: 'center',
+                        marginTop: 10,
+                        marginBottom: 15,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: 10,
+                        width: "80%",
+                        height: 40
+                    }} />
+                {renderUpInputs()}
+                <TouchableOpacity
+                    onPress={() => {
+                        setTimeout(() => {
+                            createUser();
+                        }, 10);
+                    }}
+                    style={{
+                        marginHorizontal: 30,
+                        marginTop: 5,
+                        backgroundColor: "#83F52C",
+                        borderRadius: 10
                     }}>
                     <Text
                         style={{
-                            fontSize: 25,
-                            color: 'white',
-                            fontWeight: 'bold',
+                            fontSize: 20,
                             textAlign: 'center',
-                            marginTop: 15,
-                            marginBottom: 10
+                            fontWeight: 'bold',
+                            marginVertical: 10
                         }}>
-                        SoSh WRLD
+                        Sign Up
                     </Text>
-                    <View
-                        style={{
-                            marginHorizontal: 30,
-                            marginVertical: 5,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            onFocus={() => { setCurrentTextInput("onName") }}
-                            autoFocus={currentTextInput === "onName"}
-                            onChangeText={setName}
-                            defaultValue={name}
-                            placeholder="Your Name"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            marginHorizontal: 30,
-                            marginVertical: 5,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            onFocus={() => { setCurrentTextInput("onUserName") }}
-                            autoFocus={currentTextInput === "onUserName"}
-                            onChangeText={setUserName}
-                            defaultValue={userName}
-                            placeholder="Username"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            marginHorizontal: 30,
-                            marginVertical: 5,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            onFocus={() => { setCurrentTextInput("onEmail") }}
-                            autoFocus={currentTextInput === "onEmail"}
-                            onChangeText={setEmail}
-                            value={email}
-                            placeholder="Your Email"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <View
-                        style={{
-                            marginHorizontal: 30,
-                            marginTop: 5,
-                            marginBottom: 15,
-                            backgroundColor: 'rgba(255, 255, 255, 0.22)',
-                            borderRadius: 10
-                        }}>
-                        <TextInput
-                            style={{
-                                fontSize: 18,
-                                borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                                color: 'white',
-                                marginBottom: 7,
-                                marginTop: 7.2,
-                                marginHorizontal: 10,
-                                height: 28,
-                            }}
-                            secureTextEntry={true}
-                            onFocus={() => { setCurrentTextInput("onPassword") }}
-                            autoFocus={currentTextInput === "onPassword"}
-                            onChangeText={setPassword}
-                            value={password}
-                            placeholder="Password"
-                            placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={createUser}
-                        style={{
-                            marginHorizontal: 30,
-                            marginTop: 5,
-                            marginBottom: 15,
-                            backgroundColor: "#83F52C",
-                            borderRadius: 10
-                        }}>
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                textAlign: 'center',
-                                fontWeight: 'bold',
-                                marginVertical: 10
-                            }}>
-                            Sign Up!
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+                </TouchableOpacity>
+            </PopupWrapper>
         )
     }
 
@@ -620,7 +584,7 @@ function SignIn({ navigation }) {
                 style={{
                     width: windowWidth,
                     height: windowHeight,
-                    backgroundColor: 'black'
+                    backgroundColor: 'black',
                 }}
             >
                 <Image
@@ -635,7 +599,9 @@ function SignIn({ navigation }) {
                 />
                 <View
                     style={{
-                        marginTop: 55,
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 130
                     }}>
                     <TouchableOpacity
                         onPress={() => {
@@ -666,7 +632,9 @@ function SignIn({ navigation }) {
 
                 <View
                     style={{
-                        marginTop: 15
+                        position: 'absolute',
+                        bottom: 60,
+                        right: 0
                     }}>
                     <TouchableOpacity
                         onPress={() => {

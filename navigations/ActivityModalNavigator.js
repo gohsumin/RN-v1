@@ -35,6 +35,9 @@ const ActivityModalNavigator = () => {
         options={{ headerShown: false }}
       />
       <ActivityModalStack.Screen
+      // TO-DO:
+      // change name of this and activity stack nav
+      // question: why did I make it a modal?
         mode='modal'
         name="Post Pop-Up"
         component={PostPopUp}
