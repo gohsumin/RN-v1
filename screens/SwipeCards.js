@@ -39,7 +39,7 @@ function SwipeScreen({ navigation }) {
     // source: https://snack.expo.io/EDMIVjbyq
     const α = Math.PI / 12;
 
-    const snapThreshhold = 220;
+    const snapThreshold = 220;
     const { Value } = Animated;
 
     // user object for the current user
@@ -136,12 +136,12 @@ function SwipeScreen({ navigation }) {
         onPanResponderRelease: (evt, { dx }) => {
             x.flattenOffset();
             y.flattenOffset();
-            if (dx < -snapThreshhold) {
+            if (dx < -snapThreshold) {
                 x.setValue(0);
                 y.setValue(0);
                 swipedLeft();
             }
-            if (dx > snapThreshhold) {
+            if (dx > snapThreshold) {
                 x.setValue(0);
                 y.setValue(0);
                 swipedRight();

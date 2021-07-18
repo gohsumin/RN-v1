@@ -44,7 +44,7 @@ const HomeScreen = ({ navigation }) => {
   const onNewPostView = React.useCallback(() => {
     setRefreshing(true);
     refreshTimeline(() => {
-      wait(100).then(() => {
+      wait(5).then(() => {
         setRefreshing(false);
         flatlistRef.current.scrollToIndex({ index: 0 });
       });
@@ -113,6 +113,7 @@ const HomeScreen = ({ navigation }) => {
             />
           }
           disableIntervalMomentum={true}
+          showsVerticalScrollIndicator={true}
           scrollEnabled={scrollEnabled}
           onEndReachedThreshold={0.05}
           onEndReached={() => {

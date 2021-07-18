@@ -39,7 +39,7 @@ export default class App extends React.Component {
       theme: "dark",
       loadingMore: false,
       cursor: 0,
-      loadThreshhold: 8,
+      loadThreshold: 8,
       snapshotListener: null,
       newPostExists: false, // true -> shows "New Posts" button
       isManualTrigger: false, // true from when getTimeline/refreshTimeline/loadMoreFeed are called until the call is over
@@ -121,7 +121,7 @@ export default class App extends React.Component {
 
   /* grabs the posts for the timeline of the existing user */
   getTimeline(trigger, callback) {
-    console.log("getTimeline with loadThreshhold " + this.state.loadThreshhold);
+    console.log("getTimeline with loadThreshold " + this.state.loadThreshold);
 
     // unsubscribes to the previous listener
     if (this.state.snapshotListener !== null) {
@@ -132,45 +132,46 @@ export default class App extends React.Component {
     let db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
 
     // getting the post IDs for the user's timeline
-    const listener = db.limit(this.state.loadThreshhold).onSnapshot({
+    const listener = db.limit(this.state.loadThreshold).onSnapshot({
       includeMetadataChanges: true
     }, (snapshot) => {
 
       console.log("right inside onSnapshot");
-      console.log("number of doc changes: "+snapshot.docChanges().length);
+      console.log("number of doc changes: " + snapshot.docChanges().length);
+      console.log("manual trigger? "+this.state.isManualTrigger);
 
       this.setState({ snapshotListener: listener });
 
       // triggered by an update in firestore feed because there were changes
       if (!this.state.isManualTrigger) {
-        if(snapshot.docChanges().length === 0) {
+        if (snapshot.docChanges().length === 0) {
           return false;
         }
         let newPostsCount = 0;
         if (snapshot.docChanges()[0].type === "removed") {
           return false;
         }
-        snapshot.docChanges().forEach((change) => {
-          console.log("change.type: " + change.type);
-          if (change.type === "removed") {
-            console.log("deleted item with object keys: " + Object.keys(change.doc.data()));
-          }
-          if (change.type === "added") {
-            console.log("added item with object keys: " + Object.keys(change.doc.data()));
-            console.log("this.state.posts[0].dateApproved.seconds: "+this.state.posts[0].dateApproved.seconds);
-            console.log("change.doc.data().dateApproved.seconds: "+change.doc.data().dateApproved.seconds);
-            if (change.doc.data().dateApproved.seconds > this.state.posts[0].dateApproved.seconds) {
-              newPostsCount++;
+        if (this.state.posts.length > 0) {
+          snapshot.docChanges().forEach((change) => {
+            console.log("change.type: " + change.type);
+            if (change.type === "removed") {
+              console.log("deleted item with object keys: " + Object.keys(change.doc.data()));
+            }
+            if (change.type === "added") {
+              console.log("added item with object keys: " + Object.keys(change.doc.data()));
+              if (this.state.posts.length === 0 || change.doc.data().dateApproved.seconds > this.state.posts[0].dateApproved.seconds) {
+                newPostsCount++;
+              }
+            }
+          });
+          if (newPostsCount > 0) {
+            this.setState({ newPostExists: true });
+            if (newPostsCount > this.state.loadThreshold) {
+              this.setState({ loadThreshold: newPostsCount });
             }
           }
-        });
-        if (newPostsCount > 0) {
-          this.setState({ newPostExists: true });
-          if (newPostsCount > this.state.loadThreshhold) {
-            this.setState({ loadThreshhold: newPostsCount });
-          }
+          return false;
         }
-        return false;
       }
 
       console.log("right before getting each document id");
@@ -183,8 +184,12 @@ export default class App extends React.Component {
         refs.push(doc.id);
       });
 
-      console.log("refs.length: "+refs.length);
-      console.log("this.state.posts.length: "+this.state.posts.length);
+      console.log("refs.length: " + refs.length);
+      console.log("this.state.posts.length before updating states: " + this.state.posts.length);
+
+      if (refs.length === this.state.loadThreshold) {
+        this.setState({ loadThreshold: this.state.loadThreshold + this.loadSize });
+      }
 
       if (refs.length === this.state.posts.length) {
         callback();
@@ -207,7 +212,6 @@ export default class App extends React.Component {
         const ret = res.reduce((a, b) => a.concat(b));
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
         this.setState({ posts: ret });
-        this.setState({ loadThreshhold: this.state.loadThreshhold + this.loadSize });
         this.setState({ isReady: true });
         console.log("right before callback");
         callback();
@@ -254,7 +258,7 @@ export default class App extends React.Component {
 
   /* updates the feed context by grabbing more from firestore */
   async loadMoreFeed(callback) {
-    console.log("loadMoreFeed");
+    console.log("\nloadMoreFeed");
     if (this.state.loadingMore) {
       console.log("true that: loadingMore");
       callback();
@@ -265,7 +269,7 @@ export default class App extends React.Component {
       this.getTimeline('loadMoreFeed', () => {
         this.setState({ loadingMore: false });
         this.setState({ isManualTrigger: false });
-        console.log("ALL DONE!!!!!!");
+        console.log("ALL DONE!!!!!!\n");
         callback();
       });
     });
@@ -273,7 +277,7 @@ export default class App extends React.Component {
 
   refreshTimeline(callback) {
     console.log("refreshing");
-    this.setState({ loadThreshhold: this.loadSize, isManualTrigger: true, newPostExists: false }, () => {
+    this.setState({ loadThreshold: this.loadSize, isManualTrigger: true, newPostExists: false }, () => {
       console.log("about to call getTimeline from refreshTimeline");
       setTimeout(() => {
         this.getTimeline('refreshTimeline', () => {
