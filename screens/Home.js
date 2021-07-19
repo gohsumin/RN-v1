@@ -16,7 +16,7 @@ const HomeScreen = ({ navigation }) => {
   //const userToken = useContext(AppContext).userToken;
   const uid = useContext(AppContext).uid;
   const users = useContext(UsersContext).users;
-  const { posts, getTimeline, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
+  const { posts, loadNewPosts, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -43,8 +43,8 @@ const HomeScreen = ({ navigation }) => {
 
   const onNewPostView = React.useCallback(() => {
     setRefreshing(true);
-    refreshTimeline(() => {
-      wait(5).then(() => {
+    loadNewPosts(() => {
+      wait(0).then(() => {
         setRefreshing(false);
         flatlistRef.current.scrollToIndex({ index: 0 });
       });
@@ -55,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
     if (!loadRequested) {
       setLoadRequested(true);
       loadMoreFeed(() => {
-        wait(200).then(setLoadRequested(false)).then(setScrollEnabled(true));
+        wait(5).then(setLoadRequested(false)).then(setScrollEnabled(true));
       });
     }
   }
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
           }
           disableIntervalMomentum={true}
           showsVerticalScrollIndicator={true}
-          scrollEnabled={scrollEnabled}
+          //scrollEnabled={scrollEnabled}
           onEndReachedThreshold={0.05}
           onEndReached={() => {
             setScrollEnabled(false);

@@ -29,7 +29,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isReady: true,
+      isReady: false,
       remaining: [],
       posts: [], // call getPosts whenever the user opens the app!
       users: users,
@@ -39,15 +39,16 @@ export default class App extends React.Component {
       theme: "dark",
       loadingMore: false,
       cursor: 0,
-      loadThreshold: 8,
+      latestDateApproved: "0",
       snapshotListener: null,
       newPostExists: false, // true -> shows "New Posts" button
-      isManualTrigger: false, // true from when getTimeline/refreshTimeline/loadMoreFeed are called until the call is over
     };
     this.loadSize = 8;
     this.getTimeline = this.getTimeline.bind(this);
     this.refreshTimeline = this.refreshTimeline.bind(this);
     this.loadMoreFeed = this.loadMoreFeed.bind(this);
+    this.loadNewPosts = this.loadNewPosts.bind(this);
+    this.listenForNewPosts = this.listenForNewPosts.bind(this);
     this.getUserData = this.getUserData.bind(this);
     this.getUserFeed = this.getUserFeed.bind(this);
     this.refreshUserPage = this.refreshUserPage.bind(this);
@@ -103,118 +104,51 @@ export default class App extends React.Component {
     })
   }
 
-  async getPostsbyIds(batch) {
-    return new Promise(function (resolve, reject) {
-      firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', batch).onSnapshot((postSnapshot) => {
-        let ret = [];
-        postSnapshot.forEach((doc) => {
-          const documentId = doc.id;
-          const newObj = doc.data();
-          newObj.id = documentId;
-          ret.push(newObj);
-        })
-        resolve(ret);
-        // reject??
-      });
-    })
-  }
-
-  /* grabs the posts for the timeline of the existing user */
   getTimeline(trigger, callback) {
-    console.log("getTimeline with loadThreshold " + this.state.loadThreshold);
-
-    // unsubscribes to the previous listener
-    if (this.state.snapshotListener !== null) {
-      this.state.snapshotListener();
+    const cursor = this.state.cursor;
+    let db = null;
+    if (this.state.cursor === undefined) {
+      callback();
     }
-
-    // the timeline collection
-    let db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
-
-    // getting the post IDs for the user's timeline
-    const listener = db.limit(this.state.loadThreshold).onSnapshot({
-      includeMetadataChanges: true
-    }, (snapshot) => {
-
-      console.log("right inside onSnapshot");
-      console.log("number of doc changes: " + snapshot.docChanges().length);
-      console.log("manual trigger? "+this.state.isManualTrigger);
-
-      this.setState({ snapshotListener: listener });
-
-      // triggered by an update in firestore feed because there were changes
-      if (!this.state.isManualTrigger) {
-        if (snapshot.docChanges().length === 0) {
-          return false;
-        }
-        let newPostsCount = 0;
-        if (snapshot.docChanges()[0].type === "removed") {
-          return false;
-        }
-        if (this.state.posts.length > 0) {
-          snapshot.docChanges().forEach((change) => {
-            console.log("change.type: " + change.type);
-            if (change.type === "removed") {
-              console.log("deleted item with object keys: " + Object.keys(change.doc.data()));
-            }
-            if (change.type === "added") {
-              console.log("added item with object keys: " + Object.keys(change.doc.data()));
-              if (this.state.posts.length === 0 || change.doc.data().dateApproved.seconds > this.state.posts[0].dateApproved.seconds) {
-                newPostsCount++;
-              }
-            }
-          });
-          if (newPostsCount > 0) {
-            this.setState({ newPostExists: true });
-            if (newPostsCount > this.state.loadThreshold) {
-              this.setState({ loadThreshold: newPostsCount });
-            }
-          }
-          return false;
-        }
-      }
-
-      console.log("right before getting each document id");
-
-      // list of post ids to include in the timeline
-      let refs = [];
-
+    if (this.state.cursor === 0) {
+      db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
+    }
+    else {
+      db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc").startAfter(cursor);
+    }
+    // list of post ids to include in the timeline. Should never exceed 10 items
+    let refs = [];
+    db.limit(this.loadSize).get().then((snapshot) => {
       snapshot.forEach((doc) => {
         console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
 
-      console.log("refs.length: " + refs.length);
-      console.log("this.state.posts.length before updating states: " + this.state.posts.length);
-
-      if (refs.length === this.state.loadThreshold) {
-        this.setState({ loadThreshold: this.state.loadThreshold + this.loadSize });
-      }
-
-      if (refs.length === this.state.posts.length) {
+      if (refs.length === 0) {
         callback();
       }
 
-      const newCursor = snapshot.docs[snapshot.docs.length - 1];
-      this.setState({ cursor: newCursor });
+      const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
 
-      // the 'in' query for the 'where' clause takes max 10 items
-      let batch = refs.splice(0, 10);
+      posts.get().then((feedSnapshot) => {
 
-      // array of promises, each of which would return an array of max 10 feed items (because the where clause with the 'in' query only works with up to 10 items!!)
-      let batchPromises = [];
-      while (batch.length > 0) {
-        batchPromises.push(this.getPostsbyIds(batch));
-        batch = refs.splice(0, 10);
-      }
+        let ret = [];
+        feedSnapshot.forEach((post) => {
+          const documentId = post.id;
+          const newObj = post.data();
+          newObj.id = documentId;
+          ret.push(newObj);
+        });
 
-      Promise.all(batchPromises).then(res => {
-        const ret = res.reduce((a, b) => a.concat(b));
+        // if it's the first time loading the feed, get dateApproved of the latest post
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
-        this.setState({ posts: ret });
-        this.setState({ isReady: true });
-        console.log("right before callback");
-        callback();
+        if (this.state.cursor === 0) {
+          this.setState({ latestDateApproved: ret[0].dateApproved });
+        }
+        const newCursor = snapshot.docs[snapshot.docs.length - 1];
+        this.setState({ cursor: newCursor, posts: [...this.state.posts, ...ret] }, () => {
+          callback();
+        });
       })
     });
   }
@@ -263,12 +197,10 @@ export default class App extends React.Component {
       console.log("true that: loadingMore");
       callback();
     }
-    this.setState({ loadingMore: true });
-    this.setState({ isManualTrigger: true }, () => {
+    this.setState({ loadingMore: true }, () => {
       console.log("about to call getTimeline from loadMoreFeed");
       this.getTimeline('loadMoreFeed', () => {
         this.setState({ loadingMore: false });
-        this.setState({ isManualTrigger: false });
         console.log("ALL DONE!!!!!!\n");
         callback();
       });
@@ -277,14 +209,15 @@ export default class App extends React.Component {
 
   refreshTimeline(callback) {
     console.log("refreshing");
-    this.setState({ loadThreshold: this.loadSize, isManualTrigger: true, newPostExists: false }, () => {
+    this.setState({
+      cursor: 0,
+      posts: [],
+      newPostExists: false, // why this?
+    }, () => {
       console.log("about to call getTimeline from refreshTimeline");
-      setTimeout(() => {
-        this.getTimeline('refreshTimeline', () => {
-          this.setState({ isManualTrigger: false });
-          callback();
-        })
-      }, 100);
+      this.getTimeline('refreshTimeline', () => {
+        callback();
+      })
     });
   }
 
@@ -327,20 +260,6 @@ export default class App extends React.Component {
       snapshot.forEach((doc) => {
         refs.push(doc.id);
       })
-
-      let batch = refs.splice(0, 10);
-      let batchPromises = [];
-
-      while (batch.length > 0) {
-        batchPromises.push(this.getPostsbyIds(batch));
-        batch = refs.splice(0, 10);
-      }
-
-      Promise.all(batchPromises).then(res => {
-        const ret = res.reduce((a, b) => a.concat(b));
-        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : -1);
-        callback(ret);
-      })
     })
   }
 
@@ -355,14 +274,67 @@ export default class App extends React.Component {
     });
   }
 
+  loadNewPosts(callback) {
+    console.log("loadNewPosts");
+    this.setState({ newPostExists: false });
+    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
+    db.where('dateApproved.seconds', '>', this.state.latestDateApproved.seconds).get().then((snapshot) => {
+      let refs = [];
+      snapshot.forEach((doc) => {
+        refs.push(doc.id);
+      });
+      console.log("refs: "+refs);
+      if (refs.length === 0) {
+        callback();
+      }
+      const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
+      posts.get().then((feedSnapshot) => {
+        let ret = [];
+        feedSnapshot.forEach((post) => {
+          const documentId = post.id;
+          const newObj = post.data();
+          newObj.id = documentId;
+          ret.push(newObj);
+        });
+        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
+        this.setState({
+          latestDateApproved: ret[0].dateApproved,
+          posts: [...ret, ...this.state.posts],
+        }, () => {
+          callback();
+        });
+      })
+    });
+  }
+
+  listenForNewPosts() {
+    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
+    const listener = db.orderBy('dateApproved', 'desc').limit(1).onSnapshot((snapshot) => {
+      console.log("right inside onsnapshot");
+      const changes = snapshot.docChanges();
+      changes.forEach((change) => {
+        if (change.type === 'added' && change.doc.data().dateApproved.seconds > this.state.latestDateApproved.seconds) {
+          console.log("change.doc.data().dateApproved: " + change.doc.data().dateApproved);
+          console.log("change.doc.id: " + change.doc.id);
+          this.setState({ newPostExists: true });
+        }
+      })
+
+    });
+    if (!this.state.snapshotListener) {
+      this.setState({ snapshotListener: listener });
+    }
+  }
+
   componentDidMount() {
     console.log("componentDidMount");
-    this.getSwipeCards();
     if (this.state.uid !== "") {
-      console.log("componentDidMount called getTimeline");
-      this.setState({ isManualTrigger: true, isReady: false }, () => {
+
+      this.setState({ isReady: false }, () => {
         this.getTimeline('componentDidMount', () => {
-          this.setState({ isManualTrigger: false, isReady: true });
+          console.log("componentDidMount finished calling getTimeline");
+          this.setState({ isReady: true });
+          this.listenForNewPosts();
         });
       });
     }
@@ -371,6 +343,10 @@ export default class App extends React.Component {
 
   componentWillUnmount() {
     console.log("COMPONENT WILL UNMOUNT");
+    if (this.state.snapshotListener) {
+      // unlisten to listener
+      this.state.snapshotListener();
+    }
   }
 
   popRemaining = (key) => {
@@ -432,17 +408,14 @@ export default class App extends React.Component {
                 posts: this.state.posts,
                 getTimeline: () => {
                   console.log("postsContext called getTimeline");
-                  this.setState({ isManualTrigger: true }, () => {
-                    this.getTimeline('function calling PostsContext', () => {
-                      this.setState({ isManualTrigger: false });
-                    });
-                  });
+                  this.getTimeline('function calling PostsContext', () => { });
                 },
                 updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
                 updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
                 loadMoreFeed: this.loadMoreFeed,
                 addRandomPost: this.addRandomPost,
                 refreshTimeline: this.refreshTimeline,
+                loadNewPosts: this.loadNewPosts,
                 newPostExists: this.state.newPostExists,
               }}>
                 <NavigationContainer>
