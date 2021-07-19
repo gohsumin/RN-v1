@@ -6,6 +6,7 @@ import ThemeContext from "../../data/ThemeContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 function FeedItem({
   item,
@@ -18,7 +19,7 @@ function FeedItem({
   /* refer to ./FeedItemDiagram */
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
-  const itemImageRatio = 0.71;
+  const itemImageRatio = 0.85;
   const titleRatio = 1 - itemImageRatio;
 
   const marginVertical = setting === 'popup' ? 17 : 15;
@@ -53,47 +54,56 @@ function FeedItem({
         style={{
           width: leftGridWidth,
           height: leftGridWidth,
-          // borderWidth: 1,
-          // borderColor: 'red'
         }}
       >
         <Image
           fadeDuration={0}
           source={{ uri: item.userImageURL }}
           style={{
-            width: leftGridWidth * 0.8,
-            height: leftGridWidth * 0.8,
+            width: leftGridWidth * 0.83,
+            height: leftGridWidth * 0.83,
             marginTop: -4,
             borderRadius: leftGridWidth / 2,
             alignSelf: "flex-start",
-            // borderWidth: 1,
-            // borderColor: 'red'
           }}
         />
       </TouchableOpacity>
       <View style={{
         width: rightGridWidth,
-        // borderWidth: 1,
-        // borderColor: 'red'
       }}>
         {/* texts next to the profile pic: buyer name and date */}
         <View
           style={{
-            height: leftGridWidth * 0.74,
-            opacity: 0.9
+            opacity: 0.9,
+            marginBottom: 10,
           }}
         >
           <Text
             style={{
               fontWeight: "bold",
-              fontSize: 16,
+              fontSize: 17,
               color: colors.antiBackground,
             }}
           >
             {item.userName} bought:
           </Text>
-          <Text style={{ fontSize: 13.5, color: colors.foreground1, opacity: 0.9 }}>
+          <Text
+            style={{ fontSize: 14.3, color: colors.foreground1, opacity: 0.9 }}
+          >
+            {item.itemName}
+          </Text>
+          <Text style={{
+            fontSize: 14.3,
+            color: colors.foreground1,
+            opacity: 0.9,
+            marginTop: -2,
+            textAlignVertical: 'center',
+          }}>
             {getElapsedTime(item.dateApproved.seconds)}
+            <Text style={{ fontSize: 12 }}>
+              {"  •  "}
+            </Text>
+            {item.storeName}
           </Text>
         </View>
 
@@ -102,15 +112,12 @@ function FeedItem({
           style={{
             width: rightGridWidth,
             flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: 2,
           }}
         >
           <TouchableOpacity
             style={{
-              borderRadius: 23,
-              overflow: 'hidden'
+              borderRadius: 20,
+              overflow: 'hidden',
             }}>
             <Image
               fadeDuration={0}
@@ -119,7 +126,6 @@ function FeedItem({
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,
                 borderWidth: 0.2,
-                alignItems: "center",
                 resizeMode: "contain",
                 backgroundColor: 'white',
               }}
@@ -133,33 +139,19 @@ function FeedItem({
                 overflow: 'hidden',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: 16,
-                height: 16,
-                top: 11,
-                right: 11,
+                width: 20,
+                height: 20,
+                top: 13,
+                right: 13,
               }} >
               <MaterialCommunityIcons
                 name="arrow-top-right"
-                size={15}
-                color="white"
+                size={13}
+                color={colors.green}
                 style={{
                 }} />
             </View>
           </TouchableOpacity>
-          <Text
-            style={{
-              color: colors.foreground1,
-              fontWeight: "300",
-              fontSize: 13.5,
-              paddingLeft: 10,
-              width: rightGridWidth * titleRatio,
-              flex: 1,
-              flexWrap: "wrap",
-              flexShrink: 1,
-            }}
-          >
-            {item.itemName}
-          </Text>
         </View>
 
         {/* grid with the buttons, e.g. number of likes; maybe add share button later */}

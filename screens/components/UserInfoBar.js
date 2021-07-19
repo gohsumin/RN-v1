@@ -16,8 +16,8 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
     const { theme, uid } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
     const statsFontSize = 13.6;
-    const buttonFontSize = 14;
-    const spacing = 16.7;
+    
+    const spacing = 15;
     const leftHeight = 28;
 
     function isFollowable(otherUID) {
@@ -27,7 +27,7 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
 
     const [followable, setFollowable] = useState(false);
 
-    
+
 
     function follow() {
         console.log("attempt to follow");
@@ -54,8 +54,6 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
             width: "100%",
             height: 45,
             alignContent: 'center',
-            marginTop: 16,
-            marginBottom: 13,
             flexDirection: 'row',
             justifyContent: 'center'
         }}>
@@ -65,12 +63,11 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                 paddingHorizontal: spacing,
                 alignItems: 'center',
                 justifyContent: 'center',
-                //backgroundColor: 'pink',
             }}>
-                <Text style={{ color: colors.antiBackground, fontWeight: '500', fontSize: statsFontSize }}>
+                <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
                     {userData.followingCount}
                 </Text>
-                <Text style={{ fontSize: statsFontSize, color: colors.antiBackground, fontWeight: '500' }}>
+                <Text style={{ fontSize: 13, color: colors.foreground1, fontWeight: 'bold', marginTop: -4 }}>
                     Following
                 </Text>
             </TouchableOpacity>
@@ -84,10 +81,10 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                 alignItems: 'center',
                 justifyContent: 'center'
             }}>
-                <Text style={{ color: colors.antiBackground, fontWeight: '500', fontSize: statsFontSize }}>
+                <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
                     {userData.followersCount}
                 </Text>
-                <Text style={{ fontSize: statsFontSize, color: colors.antiBackground, fontWeight: '500' }}>
+                <Text style={{ fontSize: 13, color: colors.foreground1, fontWeight: 'bold', marginTop: -4 }}>
                     Followers
                 </Text>
             </TouchableOpacity>
@@ -97,10 +94,10 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
 
             {/* last */}
             <TouchableOpacity style={{
-                width: 140,
+                width: 130,
                 alignItems: "center",
                 justifyContent: 'center',
-                backgroundColor: colors.foreground3,
+                backgroundColor: colors.blue,
                 marginHorizontal: spacing,
                 borderRadius: 4,
             }}
@@ -116,7 +113,11 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                         unfollow();
                     }
                 }}>
-                <Text style={{ fontSize: buttonFontSize, color: colors.antiBackground, fontWeight: "600" }}>
+                <Text style={{
+                    fontSize: 15,
+                    color: colors.antiBackground,
+                    fontWeight: "bold"
+                }}>
                     {getButtonText()}
                 </Text>
             </TouchableOpacity>

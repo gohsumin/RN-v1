@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { LogBox, Dimensions, RefreshControl } from "react-native";
+import { LogBox, Dimensions, RefreshControl, ActivityIndicator } from "react-native";
 import {
   Text,
   View,
@@ -23,7 +23,8 @@ const ActivityScreen = ({ route, navigation }) => {
   const { getUserData, getUserFeed } = useContext(UsersContext);
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
-  const [userFeed, setUserFeed] = useState({});
+  const [userFeed, setUserFeed] = useState([]);
+  const [cursor, setCursor] = useState(0);
   const logger = useContext(AppContext).uid;
   const [show, setShow] = useState(false);
 
@@ -33,21 +34,19 @@ const ActivityScreen = ({ route, navigation }) => {
       console.log("this is how we know it's a user's me page");
       uid = logger;
     }
-    else if (route.params.uid !== undefined) {
+    else {
       uid = route.params.uid;
       if (uid !== logger) {
         setIsUser(false);
       }
     }
-    else {
-      console.log("user not found");
-      return;
-    }
     getUserData(uid, (userData) => {
+      console.log("from getUserData, userID: " + userData.userID);
       setUserData(userData);
     })
-    getUserFeed(uid, (userFeed) => {
-      setUserFeed(userFeed);
+    getUserFeed(uid, cursor, (newItems, newCursor) => {
+      setCursor(newCursor);
+      setUserFeed(userFeed.concat(newItems));
     })
     navigation.setOptions({ title: userData.userName });
     setShow(true);
@@ -67,9 +66,23 @@ const ActivityScreen = ({ route, navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
   const { refreshUserPage } = useContext(UsersContext);
+  const [loadRequested, setLoadRequested] = useState(false);
 
   const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+
+  function onEndReached() {
+    if (!loadRequested) {
+      console.log("onEndReached!");
+      setLoadRequested(true);
+      console.log("user id: " + userData.userID);
+      getUserFeed(userData.userID, cursor, (newItems, newCursor) => {
+        setCursor(newCursor);
+        setUserFeed(userFeed.concat(newItems));
+        setLoadRequested(false);
+      })
+    }
   }
 
   const onRefresh = React.useCallback(() => {
@@ -98,6 +111,12 @@ const ActivityScreen = ({ route, navigation }) => {
     }
   }, []);
 
+  const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
+
   const renderView = () => {
     return (
       <ScrollView
@@ -108,6 +127,11 @@ const ActivityScreen = ({ route, navigation }) => {
             onRefresh={onRefresh}
           />
         }
+        onScroll={({ nativeEvent }) => {
+          if (isCloseToBottom(nativeEvent)) {
+            onEndReached();
+          }
+        }}
       >
         <View
           style={{
@@ -132,6 +156,7 @@ const ActivityScreen = ({ route, navigation }) => {
           />
           {/* profile pic, name, bio */}
           <Bio userData={userData} />
+          <View style={{ height: 23 }} />
           {/* following | followers | edit/follow */}
           <UserInfoBar
             userData={userData}
@@ -141,7 +166,8 @@ const ActivityScreen = ({ route, navigation }) => {
           />
           { /* balance information */
             isUser && <BalanceSection userData={userData} />}
-          <View style={{ marginVertical: 30 }}>
+          <View style={{ height: 30 }} />
+          <View style={{ marginVertical: 0 }}>
             {isUser && (
               <Text
                 style={{
@@ -185,9 +211,7 @@ const ActivityScreen = ({ route, navigation }) => {
                 <OtherUserPosts
                   navigation={navigation}
                   userFeed={userFeed}
-                  userData={userData}
                   width={flatListWidth}
-                  height={fullHeight}
                   toggleRender={toggleRender}
                   setModal={setModal}
                   setModalInfo={(info) => {
@@ -213,6 +237,15 @@ const ActivityScreen = ({ route, navigation }) => {
         renderView()
         : <View />
       }
+      {loadRequested &&
+        <View style={{
+          position: 'absolute',
+          alignItems: 'center',
+          alignSelf: 'center',
+          bottom: tabBarheight + 10,
+        }}>
+          <ActivityIndicator size="small" color="white" />
+        </View>}
       <BlurView
         style={{
           height: tabBarheight,

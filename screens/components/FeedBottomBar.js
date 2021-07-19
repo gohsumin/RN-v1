@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 
@@ -18,7 +18,7 @@ function FeedBottomBar(props) {
                 alignItems: "center",
                 marginTop: 14.5,
                 height: 43,
-                width: 130,
+                width: 136,
                 paddingHorizontal: 8,
                 borderRadius: 8,
                 backgroundColor: colors.foreground3
@@ -29,8 +29,8 @@ function FeedBottomBar(props) {
             {likes}
           </Text> */}
             <Icon
-                name="cart-arrow-down"
-                size={18}
+                name="users"
+                size={16}
                 color={colors.green}
                 style={{ marginRight: 3 }} />
             <View style={{
@@ -45,9 +45,10 @@ function FeedBottomBar(props) {
                     {props.numBought}
                 </Text>
                 <Text style={{
-                    fontSize: 12.3,
+                    fontSize: 13,
                     marginTop: -2.5,
                     color: colors.foreground1,
+                    fontWeight: 'bold'
                 }}>
                     Followers Bought
                 </Text>

@@ -46,7 +46,6 @@ function Bio({ userData }) {
                     fontSize: 15,
                     fontWeight: "400",
                     marginTop: 15,
-                    marginBottom: 12,
                     marginHorizontal: 35,
                     textAlign: "center",
                     lineHeight: 18,

@@ -106,10 +106,11 @@ export default class App extends React.Component {
 
   getTimeline(trigger, callback) {
     const cursor = this.state.cursor;
-    let db = null;
     if (this.state.cursor === undefined) {
+      console.log("cursor is undefined");
       callback();
     }
+    let db = null;
     if (this.state.cursor === 0) {
       db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline').orderBy("dateApproved", "desc");
     }
@@ -234,6 +235,7 @@ export default class App extends React.Component {
       following.get().then((following) => {
         followers.get().then((followers) => {
           let ret = doc.data();
+          ret.userID = uid;
           ret.following = [];
           ret.followers = [];
           following.forEach((followingDoc) => {
@@ -242,24 +244,61 @@ export default class App extends React.Component {
           followers.forEach((followersDoc) => {
             ret.followers.push(followersDoc.id);
           })
-          callback(doc.data());
+          callback(ret);
         })
       })
     }).catch((error) => { console.log(error) });
   }
 
-  getUserFeed(uid, callback) {
-    console.log("getUserFeed for user " + uid);
+  // gets feed if first time; adds more posts if end reached
+  getUserFeed(uid, cursor, callback) {
+    console.log("getUserFeed for user " + uid + " with cursor " + Object.keys(cursor));
 
-    let db = firestore.collection('Feeds').doc(uid).collection('User');
+    if (cursor === undefined) {
+      callback([], cursor);
+      return;
+    }
+    let db = firestore.collection('Feeds').doc(uid).collection('User').orderBy("dateApproved", "desc");
+    if (cursor !== 0) {
+      db = db.startAfter(cursor);
+    }
 
-    db.get().then((snapshot) => {
+    const loadSize = 10;
+
+    db.limit(loadSize).get().then((snapshot) => {
 
       let refs = [];
-
       snapshot.forEach((doc) => {
         refs.push(doc.id);
+      });
+
+      if (refs.length === 0) {
+        callback([], cursor);
+        return;
+      }
+
+      console.log("typeof refs.length: " + (typeof refs.length));
+      console.log("refs.length === 0: " + (refs.length === 0));
+
+      const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
+
+      posts.get().then((feedSnapshot) => {
+
+        let ret = [];
+        feedSnapshot.forEach((post) => {
+          const documentId = post.id;
+          const newObj = post.data();
+          newObj.id = documentId;
+          ret.push(newObj);
+        });
+
+        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
+
+        const newCursor = snapshot.docs[snapshot.docs.length - 1];
+
+        callback(ret, newCursor);
       })
+
     })
   }
 
@@ -283,7 +322,7 @@ export default class App extends React.Component {
       snapshot.forEach((doc) => {
         refs.push(doc.id);
       });
-      console.log("refs: "+refs);
+      console.log("refs: " + refs);
       if (refs.length === 0) {
         callback();
       }
