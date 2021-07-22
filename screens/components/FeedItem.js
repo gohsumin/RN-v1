@@ -112,6 +112,7 @@ function FeedItem({
           style={{
             width: rightGridWidth,
             flexDirection: "row",
+            marginBottom: 14.5
           }}
         >
           <TouchableOpacity
@@ -154,11 +155,11 @@ function FeedItem({
           </TouchableOpacity>
         </View>
 
-        {/* grid with the buttons, e.g. number of likes; maybe add share button later */}
-        {setting === 'feed' && <FeedBottomBar numBought={item.numBought} />}
-
-        {/* two-side view with the number of purchases as a result of the post and the total payout */}
-        {setting === 'self' && <CommissionsBar width={rightGridWidth * itemImageRatio} />}
+        {setting === 'self'
+          // two-side view with the number of purchases as a result of the post and the total payout
+          ? <CommissionsBar width={rightGridWidth * itemImageRatio} />
+          // grid with the buttons, e.g. number of likes; maybe add share button later
+          : <FeedBottomBar numBought={item.numBought} />}
       </View>
     </View>
   );

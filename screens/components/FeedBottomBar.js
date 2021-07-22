@@ -16,9 +16,8 @@ function FeedBottomBar(props) {
                 flexDirection: "row",
                 alignSelf: "flex-start",
                 alignItems: "center",
-                marginTop: 14.5,
                 height: 43,
-                width: 136,
+                width: 137,
                 paddingHorizontal: 8,
                 borderRadius: 8,
                 backgroundColor: colors.foreground3
@@ -48,7 +47,7 @@ function FeedBottomBar(props) {
                     fontSize: 13,
                     marginTop: -2.5,
                     color: colors.foreground1,
-                    fontWeight: 'bold'
+                    //fontWeight: 'bold'
                 }}>
                     Followers Bought
                 </Text>
