@@ -34,7 +34,7 @@ export default class App extends React.Component {
       posts: [], // call getPosts whenever the user opens the app!
       users: users,
       images: images, // make this a context so cached images can keep updating
-      user: "gohsumin",
+      user: "rihanna",
       uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
       theme: "dark",
       loadingMore: false,
@@ -302,12 +302,13 @@ export default class App extends React.Component {
     })
   }
 
-  refreshUserPage(uid, callback) {
+  refreshUserPage(uid, cursor, callback) {
     let ret = {};
     this.getUserData(uid, (userData) => {
       ret.userData = userData;
-      this.getUserFeed(uid, (userFeed) => {
-        ret.userFeed = userFeed;
+      this.getUserFeed(uid, cursor, (newItems, newCursor) => {
+        ret.userFeed = newItems;
+        ret.newCursor = newCursor;
         callback(ret);
       });
     });
@@ -367,8 +368,11 @@ export default class App extends React.Component {
 
   componentDidMount() {
     console.log("componentDidMount");
-    if (this.state.uid !== "") {
-
+    if (this.state.uid === "") {
+      this.setState({ isReady: true });
+    }
+    else {
+      console.log("uid is not an empty string");
       this.setState({ isReady: false }, () => {
         this.getTimeline('componentDidMount', () => {
           console.log("componentDidMount finished calling getTimeline");

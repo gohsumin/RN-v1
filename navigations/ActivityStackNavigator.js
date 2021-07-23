@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
-import ActivityScreen from "../screens/Activity";
+import ActivityScreen from "../screens/Profile";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { useEffect } from "react/cjs/react.development";

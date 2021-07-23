@@ -34,7 +34,7 @@ function FeedItem({
 
   return (
     <View
-      key={key}
+      key={item.key}
       onLayout={(event) => {
         setTotalWidth(width);
         setLeftGridWidth((width - 2 * marginHorizontal) * horLeftRatio);

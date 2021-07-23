@@ -6,25 +6,25 @@ import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import FeedItem from "./components/FeedItem";
 import { BlurView } from "expo-blur";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+// import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 import { AntDesign } from '@expo/vector-icons';
 const stream = require('getstream');
 
 const HomeScreen = ({ navigation }) => {
   const user = useContext(AppContext).user;
-  //const userToken = useContext(AppContext).userToken;
   const uid = useContext(AppContext).uid;
   const users = useContext(UsersContext).users;
   const { posts, loadNewPosts, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true);
+  //const [scrollEnabled, setScrollEnabled] = useState(true);
   const [flatListWidth, setFlatListWidth] = useState(0);
-  const [toggleRender, setToggleRender] = useState(false);
+  //const [toggleRender, setToggleRender] = useState(false);
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
-  const tabBarheight = useBottomTabBarHeight();
+  // const tabBarheight = useBottomTabBarHeight();
+  const WINDOW_WIDTH = Dimensions.get("window").width;
   const headerHeight = useHeaderHeight();
   const flatlistRef = useRef();
 
@@ -42,6 +42,7 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const onNewPostView = React.useCallback(() => {
+    console.log("new post view called");
     setRefreshing(true);
     loadNewPosts(() => {
       wait(0).then(() => {
@@ -55,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
     if (!loadRequested) {
       setLoadRequested(true);
       loadMoreFeed(() => {
-        wait(5).then(setLoadRequested(false)).then(setScrollEnabled(true));
+        wait(5).then(setLoadRequested(false)).then(/* setScrollEnabled(true) */);
       });
     }
   }
@@ -80,8 +81,7 @@ const HomeScreen = ({ navigation }) => {
       navigate={(user) => {
         navigation.navigate("Profile", { uid: item.userID });
       }}
-      key={item.key}
-      width={Dimensions.get("window").width}
+      width={WINDOW_WIDTH}
       setting={'feed'}
     />
   ), []);
@@ -93,93 +93,89 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView
       style={{
         flex: 1,
-      }}
-      onLayout={(event) => {
-        setFlatListWidth(event.nativeEvent.layout.width);
-        setToggleRender(!toggleRender);
+        borderWidth: 1,
+        borderColor: 'red',
+        backgroundColor: colors.background,
+        alignItems: "center"
       }}
     >
-      <View
-        style={{ backgroundColor: colors.background, alignItems: "center" }}
-      >
-        <FlatList
-          ref={flatlistRef}
-          data={posts}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-          disableIntervalMomentum={true}
-          showsVerticalScrollIndicator={true}
-          //scrollEnabled={scrollEnabled}
-          onEndReachedThreshold={0.05}
-          onEndReached={() => {
-            setScrollEnabled(false);
-            onEndReached();
-          }}
-          ListFooterComponent={
-            <View style={{ height: tabBarheight }}>
-            </View>
-          }
-          ItemSeparatorComponent={renderSeparator}
-          keyExtractor={keyExtractor}
-        />
-
+      <FlatList
+        ref={flatlistRef}
+        data={posts}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        disableIntervalMomentum={true}
+        showsVerticalScrollIndicator={true}
+        onEndReachedThreshold={0.05}
+        onEndReached={() => {
+          console.log("end reached");
+          //setScrollEnabled(false);
+          onEndReached();
+        }}
+        /* ListFooterComponent={
+          <View style={{ height: tabBarheight }}>
+          </View>
+        } */
+        ItemSeparatorComponent={renderSeparator}
+        keyExtractor={keyExtractor}
+      />
+      {console.log("right after home flatlist")}
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 20,
+          right: 20,
+        }}
+        onPress={addRandomPost}>
+        <View
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            backgroundColor: 'rgba(170, 70, 170, 1)',
+            borderWidth: 3,
+            borderColor: 'rgba(150, 80, 160, 0.8)',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <AntDesign name="addfile" size={24} color='rgba(200, 180, 200, 1)' />
+        </View>
+      </TouchableOpacity>
+      {loadRequested &&
+        <View style={{ position: 'absolute', alignItems: 'center', bottom: 10 }}>
+          <ActivityIndicator size="small" color="white" />
+        </View>}
+      {newPostExists &&
         <TouchableOpacity
+          onPress={onNewPostView}
           style={{
             position: 'absolute',
-            bottom: tabBarheight + 20,
-            right: 20,
-          }}
-          onPress={addRandomPost}>
-          <View
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              backgroundColor: 'rgba(170, 70, 170, 1)',
-              borderWidth: 3,
-              borderColor: 'rgba(150, 80, 160, 0.8)',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-            <AntDesign name="addfile" size={24} color='rgba(200, 180, 200, 1)' />
-          </View>
-        </TouchableOpacity>
-        {loadRequested &&
-          <View style={{ position: 'absolute', alignItems: 'center', bottom: tabBarheight + 10 }}>
-            <ActivityIndicator size="small" color="white" />
-          </View>}
-        {newPostExists &&
-          <TouchableOpacity
-            onPress={onNewPostView}
-            style={{
-              position: 'absolute',
-              paddingVertical: 10,
-              paddingHorizontal: 12,
-              borderRadius: 25,
-              backgroundColor: colors.blue,
-              alignSelf: 'center',
-              top: 19,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-            <Text style={{
-              textAlign: 'center',
-              fontSize: 15.5,
-              color: 'white',
-              fontWeight: 'bold',
-              marginRight: 3
-            }}>
-              New Posts
-            </Text>
-            <AntDesign name="arrowup" size={17} color="white" />
-          </TouchableOpacity>}
-      </View>
+            paddingVertical: 10,
+            paddingHorizontal: 12,
+            borderRadius: 25,
+            backgroundColor: colors.blue,
+            alignSelf: 'center',
+            top: 19,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+          <Text style={{
+            textAlign: 'center',
+            fontSize: 15.5,
+            color: 'white',
+            fontWeight: 'bold',
+            marginRight: 3
+          }}>
+            New Posts
+          </Text>
+          <AntDesign name="arrowup" size={17} color="white" />
+        </TouchableOpacity>}
     </SafeAreaView>
   );
 };

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { LogBox, Dimensions, RefreshControl, ActivityIndicator } from "react-native";
+import { Dimensions, RefreshControl, ActivityIndicator } from "react-native";
 import {
   Text,
   View,
   ScrollView,
 } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 import UsersContext from "../data/UsersContext";
-import PostsContext from "../data/PostsContext";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { BlurView } from "expo-blur";
@@ -16,7 +16,7 @@ import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+// import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useHeaderHeight } from '@react-navigation/stack';
 
 const ActivityScreen = ({ route, navigation }) => {
@@ -56,7 +56,7 @@ const ActivityScreen = ({ route, navigation }) => {
   const colors = useContext(ThemeContext).colors[theme];
   const [flatListWidth, setFlatListWidth] = useState(0);
   const [toggleRender, setToggleRender] = useState(false);
-  const tabBarheight = useBottomTabBarHeight();
+  // const tabBarheight = useBottomTabBarHeight();
   const headerHeight = useHeaderHeight();
   const fullWidth = Dimensions.get("window").width;
   const fullHeight = Dimensions.get("window").height;
@@ -88,7 +88,7 @@ const ActivityScreen = ({ route, navigation }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     if (route.params === undefined) {
-      refreshUserPage(logger, ({ userData, userFeed }) => {
+      refreshUserPage(logger, cursor, ({ userData, userFeed, newCursor }) => {
         wait(100).then(() => {
           setUserData(userData);
           setUserFeed(userFeed);
@@ -97,10 +97,11 @@ const ActivityScreen = ({ route, navigation }) => {
       });
     }
     else if (route.params.uid !== undefined) {
-      refreshUserPage(route.params.uid, ({ userData, userFeed }) => {
+      refreshUserPage(route.params.uid, cursor, ({ userData, userFeed, newCursor }) => {
         wait(100).then(() => {
           setUserData(userData);
           setUserFeed(userFeed);
+          setCursor(newCursor);
           setRefreshing(false);
         });
       });
@@ -188,7 +189,7 @@ const ActivityScreen = ({ route, navigation }) => {
                 backgroundColor: colors.foreground4,
                 overflow: "hidden",
                 alignItems: "center",
-                marginBottom: 60,
+                marginBottom: 5,
               } : {
                 flex: 1,
                 width: fullWidth,
@@ -196,7 +197,7 @@ const ActivityScreen = ({ route, navigation }) => {
                 backgroundColor: colors.background,
                 overflow: "hidden",
                 alignItems: "center",
-                marginBottom: 60,
+                marginBottom: 5,
               }}
             >
               {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
@@ -242,20 +243,10 @@ const ActivityScreen = ({ route, navigation }) => {
           position: 'absolute',
           alignItems: 'center',
           alignSelf: 'center',
-          bottom: tabBarheight + 10,
+          bottom: 10,
         }}>
           <ActivityIndicator size="small" color="white" />
         </View>}
-      <BlurView
-        style={{
-          height: tabBarheight,
-          width: "100%",
-          position: "absolute",
-          bottom: 0,
-        }}
-        intensity={99}
-        blurTint={theme === "dark" ? "dark" : "light"}
-      />
       {modal && <PostPopUp info={modalInfo} />}
     </View>
   );

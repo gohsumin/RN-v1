@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
     Text,
     View,
-    Image,
-    TouchableOpacity,
-    FlatList,
-    ScrollView,
-    LogBox,
-    Dimensions
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";

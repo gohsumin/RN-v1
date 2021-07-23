@@ -1,17 +1,10 @@
 import React from 'react';
 import {
-    View,
-    Image,
     TouchableOpacity,
     Animated,
-    Easing,
-    LogBox
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import FeedItem from './FeedItem';
-import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
-import { BlurView } from "expo-blur";
 import { useEffect } from 'react/cjs/react.development';
 
 function PostPopUp({ info }) {
@@ -86,7 +79,6 @@ function PostPopUp({ info }) {
                 <FeedItem
                     item={item}
                     navigate={navigate}
-                    key={key}
                     width={width}
                     setting={'popup'}
                 />
