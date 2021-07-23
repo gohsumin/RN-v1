@@ -5,43 +5,42 @@ function OtherUserPosts({ navigation, userFeed, width, toggleRender, setModal, s
 
     const renderItem = ({ item }) => {
         return (
-            <TouchableOpacity style={{
-                width: width / 2,
-                height: width / 2,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-                onPress={() => {
-                    setModalInfo(
-                        {
-                            item: item,
-                            navigate: navigation.navigate,
-                            setModal: setModal,
-                            key: item.id,
-                            width: width,
-                        }
-                    );
-                    setModal(true);
-                }}>
-                <View style={{
-                    padding: 8,
-                    width: width / 2 - 15,
-                    height: width / 2 - 15,
+            <View style={{
+                width: width * 0.5,
+                height: width * 0.5,
+                padding: 10
+            }}>
+                <TouchableOpacity style={{
                     borderRadius: 12,
                     overflow: 'hidden',
-                    backgroundColor: 'white'
-                }}>
+                    backgroundColor: 'white',
+                    width: "100%",
+                    height: "100%",
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+                    onPress={() => {
+                        setModalInfo(
+                            {
+                                item: item,
+                                navigate: navigation.navigate,
+                                setModal: setModal,
+                                key: item.id,
+                                width: width,
+                            }
+                        );
+                        setModal(true);
+                    }}>
                     <Image
                         fadeDuration={0}
                         style={{
-                            width: '100%',
-                            height: '100%',
+                            width: "84%",
+                            height: "84%",
                             resizeMode: 'contain',
                         }}
                         source={{ uri: item.itemImageURL }} />
-                </View>
-            </TouchableOpacity>
+                </TouchableOpacity>
+            </View>
         )
     }
 

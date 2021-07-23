@@ -4,6 +4,7 @@ import {
     Animated,
 } from 'react-native';
 import FeedItem from './FeedItem';
+import AppContext from '../../data/AppContext';
 import ThemeContext from "../../data/ThemeContext";
 import { useEffect } from 'react/cjs/react.development';
 

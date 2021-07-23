@@ -93,8 +93,6 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        borderWidth: 1,
-        borderColor: 'red',
         backgroundColor: colors.background,
         alignItems: "center"
       }}
@@ -117,14 +115,9 @@ const HomeScreen = ({ navigation }) => {
           //setScrollEnabled(false);
           onEndReached();
         }}
-        /* ListFooterComponent={
-          <View style={{ height: tabBarheight }}>
-          </View>
-        } */
         ItemSeparatorComponent={renderSeparator}
         keyExtractor={keyExtractor}
       />
-      {console.log("right after home flatlist")}
       <TouchableOpacity
         style={{
           position: 'absolute',

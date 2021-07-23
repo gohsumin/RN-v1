@@ -34,6 +34,7 @@ function TabBar() {
             height: tabBarHeight,
             width: "100%",
             position: "absolute",
+            left: 0,
             bottom: 0,
             borderTopColor: "rgba(255, 255, 255, 0.2)",
             borderTopWidth: 0.3,
@@ -81,6 +82,7 @@ function TabBar() {
 
           return (
             <TouchableOpacity
+              key={index}
               accessibilityRole="button"
               accessibilityState={isFocused ? { selected: true } : {}}
               accessibilityLabel={options.tabBarAccessibilityLabel}
@@ -88,14 +90,12 @@ function TabBar() {
               onPress={onPress}
               onLongPress={onLongPress}
               style={{
-                //width: "100%",
                 height: tabBarHeight,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
               }}
             >
-              {console.log("tab bar rendering")}
               <Icon
                 name={iconName}
                 size={25}

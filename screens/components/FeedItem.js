@@ -11,7 +11,6 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 function FeedItem({
   item,
   navigate,
-  key,
   width,
   setting,
 }) {
@@ -25,21 +24,25 @@ function FeedItem({
   const marginVertical = setting === 'popup' ? 17 : 15;
   const marginHorizontal = setting === 'popup' ? 14 : 12;
 
-  const [totalWidth, setTotalWidth] = useState(0);
-  const [leftGridWidth, setLeftGridWidth] = useState(0);
-  const [rightGridWidth, setRightGridWidth] = useState(0);
+  // const [totalWidth, setTotalWidth] = useState(0);
+  // const [leftGridWidth, setLeftGridWidth] = useState(0);
+  // const [rightGridWidth, setRightGridWidth] = useState(0);
+
+  const totalWidth = width;
+  const leftGridWidth = (width - 2 * marginHorizontal) * horLeftRatio;
+  const rightGridWidth = (width - 2 * marginHorizontal) * horRightRatio;
 
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
 
   return (
     <View
-      key={item.key}
-      onLayout={(event) => {
+      key={item.id}
+      /* onLayout={(event) => {
         setTotalWidth(width);
         setLeftGridWidth((width - 2 * marginHorizontal) * horLeftRatio);
         setRightGridWidth((width - 2 * marginHorizontal) * horRightRatio);
-      }}
+      }} */
       style={{
         width: totalWidth,
         flexDirection: "row",
@@ -48,6 +51,7 @@ function FeedItem({
         justifyContent: "center",
       }}
     >
+      {console.log("FeedItem with key "+item.id)}
       {/* profile pic */}
       <TouchableOpacity
         onPress={navigate}
