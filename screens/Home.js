@@ -1,32 +1,108 @@
-import React, { useState, useContext, useRef, useEffect, useCallback } from "react";
-import { FlatList, SafeAreaView, View, Dimensions, Text, RefreshControl, TouchableOpacity, ActivityIndicator } from "react-native";
-import UsersContext from "../data/UsersContext";
-import PostsContext from "../data/PostsContext";
+import React, { useState, useEffect, useRef } from "react";
+import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
-import FeedItem from "./components/FeedItem";
-import { BlurView } from "expo-blur";
-// import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useHeaderHeight } from '@react-navigation/stack';
 import { AntDesign } from '@expo/vector-icons';
-const stream = require('getstream');
+import HomeFeed from "./components/HomeFeed";
+import AppLoading from "expo-app-loading";
+import { firebase } from '../data/firebase';
+import "firebase/firestore";
+const firestore = firebase.firestore();
 
 const HomeScreen = ({ navigation }) => {
-  const user = useContext(AppContext).user;
-  const uid = useContext(AppContext).uid;
-  const users = useContext(UsersContext).users;
-  const { posts, loadNewPosts, loadMoreFeed, addRandomPost, refreshTimeline, newPostExists } = useContext(PostsContext);
+  const [posts, setPosts] = useState([]);
+  const [isReady, setIsReady] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [cursor, setCursor] = useState(0);
+  const [latestDateApproved, setLatestDateApproved] = useState("0");
+  const [snapshotListener, setSnapshotListener] = useState(null);
+  const [newPostExists, setNewPostExists] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
-  //const [scrollEnabled, setScrollEnabled] = useState(true);
-  const [flatListWidth, setFlatListWidth] = useState(0);
-  //const [toggleRender, setToggleRender] = useState(false);
-  const theme = React.useContext(AppContext).theme;
+  const { theme, uid } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
-  // const tabBarheight = useBottomTabBarHeight();
-  const WINDOW_WIDTH = Dimensions.get("window").width;
-  const headerHeight = useHeaderHeight();
   const flatlistRef = useRef();
+  const loadSize = 8;
+
+  function getTimeline() {
+    if (cursor === undefined) {
+      console.log("cursor is undefined");
+      return;
+    }
+    let db = null;
+    if (cursor === 0) {
+      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("dateApproved", "desc");
+    }
+    else {
+      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("dateApproved", "desc").startAfter(cursor);
+    }
+    // list of post ids to include in the timeline. Should never exceed 10 items
+    let refs = [];
+    db.limit(loadSize).get().then((snapshot) => {
+      snapshot.forEach((doc) => {
+        console.log("document id for a post: " + doc.id);
+        refs.push(doc.id);
+      });
+
+      if (refs.length === 0) {
+        return;
+      }
+
+      const postsDB = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
+
+      postsDB.get().then((feedSnapshot) => {
+
+        let ret = [];
+        feedSnapshot.forEach((post) => {
+          const documentId = post.id;
+          const newObj = post.data();
+          newObj.id = documentId;
+          ret.push(newObj);
+        });
+
+        // if it's the first time loading the feed, get dateApproved of the latest post
+        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
+        if (cursor === 0) {
+          setLatestDateApproved(ret[0].dateApproved);
+        }
+        setCursor(snapshot.docs[snapshot.docs.length - 1]);
+        setPosts([...posts, ...ret]);
+        return;
+      })
+    });
+  }
+
+  function loadMoreFeed() {
+    console.log("about to call getTimeline from loadMoreFeed");
+    getTimeline();
+  }
+
+  useEffect(() => {
+    if (isReady && cursor === 0) {
+      console.log("cursor just reset to 0");
+      getTimeline();
+    }
+  }, [cursor]);
+
+  useEffect(() => {
+    if (refreshing) {
+      setRefreshing(false);
+    }
+    if (!isReady) {
+      setIsReady(true);
+    }
+  }, [posts]);
+
+  function refreshTimeline() {
+    console.log("Home.js: refreshTimeline");
+    setCursor(0);
+  }
+
+  // on initial render, grab the first load
+  useEffect(() => {
+    console.log("Home.js: calling getTimeline")
+    getTimeline();
+  }, []);
 
   const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -34,11 +110,7 @@ const HomeScreen = ({ navigation }) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    refreshTimeline(() => {
-      wait(100).then(() => {
-        setRefreshing(false);
-      });
-    });
+    refreshTimeline();
   }, []);
 
   const onNewPostView = React.useCallback(() => {
@@ -53,42 +125,9 @@ const HomeScreen = ({ navigation }) => {
   }, []);
 
   const onEndReached = () => {
-    if (!loadRequested) {
-      setLoadRequested(true);
-      loadMoreFeed(() => {
-        wait(5).then(setLoadRequested(false)).then(/* setScrollEnabled(true) */);
-      });
-    }
+    loadMoreFeed();
   }
 
-  const renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 0.4,
-          width: "100%",
-          backgroundColor: "#808080",
-          opacity: 0.5,
-          alignSelf: "flex-end",
-        }}
-      />
-    );
-  };
-
-  const renderItem = useCallback(({ item }) => (
-    <FeedItem
-      item={item}
-      navigate={(user) => {
-        navigation.navigate("Profile", { uid: item.userID });
-      }}
-      width={WINDOW_WIDTH}
-      setting={'feed'}
-    />
-  ), []);
-
-  const keyExtractor = useCallback((item) => item.id, []);
-
-  /* return for HomeScreen */
   return (
     <SafeAreaView
       style={{
@@ -97,26 +136,13 @@ const HomeScreen = ({ navigation }) => {
         alignItems: "center"
       }}
     >
-      <FlatList
-        ref={flatlistRef}
-        data={posts}
-        renderItem={renderItem}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        disableIntervalMomentum={true}
-        showsVerticalScrollIndicator={true}
-        onEndReachedThreshold={0.05}
-        onEndReached={() => {
-          console.log("end reached");
-          //setScrollEnabled(false);
-          onEndReached();
-        }}
-        ItemSeparatorComponent={renderSeparator}
-        keyExtractor={keyExtractor}
+      <HomeFeed
+        posts={posts}
+        onEndReached={onEndReached}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        flatlistRef={flatlistRef}
+        navigation={navigation}
       />
       <TouchableOpacity
         style={{
@@ -124,7 +150,8 @@ const HomeScreen = ({ navigation }) => {
           bottom: 20,
           right: 20,
         }}
-        onPress={addRandomPost}>
+      //onPress={addRandomPost}
+      >
         <View
           style={{
             width: 60,
@@ -169,6 +196,10 @@ const HomeScreen = ({ navigation }) => {
           </Text>
           <AntDesign name="arrowup" size={17} color="white" />
         </TouchableOpacity>}
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh} />
+      {!isReady && <AppLoading />}
     </SafeAreaView>
   );
 };

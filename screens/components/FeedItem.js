@@ -170,7 +170,7 @@ function FeedItem({
 }
 
 function areEqual(prevProps, newProps) {
-  return prevProps.key === newProps.key;
+  return prevProps.item.id === newProps.item.id;
 }
 
 export default React.memo(FeedItem, areEqual);

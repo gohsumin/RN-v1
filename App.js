@@ -7,7 +7,6 @@ import PostsContext from "./data/PostsContext";
 import AppContext from "./data/AppContext";
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import SwipeCardsContext from "./data/SwipeCardsContext";
-import AppLoading from "expo-app-loading";
 import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
 import { firebase } from './data/firebase';
@@ -29,10 +28,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isReady: false,
       remaining: [],
       posts: [], // call getPosts whenever the user opens the app!
-      users: users,
       images: images, // make this a context so cached images can keep updating
       user: "rihanna",
       uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
@@ -367,29 +364,11 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
-    if (this.state.uid === "") {
-      this.setState({ isReady: true });
-    }
-    else {
-      console.log("uid is not an empty string");
-      this.setState({ isReady: false }, () => {
-        this.getTimeline('componentDidMount', () => {
-          console.log("componentDidMount finished calling getTimeline");
-          this.setState({ isReady: true });
-          this.listenForNewPosts();
-        });
-      });
-    }
     LogBox.ignoreAllLogs(true);
   }
 
   componentWillUnmount() {
     console.log("COMPONENT WILL UNMOUNT");
-    if (this.state.snapshotListener) {
-      // unlisten to listener
-      this.state.snapshotListener();
-    }
   }
 
   popRemaining = (key) => {
@@ -463,7 +442,6 @@ export default class App extends React.Component {
               }}>
                 <NavigationContainer>
                   <RootStackNavigator />
-                  {!this.state.isReady && <AppLoading />}
                 </NavigationContainer>
               </PostsContext.Provider>
             </UsersContext.Provider>
