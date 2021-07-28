@@ -15,7 +15,6 @@ function FeedItem({
   setting,
 }) {
 
-  /* refer to ./FeedItemDiagram */
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
   const itemImageRatio = 0.85;
@@ -23,10 +22,6 @@ function FeedItem({
 
   const marginVertical = setting === 'popup' ? 17 : 15;
   const marginHorizontal = setting === 'popup' ? 14 : 12;
-
-  // const [totalWidth, setTotalWidth] = useState(0);
-  // const [leftGridWidth, setLeftGridWidth] = useState(0);
-  // const [rightGridWidth, setRightGridWidth] = useState(0);
 
   const totalWidth = width;
   const leftGridWidth = (width - 2 * marginHorizontal) * horLeftRatio;
@@ -38,11 +33,6 @@ function FeedItem({
   return (
     <View
       key={item.id}
-      /* onLayout={(event) => {
-        setTotalWidth(width);
-        setLeftGridWidth((width - 2 * marginHorizontal) * horLeftRatio);
-        setRightGridWidth((width - 2 * marginHorizontal) * horRightRatio);
-      }} */
       style={{
         width: totalWidth,
         flexDirection: "row",
@@ -123,6 +113,8 @@ function FeedItem({
             style={{
               borderRadius: 20,
               overflow: 'hidden',
+              borderWidth: 0.4,
+              borderColor: colors.foreground1
             }}>
             <Image
               fadeDuration={0}
@@ -130,7 +122,6 @@ function FeedItem({
               style={{
                 width: rightGridWidth * itemImageRatio,
                 height: rightGridWidth * itemImageRatio,
-                borderWidth: 0.2,
                 resizeMode: "contain",
                 backgroundColor: 'white',
               }}

@@ -5,28 +5,93 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
-import UsersContext from "../data/UsersContext";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
-import { BlurView } from "expo-blur";
 import Bio from './components/Bio';
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
-// import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useHeaderHeight } from '@react-navigation/stack';
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { firebase } from '../data/firebase';
+import "firebase/firestore";
+const firestore = firebase.firestore();
 
 const ActivityScreen = ({ route, navigation }) => {
-  const { getUserData, getUserFeed } = useContext(UsersContext);
+  const [isReady, setIsReady] = useState(false);
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState([]);
   const [cursor, setCursor] = useState(0);
   const logger = useContext(AppContext).uid;
   const [show, setShow] = useState(false);
+
+  function getUserData(uid, callback) {
+    console.log("getUserData for user " + uid);
+
+    // the user data collection
+    const db = firestore.collection('User-Profile').doc(uid);
+
+    db.get().then((doc) => {
+      // TO-DO: also get the folollowing list from 'Following' collection
+      const following = db.collection('Following');
+      const followers = db.collection('Followers');
+      following.get().then((following) => {
+        followers.get().then((followers) => {
+          let ret = doc.data();
+          ret.userID = uid;
+          ret.following = [];
+          ret.followers = [];
+          following.forEach((followingDoc) => {
+            ret.following.push(followingDoc.id);
+          })
+          followers.forEach((followersDoc) => {
+            ret.followers.push(followersDoc.id);
+          })
+          callback(ret);
+        })
+      })
+    }).catch((error) => { console.log(error) });
+  }
+
+  function getUserFeed(uid, cursor, callback) {
+    console.log("getUserFeed for user " + uid + " with cursor " + Object.keys(cursor));
+    if (cursor === undefined) {
+      callback([], cursor);
+      return;
+    }
+    let db = firestore.collection('Feeds').doc(uid).collection('User').orderBy("dateApproved", "desc");
+    if (cursor !== 0) {
+      db = db.startAfter(cursor);
+    }
+    const loadSize = 10;
+    db.limit(loadSize).get().then((snapshot) => {
+      let refs = [];
+      snapshot.forEach((doc) => {
+        refs.push(doc.id);
+      });
+      if (refs.length === 0) {
+        callback([], cursor);
+        return;
+      }
+      console.log("typeof refs.length: " + (typeof refs.length));
+      console.log("refs.length === 0: " + (refs.length === 0));
+      const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
+      posts.get().then((feedSnapshot) => {
+        let ret = [];
+        feedSnapshot.forEach((post) => {
+          const documentId = post.id;
+          const newObj = post.data();
+          newObj.id = documentId;
+          ret.push(newObj);
+        });
+        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
+        const newCursor = snapshot.docs[snapshot.docs.length - 1];
+        callback(ret, newCursor);
+      })
+    })
+  }
 
   useEffect(() => {
     var uid = "";
@@ -40,37 +105,28 @@ const ActivityScreen = ({ route, navigation }) => {
         setIsUser(false);
       }
     }
+    navigation.setOptions({ title: userData.userName });
     getUserData(uid, (userData) => {
       console.log("from getUserData, userID: " + userData.userID);
       setUserData(userData);
+      getUserFeed(uid, cursor, (newItems, newCursor) => {
+        setCursor(newCursor);
+        setUserFeed(userFeed.concat(newItems));
+        setShow(true);
+      })
     })
-    getUserFeed(uid, cursor, (newItems, newCursor) => {
-      setCursor(newCursor);
-      setUserFeed(userFeed.concat(newItems));
-    })
-    navigation.setOptions({ title: userData.userName });
-    setShow(true);
   }, [route.params]);
 
   const theme = useContext(AppContext).theme;
   const colors = useContext(ThemeContext).colors[theme];
-  const [flatListWidth, setFlatListWidth] = useState(0);
-  const [toggleRender, setToggleRender] = useState(false);
-  // const tabBarheight = useBottomTabBarHeight();
-  const headerHeight = useHeaderHeight();
+  const tabBarheight = useBottomTabBarHeight();
   const fullWidth = Dimensions.get("window").width;
-  const fullHeight = Dimensions.get("window").height;
 
   const [modal, setModal] = useState(false);
   const [modalInfo, setModalInfo] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
-  const { refreshUserPage } = useContext(UsersContext);
   const [loadRequested, setLoadRequested] = useState(false);
-
-  const wait = (timeout) => {
-    return new Promise(resolve => setTimeout(resolve, timeout));
-  }
 
   function onEndReached() {
     if (!loadRequested) {
@@ -85,26 +141,26 @@ const ActivityScreen = ({ route, navigation }) => {
     }
   }
 
+  function refresh(uid) {
+    getUserData(uid, (newUserData) => {
+      setUserData(newUserData);
+      getUserFeed(uid, cursor, (newItems, newCursor) => {
+        setCursor(newCursor);
+        setUserFeed(newItems);
+        setRefreshing(false);
+      })
+    });
+  }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
+    // parameter was not passed in; this is the profile tab
     if (route.params === undefined) {
-      refreshUserPage(logger, cursor, ({ userData, userFeed, newCursor }) => {
-        wait(100).then(() => {
-          setUserData(userData);
-          setUserFeed(userFeed);
-          setRefreshing(false);
-        });
-      });
+      refresh(logger);
     }
+    // parameter was passed in
     else if (route.params.uid !== undefined) {
-      refreshUserPage(route.params.uid, cursor, ({ userData, userFeed, newCursor }) => {
-        wait(100).then(() => {
-          setUserData(userData);
-          setUserFeed(userFeed);
-          setCursor(newCursor);
-          setRefreshing(false);
-        });
-      });
+      refresh(route.params.uid);
     }
     else {
       console.log("user not found");
@@ -121,7 +177,13 @@ const ActivityScreen = ({ route, navigation }) => {
   const renderView = () => {
     return (
       <ScrollView
-        style={{ flex: 1 }}
+        style={{
+          flex: 1,
+          //alignItems: "center",
+          backgroundColor: colors.background,
+          paddingTop: 40,
+          marginHorizontal: 10
+        }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -134,86 +196,89 @@ const ActivityScreen = ({ route, navigation }) => {
           }
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            backgroundColor: colors.background,
-            paddingHorizontal: 14,
-            paddingTop: 40,
-          }}
-        >
-          {/* this is just for getting the width inside the padding */}
-          <View
-            style={{
-              width: "100%",
-              height: 0,
-              position: "absolute",
-            }}
-            onLayout={(event) => {
-              setFlatListWidth(event.nativeEvent.layout.width);
-              setToggleRender(!toggleRender);
-            }}
-          />
-          {/* profile pic, name, bio */}
-          <Bio userData={userData} />
-          <View style={{ height: 23 }} />
-          {/* following | followers | edit/follow */}
-          <UserInfoBar
-            userData={userData}
-            isUser={isUser}
-            setUserData={setUserData}
-            navigate={navigation.navigate}
-          />
-          { /* balance information */
-            isUser && <BalanceSection userData={userData} />}
-          <View style={{ height: 30 }} />
-          <View style={{ marginVertical: 0 }}>
-            {isUser && (
-              <Text
-                style={{
-                  color: colors.foreground1,
-                  alignSelf: "flex-start",
-                  paddingLeft: 5,
-                  paddingBottom: 5,
-                }}
-              >
-                MY POSTS
-              </Text>
-            )}
-            {/* user's posts */}
+
+        {/* profile pic, name, bio */}
+        <Bio userData={userData} />
+
+        <View style={{ height: 23 }} />
+
+        {/* following | followers | edit/follow */}
+        <UserInfoBar
+          userData={userData}
+          isUser={isUser}
+          setUserData={setUserData}
+          navigate={navigation.navigate}
+        />
+
+        {/* user balance info */}
+        {isUser && <BalanceSection userData={userData} />}
+
+        <View style={{ height: 30 }} />
+
+        <View style={{
+          marginVertical: 0,
+        }}>
+          {isUser && (
+            <Text
+              style={{
+                color: colors.foreground1,
+                alignSelf: "flex-start",
+                paddingLeft: 5,
+                paddingBottom: 5,
+              }}
+            >
+              MY POSTS
+            </Text>
+          )}
+          {(isUser && (userFeed.length > 0)) ?
+            /* user's posts */
             <View
-              style={isUser ? {
-                width: flatListWidth,
+              style={{
                 borderRadius: 9,
                 backgroundColor: colors.foreground4,
                 overflow: "hidden",
                 alignItems: "center",
                 marginBottom: 5,
-              } : {
-                flex: 1,
-                width: fullWidth,
-                borderRadius: 9,
-                backgroundColor: colors.background,
-                overflow: "hidden",
-                alignItems: "center",
-                marginBottom: 5,
               }}
             >
-              {/* Here, it's assumed that the feed is sorted by time, most recent to latest */}
-              {isUser ?
-                <SelfPosts
-                  navigation={navigation}
-                  userFeed={userFeed}
-                  userData={userData}
-                  width={flatListWidth}
-                  toggleRender={toggleRender}
-                /> :
+              <SelfPosts
+                userFeed={userFeed}
+              />
+            </View> :
+            (isUser && (userFeed.length === 0)) ?
+              <View
+                style={{
+                  borderRadius: 9,
+                  backgroundColor: colors.foreground4,
+                  overflow: "hidden",
+                  alignItems: "center",
+                  marginBottom: 5,
+                  height: 110,
+                  marginBottom: tabBarheight + 5,
+                  justifyContent: 'center'
+                }}>
+                <Text
+                  style={{
+                    color: 'gray',
+                    fontSize: 16,
+                  }}>
+                  Yet to post :)
+                </Text>
+              </View> :
+              <View
+                style={{
+                  flex: 1,
+                  borderRadius: 9,
+                  backgroundColor: colors.background,
+                  overflow: "hidden",
+                  alignItems: "center",
+                  marginBottom: 5,
+                  width: fullWidth,
+                  alignSelf: 'center'
+                }}>
                 <OtherUserPosts
                   navigation={navigation}
                   userFeed={userFeed}
-                  width={flatListWidth}
-                  toggleRender={toggleRender}
                   setModal={setModal}
                   setModalInfo={(info) => {
                     setModalInfo({
@@ -223,9 +288,8 @@ const ActivityScreen = ({ route, navigation }) => {
                       width: fullWidth * 0.90
                     });
                   }}
-                />}
-            </View>
-          </View>
+                />
+              </View>}
         </View>
       </ScrollView>
     )

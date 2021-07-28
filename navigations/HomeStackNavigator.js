@@ -30,16 +30,16 @@ const HomeStackNavigator = () => {
   };
 
   return (
-
-    <HomeStack.Navigator screenOptions={screenOptionStyle}>
-      <HomeStack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerLeft: null }}
-      />
-      <HomeStack.Screen name="Profile" component={ActivityScreen} />
-    </HomeStack.Navigator>
-
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <HomeStack.Navigator screenOptions={screenOptionStyle}>
+        <HomeStack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerLeft: null }}
+        />
+        <HomeStack.Screen name="Profile" component={ActivityScreen} />
+      </HomeStack.Navigator>
+    </View>
   );
 };
 

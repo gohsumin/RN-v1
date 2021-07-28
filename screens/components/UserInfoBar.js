@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
-import UsersContext from '../../data/UsersContext';
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
@@ -15,37 +14,84 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
 
     const { theme, uid } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
-    const statsFontSize = 13.6;
-    
+
     const spacing = 15;
     const leftHeight = 28;
 
-    function isFollowable(otherUID) {
-        // check if otherUID is followed by uid
-        firestore.collection('User-Profile').doc(otherUID).collection('Followers').doc(uid).get().then
-    }
-
-    const [followable, setFollowable] = useState(false);
-
-
+    var followUser = firebase.functions().httpsCallable('followUser');
+    var unFollowUser = firebase.functions().httpsCallable('unFollowUser');
+    const [buttonText, setButtonText] = useState("");
+    const [followable, setFollowable] = useState();
+    const [action, setAction] = useState();
 
     function follow() {
-        console.log("attempt to follow");
+        setButtonText("Unfollow");
+        /* setAction(() => {
+            unfollow();
+        }); */
+        followUser({
+            userID: userData.userID,
+        }).then(() => {
+            console.log("after following");
+            setFollowable(false);
+        });
     }
 
     function unfollow() {
-        console.log("attempt to unfollow");
+        setButtonText("Follow");
+        /* setAction(() => {
+            follow();
+        }); */
+        unFollowUser({
+            userID: userData.userID
+        }).then(() => {
+            console.log("after unfollowing");
+            setFollowable(true);
+        });
     }
 
-    function getButtonText() {
+    useEffect(() => {
         if (isUser) {
-            return "Edit Profile";
-        }
-        else if (followable) {
-            return "Follow";
+            setButtonText("Edit Profile");
+            /* setAction(() => {
+                navigate('Edit Profile', { uid: uid });
+            }); */
         }
         else {
-            return "Unfollow";
+            const path = "/User-Profile/" + uid + "/Following";
+            firebase.database().ref(path).once('value', snapshot => {
+                const res = snapshot.val();
+                // check if the logged in user is following the profile
+                if (res !== null && res[userData.userID] !== undefined) {
+                    setFollowable(false);
+                    setButtonText("Unfollow");
+                    /* setAction(() => {
+                        unfollow();
+                    }); */
+                }
+                else {
+                    console.log("nope");
+                    setFollowable(true);
+                    setButtonText("Follow");
+                    /* setAction(() => {
+                        follow();
+                    }); */
+                }
+            })
+        }
+    }, []);
+
+    function onButtonPress() {
+        console.log("onButtonPress");
+        if (isUser) {
+            navigate('Edit Profile', { uid: uid });
+            // from whatever page for updating profile: on submit, call setUserData
+        }
+        else if (followable) {
+            follow();
+        }
+        else {
+            unfollow();
         }
     }
 
@@ -101,24 +147,13 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                 marginHorizontal: spacing,
                 borderRadius: 4,
             }}
-                onPress={() => {
-                    if (isUser) {
-                        navigate('Edit Profile', { uid: uid });
-                        // from whatever page for updating profile: on submit, call setUserData
-                    }
-                    else if (followable) {
-                        follow();
-                    }
-                    else {
-                        unfollow();
-                    }
-                }}>
+                onPress={onButtonPress}>
                 <Text style={{
                     fontSize: 15,
                     color: colors.antiBackground,
                     fontWeight: "bold"
                 }}>
-                    {getButtonText()}
+                    {buttonText}
                 </Text>
             </TouchableOpacity>
         </View>

@@ -26,8 +26,6 @@ function SignIn({ navigation }) {
     const auth = firebase.auth();
     const firestore = firebase.firestore();
 
-    const stream = require('getstream');
-
     const [signInButtonOpen, setSignInButtonOpen] = useState(false);
     const [signUpButtonOpen, setSignUpButtonOpen] = useState(false);
     const [emailAuthOpen, setEmailAuthOpen] = useState(false);

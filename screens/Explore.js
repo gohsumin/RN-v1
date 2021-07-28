@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react'
+import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import AppContext from '../data/AppContext';
 import PostsContext from '../data/PostsContext';
@@ -9,8 +9,7 @@ const firestore = firebase.firestore();
 
 const ClubsScreen = ({ navigation }) => {
 
-    const { user, uid } = useContext(AppContext);
-    const { loadMoreFeed, updateTimelineAfterFollowing, updateTimelineAfterUnfollowing } = useContext(PostsContext);
+    const { updateTimelineAfterFollowing, updateTimelineAfterUnfollowing } = useContext(PostsContext);
     var followUser = firebase.functions().httpsCallable('followUser');
     var unFollowUser = firebase.functions().httpsCallable('unFollowUser');
 
@@ -31,10 +30,10 @@ const ClubsScreen = ({ navigation }) => {
                     console.log("follow pressed");
                     followUser({
                         userID: "tqsjujBkrYfzwAqgpd2mE1ic0gn2",
-                    }).then(function(res) {
+                    }).then(function (res) {
                         console.log("after following");
                     });
-                    updateTimelineAfterFollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
+                    //updateTimelineAfterFollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}
                 style={{
                     borderRadius: 25,
@@ -55,9 +54,10 @@ const ClubsScreen = ({ navigation }) => {
                 onPress={() => {
                     unFollowUser({
                         userID: "tqsjujBkrYfzwAqgpd2mE1ic0gn2"
-                    }).then(function(res) {
-                        updateTimelineAfterUnfollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
+                    }).then(() => {
+                        console.log("after unfollowing");
                     });
+                    //updateTimelineAfterUnfollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}
                 style={{
                     borderRadius: 25,

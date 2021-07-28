@@ -40,7 +40,7 @@ function TabBar() {
             borderTopWidth: 0.3,
           }}
           locations={[0.1, 1]}
-          colors={['rgba(25, 23, 23, 0.96)', 'rgba(2, 0, 0, 0.98)']}
+          colors={colors.tabBarGradient}
         />
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];

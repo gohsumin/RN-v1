@@ -3,10 +3,11 @@ import {
     FlatList,
     View,
     Dimensions,
+    RefreshControl,
 } from "react-native";
 import FeedItem from './FeedItem';
 
-function HomeFeed({ posts, onEndReached, flatlistRef, navigation }) {
+function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const WINDOW_WIDTH = Dimensions.get("window").width;
 
@@ -41,6 +42,12 @@ function HomeFeed({ posts, onEndReached, flatlistRef, navigation }) {
         <FlatList
             ref={flatlistRef}
             data={posts}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
             renderItem={renderItem}
             disableIntervalMomentum={true}
             showsVerticalScrollIndicator={true}
@@ -53,7 +60,7 @@ function HomeFeed({ posts, onEndReached, flatlistRef, navigation }) {
 }
 
 function areEqual(prevProps, newProps) {
-    return prevProps.posts === newProps.posts;
+    return (prevProps.posts === newProps.posts && prevProps.refreshing === newProps.refreshing);
 }
 
 export default React.memo(HomeFeed, areEqual);

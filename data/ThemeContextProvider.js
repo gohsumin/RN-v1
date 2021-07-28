@@ -14,7 +14,7 @@ class ThemeContextProvider extends Component {
             blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
-            tabBar: 'black',
+            tabBarGradient: ['rgba(25, 23, 23, 0.96)', 'rgba(2, 0, 0, 0.98)'],
             tabBarInactiveTint: '#e0e0e0',
             green: "#75fa4d",
         },
@@ -28,7 +28,7 @@ class ThemeContextProvider extends Component {
             blue: '#539dfc',
             availableBalance: '#1cc96b',
             pendingBalance: '#ff851f',
-            tabBar: 'rgba(255, 255, 255, 0.6)',
+            tabBarGradient: ['rgba(232, 230, 230, 0.96)', 'rgba(255, 255, 255, 0.98)'],
             tabBarInactiveTint: '#222',
             green: "#ADFF2F",
         }

@@ -1,8 +1,12 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, Dimensions } from "react-native";
 import FeedItem from "./FeedItem";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-function SelfPosts({ navigation, userFeed, userName, userData, width, toggleRender }) {
+function SelfPosts({ userFeed }) {
+
+    const WINDOW_WIDTH = Dimensions.get('window').width;
+    const tabBarheight = useBottomTabBarHeight();
 
     const renderSeparator = () => {
         return (
@@ -26,13 +30,13 @@ function SelfPosts({ navigation, userFeed, userName, userData, width, toggleRend
                 <FeedItem
                     item={item}
                     navigate={() => {}}
-                    width={width}
+                    width={WINDOW_WIDTH}
                     setting={'self'}
                 />
             }
-            extraData={toggleRender}
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={renderSeparator}
+            ListFooterComponent={<View style={{height: tabBarheight}}/>}
         />
     )
 }

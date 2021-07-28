@@ -1,14 +1,19 @@
 import React, { useState } from "react";
-import { View, FlatList, TouchableOpacity, Image, Text } from "react-native";
+import { View, FlatList, TouchableOpacity, Image, Dimensions } from "react-native";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
-function OtherUserPosts({ navigation, userFeed, width, toggleRender, setModal, setModalInfo }) {
+function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
+
+    const tabBarheight = useBottomTabBarHeight();
+    const WINDOW_WIDTH = Dimensions.get('window').width;
 
     const renderItem = ({ item }) => {
+
         return (
             <View style={{
-                width: width * 0.5,
-                height: width * 0.5,
-                padding: 10
+                width: "50%",
+                aspectRatio: 1,
+                padding: 10,
             }}>
                 <TouchableOpacity style={{
                     borderRadius: 12,
@@ -26,7 +31,7 @@ function OtherUserPosts({ navigation, userFeed, width, toggleRender, setModal, s
                                 navigate: navigation.navigate,
                                 setModal: setModal,
                                 key: item.id,
-                                width: width,
+                                width: WINDOW_WIDTH,
                             }
                         );
                         setModal(true);
@@ -45,15 +50,14 @@ function OtherUserPosts({ navigation, userFeed, width, toggleRender, setModal, s
     }
 
     return (
-        <View>
-            <FlatList
-                data={userFeed}
-                numColumns={2}
-                renderItem={renderItem}
-                extraData={toggleRender}
-                keyExtractor={(item, index) => item.id}
-            />
-        </View>
+        <FlatList
+            data={userFeed}
+            numColumns={2}
+            renderItem={renderItem}
+            //extraData={toggleRender}
+            keyExtractor={(item, index) => item.id}
+            ListFooterComponent={<View style={{ height: tabBarheight }} />}
+        />
     )
 }
 
