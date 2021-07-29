@@ -7,6 +7,7 @@ import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
 import { firebase } from '../data/firebase';
 import "firebase/firestore";
+import { LinearGradient } from "expo-linear-gradient";
 const firestore = firebase.firestore();
 
 const HomeScreen = ({ navigation }) => {
@@ -220,6 +221,27 @@ const HomeScreen = ({ navigation }) => {
         alignItems: "center"
       }}
     >
+      <LinearGradient
+        style={{
+          width: "100%",
+          height: 110,
+          justifyContent: 'flex-end',
+        }}
+        colors={colors.headerGradient}
+        locations={[0.3, 1]}
+        >
+        <Text
+          style={{
+            textAlignVertical: 'bottom',
+            marginLeft: 30,
+            marginBottom: 7,
+            fontSize: 37,
+            fontWeight: 'bold',
+            color: colors.antiBackground
+          }}>
+          Home
+        </Text>
+      </LinearGradient>
       <HomeFeed
         posts={posts}
         onEndReached={onEndReached}

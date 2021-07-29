@@ -32,7 +32,7 @@ export default class App extends React.Component {
       images: images, // make this a context so cached images can keep updating
       user: "rihanna",
       uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
-      theme: "light",
+      theme: "dark",
     };
     this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
     this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);

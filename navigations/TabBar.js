@@ -17,7 +17,7 @@ function TabBar() {
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
   const { user } = React.useContext(AppContext);
-  const tabBarHeight = 50;
+  const tabBarHeight = 57;
 
   function TabBarComponent({ state, descriptors, navigation }) {
 
@@ -117,7 +117,7 @@ function TabBar() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <StatusBar translucent backgroundColor="transparent" barStyle={theme === "dark" ? "light-content" : "dark-content"} />
       <FlashMessage position="top" />
       <Tab.Navigator
         tabBar={props => <TabBarComponent {...props} />}

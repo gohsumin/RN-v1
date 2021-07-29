@@ -35,7 +35,7 @@ const HomeStackNavigator = () => {
         <HomeStack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ headerLeft: null }}
+          options={{ headerLeft: null, headerShown: false }}
         />
         <HomeStack.Screen name="Profile" component={ActivityScreen} />
       </HomeStack.Navigator>
