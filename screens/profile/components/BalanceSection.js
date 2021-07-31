@@ -4,8 +4,8 @@ import {
     View,
   } from "react-native";
 import BalanceItem from './BalanceItem';
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 
 function BalanceSection({ userData }) {
 

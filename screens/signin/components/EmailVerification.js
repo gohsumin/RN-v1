@@ -10,7 +10,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 function EmailVerification() {
 
-    const tabBarheight = useBottomTabBarHeight();
+    const tabBarHeight = useBottomTabBarHeight();
     const windowHeight = Dimensions.get('window').height;
     const windowWidth = Dimensions.get('window').width;
     const smallTextHeight = 30;
@@ -225,7 +225,7 @@ function EmailVerification() {
                     </View>
                 </TouchableOpacity>
             </View>
-            <View style={{ height: tabBarheight }} />
+            <View style={{ height: tabBarHeight }} />
 
 
         </SafeAreaView>

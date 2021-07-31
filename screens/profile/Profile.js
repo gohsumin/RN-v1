@@ -5,18 +5,18 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import AppContext from "../data/AppContext";
-import ThemeContext from "../data/ThemeContext";
-import Header from './components/Header';
-import Bio from './components/Bio';
+import AppContext from "../../data/AppContext";
+import ThemeContext from "../../data/ThemeContext";
+import Header from '../components/Header';
+import Bio from '../components/Bio';
 import BalanceSection from './components/BalanceSection';
-import UserInfoBar from './components/UserInfoBar';
-import PostPopUp from "./components/PostPopUp";
-import SelfPosts from "./components/SelfPosts";
-import OtherUserPosts from "./components/OtherUserPosts";
+import UserInfoBar from '../components/UserInfoBar';
+import PostPopUp from "../components/PostPopUp";
+import SelfPosts from "../components/SelfPosts";
+import OtherUserPosts from "../components/OtherUserPosts";
 import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { firebase } from '../data/firebase';
+import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
 
@@ -122,7 +122,7 @@ const ActivityScreen = ({ route, navigation }) => {
   const theme = useContext(AppContext).theme;
   const colors = useContext(ThemeContext).colors[theme];
   const headerHeight = useHeaderHeight();
-  const tabBarheight = useBottomTabBarHeight();
+  const tabBarHeight = useBottomTabBarHeight();
   const fullWidth = Dimensions.get("window").width;
 
   const [modal, setModal] = useState(false);
@@ -257,7 +257,7 @@ const ActivityScreen = ({ route, navigation }) => {
                   alignItems: "center",
                   marginBottom: 5,
                   height: 110,
-                  marginBottom: tabBarheight + 5,
+                  marginBottom: tabBarHeight + 5,
                   justifyContent: 'center'
                 }}>
                 <Text

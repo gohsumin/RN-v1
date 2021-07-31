@@ -10,7 +10,7 @@ import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createStackNavigator();
 
-const ActivityStackNavigator = () => {
+const ProfileStackNavigator = () => {
 
   const { theme } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
@@ -51,4 +51,4 @@ const ActivityStackNavigator = () => {
   );
 };
 
-export { ActivityStackNavigator };
+export { ProfileStackNavigator };

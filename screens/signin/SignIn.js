@@ -10,10 +10,10 @@ import {
     StatusBar,
     Alert
 } from 'react-native';
-import AppContext from '../data/AppContext';
-import PostsContext from '../data/PostsContext';
+import AppContext from '../../data/AppContext';
+import PostsContext from '../../data/PostsContext';
 import * as Google from 'expo-google-app-auth';
-import { firebase } from '../data/firebase';
+import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 import "firebase/auth";
 import { showMessage } from "react-native-flash-message";

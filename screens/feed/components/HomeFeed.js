@@ -6,8 +6,8 @@ import {
     RefreshControl,
 } from "react-native";
 import FeedItem from './FeedItem';
-import AppContext from '../../data/AppContext';
-import ThemeContext from '../../data/ThemeContext';
+import AppContext from '../../../data/AppContext';
+import ThemeContext from '../../../data/ThemeContext';
 
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 

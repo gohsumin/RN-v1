@@ -3,7 +3,6 @@ import { Text, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/Home";
 import ActivityScreen from "../screens/Profile";
-import ActivityModalNavigator from "./ActivityModalNavigator";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 

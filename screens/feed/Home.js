@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import AppContext from "../data/AppContext";
-import ThemeContext from "../data/ThemeContext";
+import AppContext from "../../data/AppContext";
+import ThemeContext from "../../data/ThemeContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
-import { firebase } from '../data/firebase';
+import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
 const firestore = firebase.firestore();

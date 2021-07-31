@@ -4,9 +4,9 @@ import {
     View,
     TouchableOpacity,
 } from "react-native";
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
-import UsersContext from '../../data/UsersContext';
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
+import UsersContext from '../../../data/UsersContext';
 
 function UpdateUser() {
 

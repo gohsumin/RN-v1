@@ -6,7 +6,7 @@ import ThemeContext from "../../data/ThemeContext";
 
 function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
 
-    const tabBarheight = useBottomTabBarHeight();
+    const tabBarHeight = useBottomTabBarHeight();
     const WINDOW_WIDTH = Dimensions.get('window').width;
     const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
@@ -62,7 +62,7 @@ function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
             renderItem={renderItem}
             //extraData={toggleRender}
             keyExtractor={(item, index) => item.id}
-            ListFooterComponent={<View style={{ height: tabBarheight }} />}
+            ListFooterComponent={<View style={{ height: tabBarHeight }} />}
         />
     )
 }

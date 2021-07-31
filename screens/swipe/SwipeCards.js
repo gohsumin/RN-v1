@@ -9,13 +9,13 @@ import {
     SafeAreaView,
     TouchableOpacity
 } from "react-native";
-import PostsContext from "../data/PostsContext";
-import ThemeContext from "../data/ThemeContext";
-import SwipeCardsContext from "../data/SwipeCardsContext";
+import PostsContext from "../../data/PostsContext";
+import ThemeContext from "../../data/ThemeContext";
+import SwipeCardsContext from "../../data/SwipeCardsContext";
 import { LinearGradient } from 'expo-linear-gradient';
-import AppContext from '../data/AppContext';
+import AppContext from '../../data/AppContext';
 import { useHeaderHeight } from '@react-navigation/stack';
-import { firebase } from '../data/firebase';
+import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 
 function SwipeScreen({ navigation }) {

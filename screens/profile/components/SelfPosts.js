@@ -6,7 +6,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 function SelfPosts({ userFeed }) {
 
     const WINDOW_WIDTH = Dimensions.get('window').width;
-    const tabBarheight = useBottomTabBarHeight();
+    const tabBarHeight = useBottomTabBarHeight();
 
     const renderSeparator = () => {
         return (
@@ -36,7 +36,7 @@ function SelfPosts({ userFeed }) {
             }
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={renderSeparator}
-            ListFooterComponent={<View style={{height: tabBarheight}}/>}
+            ListFooterComponent={<View style={{height: tabBarHeight}}/>}
         />
     )
 }

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import AppContext from '../data/AppContext';
-import PostsContext from '../data/PostsContext';
-import { firebase } from '../data/firebase';
+import AppContext from '../../data/AppContext';
+import PostsContext from '../../data/PostsContext';
+import { firebase } from '../../data/firebase';
 require("firebase/functions");
 import "firebase/firestore";
 const firestore = firebase.firestore();
