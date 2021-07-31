@@ -217,24 +217,24 @@ const HomeScreen = ({ navigation }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.homeBackground,
         alignItems: "center"
       }}
     >
       <LinearGradient
         style={{
           width: "100%",
-          height: 110,
+          height: 105,
           justifyContent: 'flex-end',
         }}
-        colors={colors.headerGradient}
-        locations={[0.3, 1]}
+        colors={colors.homeHeaderGradient}
+        locations={[0.1, 0.8]}
         >
         <Text
           style={{
             textAlignVertical: 'bottom',
             marginLeft: 30,
-            marginBottom: 7,
+            marginBottom: 12,
             fontSize: 37,
             fontWeight: 'bold',
             color: colors.antiBackground
@@ -250,7 +250,7 @@ const HomeScreen = ({ navigation }) => {
         flatlistRef={flatlistRef}
         navigation={navigation}
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           position: 'absolute',
           bottom: 20,
@@ -271,7 +271,7 @@ const HomeScreen = ({ navigation }) => {
           }}>
           <AntDesign name="addfile" size={24} color='rgba(200, 180, 200, 1)' />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       {loadRequested &&
         <View style={{ position: 'absolute', alignItems: 'center', bottom: 10 }}>
           <ActivityIndicator size="small" color="white" />

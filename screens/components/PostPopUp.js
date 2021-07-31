@@ -7,6 +7,8 @@ import FeedItem from './FeedItem';
 import AppContext from '../../data/AppContext';
 import ThemeContext from "../../data/ThemeContext";
 import { useEffect } from 'react/cjs/react.development';
+import { useHeaderHeight } from "@react-navigation/stack";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 function PostPopUp({ info }) {
 
@@ -20,6 +22,9 @@ function PostPopUp({ info }) {
 
     const theme = React.useContext(AppContext).theme;
     const colors = React.useContext(ThemeContext).colors[theme];
+
+    const headerHeight = useHeaderHeight();
+    const tabBarHeight = useBottomTabBarHeight();
 
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -39,10 +44,11 @@ function PostPopUp({ info }) {
             {
                 flex: 1,
                 width: "100%",
-                height: "100%",
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
+                top: 0,
+                bottom: - tabBarHeight,
                 backgroundColor: 'rgba(255, 255, 255, 0.4)',
                 opacity: fadeAnim
             }

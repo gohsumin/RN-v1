@@ -101,7 +101,7 @@ function FeedItem({
           </Text>
         </View>
 
-        {/* grid with the picture and the title */}
+        {/* grid with the picture */}
         <View
           style={{
             width: rightGridWidth,

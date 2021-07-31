@@ -1,40 +1,45 @@
 import React from "react";
-import { View, Text } from 'react-native';
-import { createStackNavigator } from "@react-navigation/stack";
+import { View, Text, Dimensions } from 'react-native';
+import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import ActivityScreen from "../screens/Profile";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { useEffect } from "react/cjs/react.development";
 import UpdateUser from '../screens/components/UpdateUser';
+import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createStackNavigator();
 
 const ActivityStackNavigator = () => {
 
-  const { theme, user } = React.useContext(AppContext);
+  const { theme } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
 
   const screenOptionStyle = {
     headerStyle: {
-      backgroundColor: colors.foreground4,
+      backgroundColor: 'transparent',
       height: 83,
       shadowColor: 'transparent',
     },
     cardStyle: {
-      backgroundColor: colors.background
+      backgroundColor: 'transparent'
     },
     headerTitleStyle: { marginTop: 10, fontSize: 18 },
     headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,
+    headerTransparent: true,
     headerBackTitle: "Back",
   };
-  
+
   return (
-    <Stack.Navigator initialRouteName={"Profile"} screenOptions={screenOptionStyle}>
+    <Stack.Navigator initialRouteName={""} screenOptions={screenOptionStyle}>
       <Stack.Screen
         name="Profile"
         component={ActivityScreen}
-        options={{ headerLeft: null, gestureEnabled: false }}
+        options={{
+          headerLeft: null,
+          gestureEnabled: false,
+        }}
       >
       </Stack.Screen>
       <Stack.Screen

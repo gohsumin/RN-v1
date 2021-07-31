@@ -16,16 +16,20 @@ const HomeStackNavigator = () => {
 
   const screenOptionStyle = {
     headerStyle: {
-      backgroundColor: colors.foreground4,
+      backgroundColor: 'transparent',
       height: 83,
       shadowColor: 'transparent',
     },
     cardStyle: {
-      backgroundColor: colors.background
+      backgroundColor: 'transparent'
     },
-    headerTitleStyle: { marginTop: 10, fontSize: 18 },
+    headerTitleStyle: {
+      marginTop: 10,
+      fontSize: 18,
+    },
     headerTitleAlign: 'center',
     headerTintColor: colors.antiBackground,
+    headerTransparent: true,
     headerBackTitle: "Back",
   };
 

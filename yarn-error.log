@@ -1,0 +1,91 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/mongodb-database-tools-macos-x86_64-100.1.1/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  12.17.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@react: Request "https://registry.yarnpkg.com/@react" returned a 405
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66997:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140662:22)
+      at Request.emit (events.js:315:20)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141634:10)
+      at Request.emit (events.js:315:20)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141556:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (_stream_readable.js:1221:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21)
+
+npm manifest: 
+  {
+    "main": "node_modules/expo/AppEntry.js",
+    "scripts": {
+      "start": "expo start",
+      "android": "expo start --android",
+      "ios": "expo start --ios",
+      "web": "expo start --web",
+      "eject": "expo eject"
+    },
+    "dependencies": {
+      "@react": "^16.13.1",
+      "@react-native-community/masked-view": "^0.1.0",
+      "@react-native-community/picker": "^1.8.1",
+      "@react-native-firebase/app": "^12.1.0",
+      "@react-native-picker/picker": "1.9.11",
+      "@react-navigation/bottom-tabs": "^5.11.11",
+      "@react-navigation/native": "^5.9.4",
+      "@react-navigation/stack": "^5.14.5",
+      "core-js": "^3.3",
+      "expo": "^1.0.0",
+      "expo-app-loading": "^1.0.3",
+      "expo-blur": "~9.0.3",
+      "expo-firebase-core": "~3.0.0",
+      "expo-google-app-auth": "^8.1.7",
+      "expo-image-picker": "~10.1.4",
+      "expo-linear-gradient": "~9.1.0",
+      "expo-permissions": "~12.0.1",
+      "expo-status-bar": "~1.0.4",
+      "firebase": "^8.2.3",
+      "firebase-tools": "^9.13.0",
+      "js-cookie": "^2.2.1",
+      "prop-types": "^15.0",
+      "react-firebase-hooks": "^3.0.4",
+      "react-gmail": "^1.0.1",
+      "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
+      "react-native-flash-message": "^0.1.23",
+      "react-native-gesture-handler": "^1.10.3",
+      "react-native-keycode": "^1.1.2",
+      "react-native-reanimated": "~2.1.0",
+      "react-native-redash": "^16.0.11",
+      "react-native-safe-area-context": "3.2.0",
+      "react-native-screens": "^3.0.0",
+      "react-native-vector-icons": "^8.1.0",
+      "react-navigation": "^4.4.4",
+      "react-navigation-stack": "^2.10.4"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.9.0",
+      "@types/jest": "^26.0.23",
+      "@types/react": "^17.0.11",
+      "@types/react-native": "^0.64.10",
+      "@types/react-test-renderer": "^17.0.1",
+      "typescript": "^4.3.4"
+    },
+    "private": true
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

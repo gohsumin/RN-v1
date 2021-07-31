@@ -6,20 +6,26 @@ import {
     RefreshControl,
 } from "react-native";
 import FeedItem from './FeedItem';
+import AppContext from '../../data/AppContext';
+import ThemeContext from '../../data/ThemeContext';
 
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const WINDOW_WIDTH = Dimensions.get("window").width;
+    const { theme } = React.useContext(AppContext);
+    const colors = React.useContext(ThemeContext).colors[theme];
 
     const renderSeparator = () => {
         return (
             <View
                 style={{
                     height: 0.4,
-                    width: "100%",
-                    backgroundColor: "#808080",
+                    width: "85%",
+                    backgroundColor: colors.foreground2,
                     opacity: 0.5,
-                    alignSelf: "flex-end",
+                    alignSelf: "center",
+                    marginTop: 6,
+                    marginBottom: 2
                 }}
             />
         );

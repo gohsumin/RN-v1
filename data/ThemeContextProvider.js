@@ -6,6 +6,7 @@ class ThemeContextProvider extends Component {
     colors: {
         dark: {
             background: 'black',
+            homeBackground: '#0d0d0d',
             antiBackground: 'white',
             foreground1: '#908f96',
             foreground2: '#303030',
@@ -14,25 +15,28 @@ class ThemeContextProvider extends Component {
             blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
-            headerGradient: ['rgba(25, 23, 23, 0.96)','black'],
-            tabBarGradient: ['rgba(25, 23, 23, 0.96)', 'rgba(2, 0, 0, 0.98)'],
+            homeHeaderGradient: ['#020000','#0d0d0d'],
+            headerGradient: ['black', '#0e0c0c'],
+            tabBarGradient: ['#0f0d0d', '#020000'],
             tabBarInactiveTint: '#e0e0e0',
             green: "#75fa4d",
         },
         light: {
             background: 'white',
+            homeBackground: '#f9fafa',
             antiBackground: 'black',
             foreground1: '#333',
             foreground2: '#ddd',
             foreground3: '#e8f4ff',
-            foreground4: '#f9f9f9',
+            foreground4: '#f7f7f7',
             blue: '#539dfc',
             availableBalance: '#1cc96b',
             pendingBalance: '#ff851f',
-            headerGradient: ['rgba(225, 223, 223, 1)', 'white'],
-            tabBarGradient: ['rgba(232, 230, 230, 0.96)', 'rgba(255, 255, 255, 0.98)'],
+            homeHeaderGradient: ['white', '#f9fafa'],
+            headerGradient: ['white', '#fbfbfb'],
+            tabBarGradient: ['#fbfbfb', 'white'],
             tabBarInactiveTint: '#222',
-            green: "#ADFF2F",
+            green: "#5e7",
         }
     }
   };

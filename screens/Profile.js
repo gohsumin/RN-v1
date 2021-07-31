@@ -7,12 +7,14 @@ import {
 } from "react-native";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
+import Header from './components/Header';
 import Bio from './components/Bio';
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
+import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../data/firebase';
 import "firebase/firestore";
@@ -105,9 +107,9 @@ const ActivityScreen = ({ route, navigation }) => {
         setIsUser(false);
       }
     }
-    navigation.setOptions({ title: userData.userName });
     getUserData(uid, (userData) => {
       console.log("from getUserData, userID: " + userData.userID);
+      navigation.setOptions({ title: userData.userName });
       setUserData(userData);
       getUserFeed(uid, cursor, (newItems, newCursor) => {
         setCursor(newCursor);
@@ -115,10 +117,11 @@ const ActivityScreen = ({ route, navigation }) => {
         setShow(true);
       })
     })
-  }, [route.params]);
+  }, []);
 
   const theme = useContext(AppContext).theme;
   const colors = useContext(ThemeContext).colors[theme];
+  const headerHeight = useHeaderHeight();
   const tabBarheight = useBottomTabBarHeight();
   const fullWidth = Dimensions.get("window").width;
 
@@ -179,8 +182,8 @@ const ActivityScreen = ({ route, navigation }) => {
       <ScrollView
         style={{
           flex: 1,
-          //alignItems: "center",
           backgroundColor: colors.background,
+          marginTop: headerHeight,
           paddingTop: 40,
           marginHorizontal: 10
         }}
@@ -298,6 +301,10 @@ const ActivityScreen = ({ route, navigation }) => {
   return (
 
     <View style={{ flex: 1, backgroundColor: colors.background }}>
+
+      {/* header */}
+      <Header title={userData.userName} />
+      
       {show ?
         renderView()
         : <View />

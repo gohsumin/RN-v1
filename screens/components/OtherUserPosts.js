@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity, Image, Dimensions } from "react-native";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import AppContext from "../../data/AppContext";
+import ThemeContext from "../../data/ThemeContext";
 
 function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
 
     const tabBarheight = useBottomTabBarHeight();
     const WINDOW_WIDTH = Dimensions.get('window').width;
+    const { theme } = React.useContext(AppContext);
+    const colors = React.useContext(ThemeContext).colors[theme];
 
     const renderItem = ({ item }) => {
 
@@ -17,6 +21,8 @@ function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
             }}>
                 <TouchableOpacity style={{
                     borderRadius: 12,
+                    borderWidth: 0.4,
+                    borderColor: colors.foreground2,
                     overflow: 'hidden',
                     backgroundColor: 'white',
                     width: "100%",
