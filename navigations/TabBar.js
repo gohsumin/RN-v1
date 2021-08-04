@@ -1,17 +1,15 @@
 import React from "react";
-import { View, Platform, StatusBar, TouchableOpacity, Text } from "react-native";
+import { View, Platform, TouchableOpacity, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ClubsScreen from "../screens/Explore.js";
+import ClubsScreen from "../screens/explore/Explore.js";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import { ProfileStackNavigator } from "./ProfileStackNavigator";
 import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
-import FlashMessage from "react-native-flash-message";
 import { LinearGradient } from 'expo-linear-gradient';
 
 const Tab = createBottomTabNavigator();
-const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 
 function TabBar() {
   const theme = React.useContext(AppContext).theme;
@@ -117,8 +115,6 @@ function TabBar() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <StatusBar translucent backgroundColor="transparent" barStyle={theme === "dark" ? "light-content" : "dark-content"} />
-      <FlashMessage position="top" />
       <Tab.Navigator
         tabBar={props => <TabBarComponent {...props} />}
       >

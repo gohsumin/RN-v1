@@ -1,6 +1,6 @@
 import React from "react";
 import { View, FlatList, Dimensions } from "react-native";
-import FeedItem from "./FeedItem";
+import FeedItem from "../../feed/components/FeedItem";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 function SelfPosts({ userFeed }) {

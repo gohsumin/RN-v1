@@ -304,16 +304,16 @@ function SwipeScreen({ navigation }) {
             }}>
                 <TouchableOpacity
                     onPress={swipedLeft}>
-                    <Image source={require('../assets/pass.png')} resizeMode='contain' style={{
+                    <Image source={require('../../assets/pass.png')} resizeMode='contain' style={{
                         width: iconWidth, height: iconHeight,
                     }} />
                 </TouchableOpacity>
-                <Image source={require('../assets/checkall.png')} resizeMode='contain' style={{
+                <Image source={require('../../assets/checkall.png')} resizeMode='contain' style={{
                     width: iconWidth, height: iconHeight,
                 }} />
                 <TouchableOpacity
                     onPress={swipedRight}>
-                    <Image source={require('../assets/check.png')} resizeMode='contain' style={{
+                    <Image source={require('../../assets/check.png')} resizeMode='contain' style={{
                         width: iconWidth, height: iconHeight,
                     }} />
                 </TouchableOpacity>

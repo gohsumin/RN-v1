@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 
 function CommissionsBar({width}) {
 

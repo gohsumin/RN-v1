@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import AppContext from '../../data/AppContext';
-import ThemeContext from '../../data/ThemeContext';
+import AppContext from '../../../data/AppContext';
+import ThemeContext from '../../../data/ThemeContext';
 
 function Header(props) {
 

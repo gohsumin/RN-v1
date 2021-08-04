@@ -4,9 +4,9 @@ import {
     View,
     TouchableOpacity,
 } from "react-native";
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
-import { firebase } from '../../data/firebase';
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
+import { firebase } from '../../../data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
 

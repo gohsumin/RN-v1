@@ -3,8 +3,8 @@ import {
     Text,
     View,
 } from "react-native";
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 import { Entypo } from "@expo/vector-icons";
 
 function BalanceItem({title, amount, index}) {

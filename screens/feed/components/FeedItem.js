@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import { getElapsedTime } from "../../helpers/postsHelpers";
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import { getElapsedTime } from "../../../helpers/postsHelpers";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 function FeedItem({
   item,

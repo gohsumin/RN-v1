@@ -224,17 +224,17 @@ const HomeScreen = ({ navigation }) => {
       <LinearGradient
         style={{
           width: "100%",
-          height: 105,
+          height: 108,
           justifyContent: 'flex-end',
         }}
         colors={colors.homeHeaderGradient}
-        locations={[0.1, 0.8]}
+        locations={[0, 0.7]}
         >
         <Text
           style={{
             textAlignVertical: 'bottom',
-            marginLeft: 30,
-            marginBottom: 12,
+            marginLeft: 33,
+            marginBottom: 14,
             fontSize: 37,
             fontWeight: 'bold',
             color: colors.antiBackground

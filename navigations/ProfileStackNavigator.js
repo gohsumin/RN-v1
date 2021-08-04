@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, Dimensions } from 'react-native';
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
-import ActivityScreen from "../screens/Profile";
+import ActivityScreen from "../screens/profile/Profile";
 import AppContext from "../data/AppContext";
-import ThemeContext from "../data/ThemeContext";
+import ThemeContext from "./../data/ThemeContext";
 import { useEffect } from "react/cjs/react.development";
-import UpdateUser from '../screens/components/UpdateUser';
+import UpdateUser from './../screens/profile/components/UpdateUser';
 import { LinearGradient } from "expo-linear-gradient";
 
 const Stack = createStackNavigator();

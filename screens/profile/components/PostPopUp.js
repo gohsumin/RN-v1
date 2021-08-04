@@ -3,9 +3,9 @@ import {
     TouchableOpacity,
     Animated,
 } from 'react-native';
-import FeedItem from './FeedItem';
-import AppContext from '../../data/AppContext';
-import ThemeContext from "../../data/ThemeContext";
+import FeedItem from '../../feed/components/FeedItem';
+import AppContext from '../../../data/AppContext';
+import ThemeContext from "../../../data/ThemeContext";
 import { useEffect } from 'react/cjs/react.development';
 import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";

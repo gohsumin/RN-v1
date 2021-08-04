@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity, Image, Dimensions } from "react-native";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 
 function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
 

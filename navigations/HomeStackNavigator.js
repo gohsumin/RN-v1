@@ -1,8 +1,8 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "../screens/Home";
-import ActivityScreen from "../screens/Profile";
+import HomeScreen from "../screens/feed/Home";
+import ActivityScreen from "../screens/profile/Profile";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 

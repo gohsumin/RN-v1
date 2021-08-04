@@ -1,17 +1,20 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, StatusBar } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabBar from "../navigations/TabBar";
-import SignInScreen from "../screens/SignIn";
-import SwipeCards from "../screens/SwipeCards";
+import SignInScreen from "../screens/signin/SignIn";
+import LoginScreen from "../screens/signin/components/Login";
+import SignUpScreen from "../screens/signin/components/SignUp";
+import SwipeCards from "../screens/swipe/SwipeCards";
 import AppContext from "../data/AppContext";
 import PostsContext from "../data/PostsContext";
 import ThemeContext from "../data/ThemeContext";
+import FlashMessage from "react-native-flash-message";
 
 const RootStack = createStackNavigator();
 
 const RootStackNavigator = () => {
-  
+
   const { theme, user } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
 
@@ -31,23 +34,37 @@ const RootStackNavigator = () => {
   };
 
   return (
-    <RootStack.Navigator
-      initialRouteName={user === "" ? "Sign In" : "Main"}
-      mode="modal"
-      screenOptions={screenOptionStyle}>
-      <RootStack.Screen
-        name="Sign In"
-        component={SignInScreen}
-        options={{ headerShown: false }}
-      >
-      </RootStack.Screen>
-      <RootStack.Screen
-        name="Main"
-        component={TabBar}
-        options={{ headerShown: false }}
-      />
-      <RootStack.Screen name="Approve Purchases" component={SwipeCards} />
-    </RootStack.Navigator>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <StatusBar translucent backgroundColor="transparent" barStyle={theme === "dark" ? "light-content" : "dark-content"} />
+      <FlashMessage position="top" />
+      <RootStack.Navigator
+        initialRouteName={user === "" ? "Sign In" : "Main"}
+        mode="modal"
+        screenOptions={screenOptionStyle}>
+        <RootStack.Screen
+          name="Sign In"
+          component={SignInScreen}
+          options={{ headerShown: false }}
+        >
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="Login"
+          component={LoginScreen}
+        >
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="Sign Up"
+          component={SignUpScreen}
+        >
+        </RootStack.Screen>
+        <RootStack.Screen
+          name="Main"
+          component={TabBar}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen name="Approve Purchases" component={SwipeCards} />
+      </RootStack.Navigator>
+    </View>
   );
 };
 

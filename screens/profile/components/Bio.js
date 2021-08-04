@@ -4,8 +4,8 @@ import {
     View,
     Image,
 } from "react-native";
-import AppContext from "../../data/AppContext";
-import ThemeContext from "../../data/ThemeContext";
+import AppContext from "../../../data/AppContext";
+import ThemeContext from "../../../data/ThemeContext";
 import { MaterialIcons } from '@expo/vector-icons';
 
 function Bio({ userData }) {
