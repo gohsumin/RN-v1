@@ -33,25 +33,39 @@ const ActivityScreen = ({ route, navigation }) => {
     console.log("getUserData for user " + uid);
 
     // the user data collection
-    const db = firestore.collection('User-Profile').doc(uid);
+    const userProfileDB = firestore.collection('User-Profile').doc(uid);
 
-    db.get().then((doc) => {
+    userProfileDB.get().then((doc) => {
       // TO-DO: also get the folollowing list from 'Following' collection
-      const following = db.collection('Following');
-      const followers = db.collection('Followers');
+      const following = userProfileDB.collection('Following');
+      const followers = userProfileDB.collection('Followers');
+      const userBalanceDB = firestore.collection('User-Balance').doc(uid);
       following.get().then((following) => {
         followers.get().then((followers) => {
+
           let ret = doc.data();
           ret.userID = uid;
           ret.following = [];
           ret.followers = [];
+
           following.forEach((followingDoc) => {
             ret.following.push(followingDoc.id);
           })
           followers.forEach((followersDoc) => {
             ret.followers.push(followersDoc.id);
           })
-          callback(ret);
+          if (uid !== logger) {
+            callback(ret);
+          }
+          else {
+            userBalanceDB.get().then((userBalance) => {
+              console.log("getting user balance");
+              const balance = userBalance.data();
+              ret.available = balance.activeBalance;
+              ret.pending = balance.pendingBalance;
+              callback(ret);
+            })
+          }
         })
       })
     }).catch((error) => { console.log(error) });
@@ -304,7 +318,7 @@ const ActivityScreen = ({ route, navigation }) => {
 
       {/* header */}
       <Header title={userData.userName} />
-      
+
       {show ?
         renderView()
         : <View />

@@ -1,5 +1,4 @@
-//import firebase from "firebase/app";
-import * as firebase from 'firebase';
+import { firebase } from '@firebase/app'
 
 const firebaseConfig = {
     apiKey: "AIzaSyAUSNeT750wI-oDmpQm4AZcsYmZfc-ShSU",
@@ -11,7 +10,14 @@ const firebaseConfig = {
     measurementId: "G-JMPYGPX7P5"
 };
 
-if (!firebase.apps.length) {
+if (firebase.app !== undefined && firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+}
+else if (firebase === undefined) {
+    console.log("firebase is undefined");
+}
+else {
+    console.log("firebase.app is undefined");
     firebase.initializeApp(firebaseConfig);
 }
 

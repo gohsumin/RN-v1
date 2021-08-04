@@ -2,7 +2,7 @@ import React from "react";
 import {
     Text,
     View,
-  } from "react-native";
+} from "react-native";
 import BalanceItem from './BalanceItem';
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
@@ -28,7 +28,7 @@ function BalanceSection({ userData }) {
                 style={{ width: "100%", borderRadius: 9, overflow: "hidden" }}
             >
                 <BalanceItem title={"Available:"} amount={userData.available} index={0} />
-                {/* {renderSeparator()} */}
+                <View style={{ marginHorizontal: 14, height: 0, borderWidth: 0.4, borderColor: colors.foreground2 }} />
                 <BalanceItem title={"Pending:"} amount={userData.pending} index={1} />
             </View>
         </View>

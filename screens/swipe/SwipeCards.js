@@ -9,7 +9,6 @@ import {
     SafeAreaView,
     TouchableOpacity
 } from "react-native";
-import PostsContext from "../../data/PostsContext";
 import ThemeContext from "../../data/ThemeContext";
 import SwipeCardsContext from "../../data/SwipeCardsContext";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -44,9 +43,6 @@ function SwipeScreen({ navigation }) {
 
     // user object for the current user
     const user = useContext(AppContext).user;
-
-    // function that adds a new post to the posts context
-    //const { addPost } = React.useContext(PostsContext);
 
     // pops the first item off the remaining array context
     const popRemaining = useContext(SwipeCardsContext).popRemaining;
