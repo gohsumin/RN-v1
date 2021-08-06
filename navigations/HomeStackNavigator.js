@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/feed/Home";
-import ActivityScreen from "../screens/profile/Profile";
+import ProfileScreen from "../screens/profile/Profile";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 
@@ -40,7 +40,7 @@ const HomeStackNavigator = () => {
           component={HomeScreen}
           options={{ headerLeft: null, headerShown: false }}
         />
-        <HomeStack.Screen name="Profile" component={ActivityScreen} />
+        <HomeStack.Screen name="Profile" component={ProfileScreen} />
       </HomeStack.Navigator>
     </View>
   );

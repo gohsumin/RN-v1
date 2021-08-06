@@ -7,7 +7,7 @@ require("firebase/functions");
 import "firebase/firestore";
 const firestore = firebase.firestore();
 
-const ClubsScreen = ({ navigation }) => {
+const ExploreScreen = ({ navigation }) => {
 
     const { updateTimelineAfterFollowing, updateTimelineAfterUnfollowing } = useContext(PostsContext);
     var followUser = firebase.functions().httpsCallable('followUser');
@@ -78,7 +78,7 @@ const ClubsScreen = ({ navigation }) => {
     )
 }
 
-export default ClubsScreen;
+export default ExploreScreen;
 
 const styles = StyleSheet.create({
     container: {

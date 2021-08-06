@@ -20,11 +20,11 @@ function PostPopUp({ info }) {
         width
     } = info;
 
-    const theme = React.useContext(AppContext).theme;
+    const { platform, theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
-    const headerHeight = useHeaderHeight();
-    const tabBarHeight = useBottomTabBarHeight();
+    const headerHeight = platform === "web" ? 0 : useHeaderHeight();
+    const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
 
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -86,7 +86,6 @@ function PostPopUp({ info }) {
                 <FeedItem
                     item={item}
                     navigate={navigate}
-                    width={width}
                     setting={'popup'}
                 />
             </Animated.View>

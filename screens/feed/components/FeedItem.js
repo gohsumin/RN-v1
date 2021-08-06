@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity, Dimensions } from "react-native";
 import { getElapsedTime } from "../../../helpers/postsHelpers";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
@@ -10,43 +10,49 @@ import CommissionsBar from "./CommissionsBar";
 function FeedItem({
   item,
   navigate,
-  width,
   setting,
 }) {
 
+  const { theme, platform } = React.useContext(AppContext);
+  const colors = React.useContext(ThemeContext).colors[theme];
+
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
-  const itemImageRatio = 0.85;
+  const itemImageRatio = 0.79;
   const titleRatio = 1 - itemImageRatio;
 
   const marginVertical = setting === 'popup' ? 17 : 15;
-  const marginHorizontal = setting === 'popup' ? 14 : 12;
+  const marginHorizontal = platform === "web" ? 150 : setting === 'popup' ? 14 : 12;
 
-  const totalWidth = width;
-  const leftGridWidth = (width - 2 * marginHorizontal) * horLeftRatio;
-  const rightGridWidth = (width - 2 * marginHorizontal) * horRightRatio;
+  const WINDOW_WIDTH = Dimensions.get('window').width;
+  const itemTotalWidth = platform === "web" ? 900 : WINDOW_WIDTH;
+  const leftGridWidth = (itemTotalWidth - 2 * marginHorizontal) * horLeftRatio;
+  const rightGridWidth = (itemTotalWidth - 2 * marginHorizontal) * horRightRatio;
 
-  const theme = React.useContext(AppContext).theme;
-  const colors = React.useContext(ThemeContext).colors[theme];
 
   return (
     <View
       key={item.id}
       style={{
-        width: totalWidth,
+        width: WINDOW_WIDTH,
         flexDirection: "row",
         marginVertical: marginVertical,
-        paddingHorizontal: marginHorizontal,
         justifyContent: "center",
       }}
     >
-      {console.log("FeedItem with key "+item.id)}
+      {/* horizontal padding */}
+      <View style={{ width: (WINDOW_WIDTH - itemTotalWidth) / 2 }} />
+
+      {console.log("FeedItem with key " + item.id)}
       {/* profile pic */}
       <TouchableOpacity
         onPress={navigate}
         style={{
           width: leftGridWidth,
           height: leftGridWidth,
+          shadowColor: colors.background,
+          shadowOpacity: 0.6,
+          shadowRadius: 10,
         }}
       >
         <Image
@@ -76,12 +82,22 @@ function FeedItem({
               fontWeight: "bold",
               fontSize: 17,
               color: colors.antiBackground,
+              textShadowColor: colors.background,
+              textShadowOpacity: 0.6,
+              textShadowRadius: 10,
             }}
           >
             {item.userName} bought:
           </Text>
           <Text
-            style={{ fontSize: 14.3, color: colors.foreground1, opacity: 0.9 }}
+            style={{
+              fontSize: 14.3,
+              color: colors.foreground1,
+              opacity: 0.9,
+              textShadowColor: colors.background,
+              textShadowOpacity: 0.6,
+              textShadowRadius: 10,
+            }}
           >
             {item.itemName}
           </Text>
@@ -91,6 +107,9 @@ function FeedItem({
             opacity: 0.9,
             marginTop: -2,
             textAlignVertical: 'center',
+            textShadowColor: colors.background,
+            textShadowOpacity: 0.6,
+            textShadowRadius: 10,
           }}>
             {getElapsedTime(item.dateApproved.seconds)}
             <Text style={{ fontSize: 12 }}>
@@ -105,15 +124,16 @@ function FeedItem({
           style={{
             width: rightGridWidth,
             flexDirection: "row",
-            marginBottom: 14.5
+            marginBottom: 14.5,
           }}
         >
           <TouchableOpacity
             style={{
               borderRadius: 20,
               overflow: 'hidden',
-              borderWidth: 0.4,
-              borderColor: colors.foreground1
+              shadowColor: colors.background,
+              shadowOpacity: 0.6,
+              shadowRadius: 10,
             }}>
             <Image
               fadeDuration={0}
@@ -155,6 +175,9 @@ function FeedItem({
           // grid with the buttons, e.g. number of likes; maybe add share button later
           : <FeedBottomBar numBought={item.numBought} />}
       </View>
+
+      {/* horizontal padding */}
+      <View style={{ width: (WINDOW_WIDTH - itemTotalWidth) / 2 }} />
     </View>
   );
 }

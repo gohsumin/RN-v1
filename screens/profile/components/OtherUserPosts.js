@@ -6,10 +6,10 @@ import ThemeContext from "../../../data/ThemeContext";
 
 function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
 
-    const tabBarHeight = useBottomTabBarHeight();
-    const WINDOW_WIDTH = Dimensions.get('window').width;
-    const { theme } = React.useContext(AppContext);
+    const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
+    const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
+    const WINDOW_WIDTH = Dimensions.get('window').width;
 
     const renderItem = ({ item }) => {
 
@@ -37,7 +37,6 @@ function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
                                 navigate: navigation.navigate,
                                 setModal: setModal,
                                 key: item.id,
-                                width: WINDOW_WIDTH,
                             }
                         );
                         setModal(true);

@@ -5,12 +5,15 @@ import ThemeContext from "../../data/ThemeContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
+import WebNavigationTopView from "../web/WebNavigationTopView";
+import WebNavigationLeftView from "../web/WebNavigationLeftView";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
+import WebBackgroundView from "../web/WebBackgroundView";
 const firestore = firebase.firestore();
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const [cursor, setCursor] = useState(0);
@@ -19,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
   const [newPostExists, setNewPostExists] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
-  const { theme, uid } = React.useContext(AppContext);
+  const { theme, uid, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
   const flatlistRef = useRef();
   const loadSize = 8;
@@ -218,30 +221,41 @@ const HomeScreen = ({ navigation }) => {
       style={{
         flex: 1,
         backgroundColor: colors.homeBackground,
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
-      <LinearGradient
-        style={{
-          width: "100%",
-          height: 108,
-          justifyContent: 'flex-end',
-        }}
-        colors={colors.homeHeaderGradient}
-        locations={[0, 0.7]}
-        >
-        <Text
+      {platform === "web" &&
+        <View
           style={{
-            textAlignVertical: 'bottom',
-            marginLeft: 33,
-            marginBottom: 14,
-            fontSize: 37,
-            fontWeight: 'bold',
-            color: colors.antiBackground
+            position: 'absolute',
+            width: 700,
+            height: "100%",
+            backgroundColor: "#151515"
           }}>
-          Home
-        </Text>
-      </LinearGradient>
+        </View>
+      }
+      {platform !== "web" &&
+        <LinearGradient
+          style={{
+            width: "100%",
+            height: 108,
+            justifyContent: 'flex-end',
+          }}
+          colors={colors.homeHeaderGradient}
+          locations={[0, 0.7]}
+        >
+          <Text
+            style={{
+              textAlignVertical: 'bottom',
+              marginLeft: 33,
+              marginBottom: 14,
+              fontSize: 37,
+              fontWeight: 'bold',
+              color: colors.antiBackground
+            }}>
+            Home
+          </Text>
+        </LinearGradient>}
       <HomeFeed
         posts={posts}
         onEndReached={onEndReached}
@@ -303,6 +317,15 @@ const HomeScreen = ({ navigation }) => {
           <AntDesign name="arrowup" size={17} color="white" />
         </TouchableOpacity>}
       {!isReady && <AppLoading />}
+      {platform === "web" &&
+        <WebBackgroundView />}
+      {platform === "web" &&
+        <WebNavigationTopView
+          navigation={navigation}
+          route={route} />}
+      {platform === "web" &&
+        <WebNavigationLeftView
+          navigation={navigation} />}
     </SafeAreaView>
   );
 };

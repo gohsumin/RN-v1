@@ -12,7 +12,7 @@ import ThemeContext from '../../../data/ThemeContext';
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const WINDOW_WIDTH = Dimensions.get("window").width;
-    const { theme } = React.useContext(AppContext);
+    const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
     const renderSeparator = () => {
@@ -20,7 +20,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
             <View
                 style={{
                     height: 0.4,
-                    width: "85%",
+                    width: platform === "web" ? 600 : "85%",
                     backgroundColor: colors.foreground2,
                     opacity: 0.5,
                     alignSelf: "center",
@@ -37,10 +37,14 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
             navigate={() => {
                 navigation.navigate("Profile", { uid: item.userID });
             }}
-            width={WINDOW_WIDTH}
             setting={'feed'}
         />
     ), []);
+
+    const renderHeader = () => {
+        if (platform !== "web") return null;
+        return <View style={{ height: 95 }} />
+    }
 
     const keyExtractor = React.useCallback((item) => item.id, []);
 
@@ -54,6 +58,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
                     onRefresh={onRefresh}
                 />
             }
+            ListHeaderComponent={renderHeader}
             renderItem={renderItem}
             disableIntervalMomentum={true}
             showsVerticalScrollIndicator={true}

@@ -7,18 +7,25 @@ import {
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import { MaterialIcons } from '@expo/vector-icons';
+import { useHeaderHeight } from "@react-navigation/stack";
 
 function Bio({ userData }) {
 
-    const theme = React.useContext(AppContext).theme;
+    const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
+
+    const headerHeight = platform === "web" ? 0 : useHeaderHeight();
+
     return (
-        <View style={{ alignItems: 'center' }}>
+        <View style={{
+            alignItems: 'center',
+            paddingTop: platform === "web" ? 120 : headerHeight + 40,
+        }}>
             {/* profile image */}
             <Image
                 fadeDuration={0}
-                source={{uri: userData.userImageURL}}
+                source={{ uri: userData.userImageURL }}
                 style={{ width: 160, height: 160, borderRadius: 12 }}
             />
             {/* user name and verified icon */}

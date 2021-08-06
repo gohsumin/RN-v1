@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { LogBox, AsyncStorageStatic } from "react-native";
+import { LogBox, Platform } from "react-native";
 import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
@@ -34,6 +34,7 @@ export default class App extends React.Component {
       uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
       theme: "dark",
     };
+    this.platform = Platform.OS;
     this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
     this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
   }
@@ -145,6 +146,7 @@ export default class App extends React.Component {
         popRemaining: this.popRemaining
       }}>
         <AppContext.Provider value={{
+          platform: this.platform,
           user: this.state.user,
           uid: this.state.uid, theme: this.state.theme,
           setUser: this.setUser,

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Platform, TouchableOpacity, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ClubsScreen from "../screens/explore/Explore.js";
+import ExploreScreen from "../screens/explore/Explore.js";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import { ProfileStackNavigator } from "./ProfileStackNavigator";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -119,7 +119,7 @@ function TabBar() {
         tabBar={props => <TabBarComponent {...props} />}
       >
         <Tab.Screen name="Home" component={HomeStackNavigator} />
-        <Tab.Screen name="Explore" component={ClubsScreen} />
+        <Tab.Screen name="Explore" component={ExploreScreen} />
         <Tab.Screen name="Profile" component={ProfileStackNavigator} />
       </Tab.Navigator>
     </View>

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Dimensions } from 'react-native';
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
-import ActivityScreen from "../screens/profile/Profile";
+import ProfileScreen from "../screens/profile/Profile";
 import AppContext from "../data/AppContext";
 import ThemeContext from "./../data/ThemeContext";
 import { useEffect } from "react/cjs/react.development";
@@ -35,7 +35,7 @@ const ProfileStackNavigator = () => {
     <Stack.Navigator initialRouteName={""} screenOptions={screenOptionStyle}>
       <Stack.Screen
         name="Profile"
-        component={ActivityScreen}
+        component={ProfileScreen}
         options={{
           headerLeft: null,
           gestureEnabled: false,

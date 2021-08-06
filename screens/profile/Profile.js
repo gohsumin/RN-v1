@@ -8,25 +8,28 @@ import {
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import Header from './components/Header';
+import WebBackgroundView from "../web/WebBackgroundView";
+import WebNavigationLeftView from "../web/WebNavigationLeftView";
+import WebNavigationTopView from "../web/WebNavigationTopView";
 import Bio from './components/Bio';
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
-import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
 
-const ActivityScreen = ({ route, navigation }) => {
+const ProfileScreen = ({ route, navigation }) => {
   const [isReady, setIsReady] = useState(false);
   const [isUser, setIsUser] = useState(true);
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState([]);
   const [cursor, setCursor] = useState(0);
   const logger = useContext(AppContext).uid;
+  const { platform } = useContext(AppContext);
   const [show, setShow] = useState(false);
 
   function getUserData(uid, callback) {
@@ -135,8 +138,7 @@ const ActivityScreen = ({ route, navigation }) => {
 
   const theme = useContext(AppContext).theme;
   const colors = useContext(ThemeContext).colors[theme];
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
+  const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
   const fullWidth = Dimensions.get("window").width;
 
   const [modal, setModal] = useState(false);
@@ -196,9 +198,6 @@ const ActivityScreen = ({ route, navigation }) => {
       <ScrollView
         style={{
           flex: 1,
-          backgroundColor: colors.background,
-          marginTop: headerHeight,
-          paddingTop: 40,
           marginHorizontal: 10
         }}
         refreshControl={
@@ -314,10 +313,26 @@ const ActivityScreen = ({ route, navigation }) => {
 
   return (
 
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
+    <View style={{
+      flex: 1,
+      backgroundColor: platform === "web" ? colors.homeBackground : colors.background,
+    }}>
+
+      {/* web view background gray */}
+      {platform === "web" &&
+        <View
+          style={{
+            position: 'absolute',
+            width: 700,
+            height: "100%",
+            alignSelf: 'center',
+            backgroundColor: "#151515"
+          }}>
+        </View>
+      }
 
       {/* header */}
-      <Header title={userData.userName} />
+      {platform !== "web" && <Header title={userData.userName} />}
 
       {show ?
         renderView()
@@ -333,7 +348,16 @@ const ActivityScreen = ({ route, navigation }) => {
           <ActivityIndicator size="small" color="white" />
         </View>}
       {modal && <PostPopUp info={modalInfo} />}
+      {platform === "web" &&
+        <WebBackgroundView />}
+      {platform === "web" &&
+        <WebNavigationTopView
+          navigation={navigation}
+          userName={userData.userName} />}
+      {platform === "web" &&
+        <WebNavigationLeftView
+          navigation={navigation} />}
     </View>
   );
 };
-export default ActivityScreen;
+export default ProfileScreen;

@@ -6,7 +6,7 @@ class ThemeContextProvider extends Component {
     colors: {
         dark: {
             background: 'black',
-            homeBackground: '#0d0d0d',
+            homeBackground: '#111',
             antiBackground: 'white',
             foreground1: '#908f96',
             foreground2: '#303030',
@@ -15,7 +15,7 @@ class ThemeContextProvider extends Component {
             blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
-            homeHeaderGradient: ['#020000','#0d0d0d'],
+            homeHeaderGradient: ['#020000','#111'],
             headerGradient: ['black', '#0e0c0c'],
             tabBarGradient: ['#0f0d0d', '#020000'],
             tabBarInactiveTint: '#e0e0e0',
