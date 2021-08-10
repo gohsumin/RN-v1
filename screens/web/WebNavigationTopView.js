@@ -1,18 +1,25 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Image, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
+import StyleContext from '../../data/StyleContext';
 import Icon from "react-native-vector-icons/Ionicons";
 
 const WebNavigationTopView = ({ navigation, userName }) => {
 
     const { theme, user } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
+    const {
+        getLeftViewButtonWidth,
+        getDynamicLeftViewWidth,
+        logoCollapsePoint,
+        stickyPadding,
+    } = React.useContext(StyleContext).web;
 
     const { index, routes } = navigation.dangerouslyGetState();
     const currentRoute = routes[index].name;
-    const headerText = currentRoute === "Profile" ? userName : currentRoute;
+
+    const window = useWindowDimensions();
 
     return (
         <View
@@ -21,15 +28,6 @@ const WebNavigationTopView = ({ navigation, userName }) => {
                 width: "100%",
                 height: 80,
             }}>
-            {/* <LinearGradient
-                style={{
-                    //position: 'absolute',
-                    width: "100%",
-                    height: "100%",
-                }}
-                locations={[0.8, 1]}
-                colors={[colors.homeBackground, 'rgba(255, 255, 255, 0)']}>
-            </LinearGradient> */}
             <View
                 style={{
                     width: 706,
@@ -41,12 +39,7 @@ const WebNavigationTopView = ({ navigation, userName }) => {
                     alignSelf: 'center',
                     alignItems: 'center',
                     backgroundColor: "#222",
-                    shadowColor: 'black',
-                    shadowOpacity: 1,
-                    shadowRadius: 15,
                     borderRadius: 13,
-                    // borderColor: colors.foreground2,
-                    // borderWidth: 0.1
                 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -71,32 +64,77 @@ const WebNavigationTopView = ({ navigation, userName }) => {
                         borderWidth: 0.1,
                         marginLeft: 13
                     }} />
-                <View style={{
-                    marginLeft: 14,
-                    marginBottom: 3,
-                }}>
-                    <Text
-                        style={{
-                            color: colors.antiBackground,
-                            opacity: 0.8,
-                            fontSize: 25,
-                            fontWeight: '400',
-                            textShadowColor: 'black',
-                            textShadowRadius: 3,
-                            textShadowOpacity: 1,
-                        }}>
-                        {currentRoute === "Profile" ? "Profile" : headerText}
-                    </Text>
-                    {currentRoute === "Profile" &&
+                {(currentRoute === "Profile" || currentRoute === "My Profile") ?
+                    <View style={{
+                        marginLeft: 14,
+                        marginBottom: 3,
+                    }}>
+                        <Text
+                            style={{
+                                color: colors.antiBackground,
+                                opacity: 0.8,
+                                fontSize: 25,
+                                fontWeight: '400',
+                                textShadowColor: 'black',
+                                textShadowRadius: 3,
+                                textShadowOpacity: 1,
+                            }}>
+                            Profile
+                        </Text>
                         <Text
                             style={{
                                 color: colors.foreground1,
                                 fontSize: 18,
                                 fontWeight: '500',
                             }}>
-                            {headerText}
-                        </Text>}
-                </View>
+                            {userName}
+                        </Text>
+                    </View> :
+                    <View style={{
+                        marginLeft: 14,
+                        marginBottom: 3,
+                    }}>
+                        <Text
+                            style={{
+                                color: colors.antiBackground,
+                                opacity: 0.8,
+                                fontSize: 25,
+                                fontWeight: '400',
+                                textShadowColor: 'black',
+                                textShadowRadius: 3,
+                                textShadowOpacity: 1,
+                            }}>
+                            {currentRoute}
+                        </Text>
+                    </View>
+                }
+            </View>
+            <View
+                style={{
+                    position: 'absolute',
+                    height: 80,
+                    width: getDynamicLeftViewWidth(window.width),
+                    justifyContent: 'center',
+                    alignItems: window.width < logoCollapsePoint ? 'flex-start' : 'center',
+                    paddingLeft: window.width < logoCollapsePoint ? stickyPadding - 6 : 0,
+                    // borderWidth: 1,
+                    // borderColor: 'red',
+                }}>
+                <Image
+                    style={{
+                        width: window.width < logoCollapsePoint ? 50 : getLeftViewButtonWidth(window.width),
+                        height: "100%",
+                        marginTop: (window.width < logoCollapsePoint) ? 0 : -2,
+                        shadowColor: 'black',
+                        shadowRadius: 5,
+                        shadowOpacity: 1,
+                        // borderWidth: 1,
+                        // borderColor: 'orange',
+                    }}
+                    resizeMode='contain'
+                    source={(window.width < logoCollapsePoint) ?
+                        require('../../assets/logo.png') :
+                        require('../../assets/SoShNavLogo.png')} />
             </View>
         </View >
     )

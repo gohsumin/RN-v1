@@ -26,7 +26,14 @@ function Bio({ userData }) {
             <Image
                 fadeDuration={0}
                 source={{ uri: userData.userImageURL }}
-                style={{ width: 160, height: 160, borderRadius: 12 }}
+                style={{
+                    width: 160,
+                    height: 160,
+                    borderRadius: 12,
+                    shadowColor: 'black',
+                    shadowOpacity: 0.3,
+                    shadowRadius: 10
+                }}
             />
             {/* user name and verified icon */}
             <View style={{

@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
+import StyleContext from "../../data/StyleContext";
 import Header from './components/Header';
 import WebBackgroundView from "../web/WebBackgroundView";
 import WebNavigationLeftView from "../web/WebNavigationLeftView";
@@ -136,10 +137,38 @@ const ProfileScreen = ({ route, navigation }) => {
     })
   }, []);
 
+  useEffect(() => {
+    var uid = "";
+    if (route.params === undefined) {
+      console.log("this is how we know it's a user's me page");
+      uid = logger;
+    }
+    else {
+      uid = route.params.uid;
+      if (uid !== logger) {
+        setIsUser(false);
+      }
+      else {
+        setIsUser(true);
+      }
+    }
+    getUserData(uid, (userData) => {
+      console.log("from getUserData, userID: " + userData.userID);
+      navigation.setOptions({ title: userData.userName });
+      setUserData(userData);
+      getUserFeed(uid, cursor, (newItems, newCursor) => {
+        setCursor(newCursor);
+        setUserFeed(newItems);
+        setShow(true);
+      })
+    })
+  }, [route]);
+
   const theme = useContext(AppContext).theme;
   const colors = useContext(ThemeContext).colors[theme];
   const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
   const fullWidth = Dimensions.get("window").width;
+  const webCenterSectionWidth = useContext(StyleContext).web.centerSectionWidth;
 
   const [modal, setModal] = useState(false);
   const [modalInfo, setModalInfo] = useState(null);
@@ -198,7 +227,8 @@ const ProfileScreen = ({ route, navigation }) => {
       <ScrollView
         style={{
           flex: 1,
-          marginHorizontal: 10
+          width: "100%",
+          alignSelf: 'center',
         }}
         refreshControl={
           <RefreshControl
@@ -212,56 +242,47 @@ const ProfileScreen = ({ route, navigation }) => {
           }
         }}
       >
+        <View
+          style={{
+            width: platform === "web" ? webCenterSectionWidth - 100 : "100%",
+            alignSelf: 'center'
+          }}>
 
-        {/* profile pic, name, bio */}
-        <Bio userData={userData} />
+          {/* profile pic, name, bio */}
+          <Bio userData={userData} />
 
-        <View style={{ height: 23 }} />
+          <View style={{ height: 23 }} />
 
-        {/* following | followers | edit/follow */}
-        <UserInfoBar
-          userData={userData}
-          isUser={isUser}
-          setUserData={setUserData}
-          navigate={navigation.navigate}
-        />
+          {/* following | followers | edit/follow */}
+          <UserInfoBar
+            userData={userData}
+            isUser={isUser}
+            setUserData={setUserData}
+            navigate={navigation.navigate}
+          />
 
-        {/* user balance info */}
-        {isUser && <BalanceSection userData={userData} />}
+          {/* user balance info */}
+          {isUser && <BalanceSection userData={userData} />}
 
-        <View style={{ height: 30 }} />
+          <View style={{ height: 30 }} />
 
-        <View style={{
-          marginVertical: 0,
-        }}>
-          {isUser && (
-            <Text
-              style={{
-                color: colors.foreground1,
-                alignSelf: "flex-start",
-                paddingLeft: 5,
-                paddingBottom: 5,
-              }}
-            >
-              MY POSTS
-            </Text>
-          )}
-          {(isUser && (userFeed.length > 0)) ?
-            /* user's posts */
-            <View
-              style={{
-                borderRadius: 9,
-                backgroundColor: colors.foreground4,
-                overflow: "hidden",
-                alignItems: "center",
-                marginBottom: 5,
-              }}
-            >
-              <SelfPosts
-                userFeed={userFeed}
-              />
-            </View> :
-            (isUser && (userFeed.length === 0)) ?
+          <View style={{
+            marginVertical: 0,
+          }}>
+            {isUser && (
+              <Text
+                style={{
+                  color: colors.foreground1,
+                  alignSelf: "flex-start",
+                  paddingLeft: 5,
+                  paddingBottom: 5,
+                }}
+              >
+                MY POSTS
+              </Text>
+            )}
+            {(isUser && (userFeed.length > 0)) ?
+              /* user's posts */
               <View
                 style={{
                   borderRadius: 9,
@@ -269,43 +290,61 @@ const ProfileScreen = ({ route, navigation }) => {
                   overflow: "hidden",
                   alignItems: "center",
                   marginBottom: 5,
-                  height: 110,
-                  marginBottom: tabBarHeight + 5,
-                  justifyContent: 'center'
-                }}>
-                <Text
-                  style={{
-                    color: 'gray',
-                    fontSize: 16,
-                  }}>
-                  Yet to post :)
-                </Text>
-              </View> :
-              <View
-                style={{
-                  flex: 1,
-                  borderRadius: 9,
-                  backgroundColor: colors.background,
-                  overflow: "hidden",
-                  alignItems: "center",
-                  marginBottom: 5,
-                  width: fullWidth,
-                  alignSelf: 'center'
-                }}>
-                <OtherUserPosts
-                  navigation={navigation}
+                }}
+              >
+                <SelfPosts
                   userFeed={userFeed}
-                  setModal={setModal}
-                  setModalInfo={(info) => {
-                    setModalInfo({
-                      ...info,
-                      navigate: navigation,
-                      setModal: setModal,
-                      width: fullWidth * 0.90
-                    });
-                  }}
                 />
-              </View>}
+              </View> :
+              (isUser && (userFeed.length === 0)) ?
+                <View
+                  style={{
+                    borderRadius: 9,
+                    backgroundColor: colors.foreground4,
+                    overflow: "hidden",
+                    alignItems: "center",
+                    marginBottom: 5,
+                    height: 110,
+                    marginBottom: tabBarHeight + 5,
+                    justifyContent: 'center',
+                    shadowColor: 'black',
+                    shadowOpacity: platform === "web" ? 0.3 : 0,
+                    shadowRadius: 5,
+                    shadowOffset: { width: 1, height: 1 }
+                  }}>
+                  <Text
+                    style={{
+                      color: 'gray',
+                      fontSize: 16,
+                    }}>
+                    Yet to post :)
+                  </Text>
+                </View> :
+                <View
+                  style={{
+                    flex: 1,
+                    borderRadius: 9,
+                    overflow: "hidden",
+                    alignItems: "center",
+                    marginBottom: 5,
+                    width: fullWidth,
+                    alignSelf: 'center'
+                  }}>
+                  <OtherUserPosts
+                    navigation={navigation}
+                    userFeed={userFeed}
+                    setModal={setModal}
+                    setModalInfo={(info) => {
+                      setModalInfo({
+                        ...info,
+                        navigate: navigation,
+                        setModal: setModal,
+                        width: (platform === "web" ? webCenterSectionWidth : fullWidth) * 0.90
+                      });
+                    }}
+                  />
+                </View>}
+          </View>
         </View>
       </ScrollView>
     )
@@ -323,10 +362,10 @@ const ProfileScreen = ({ route, navigation }) => {
         <View
           style={{
             position: 'absolute',
-            width: 700,
+            width: webCenterSectionWidth,
             height: "100%",
             alignSelf: 'center',
-            backgroundColor: "#151515"
+            backgroundColor: "#1e1e1e"
           }}>
         </View>
       }
@@ -347,7 +386,6 @@ const ProfileScreen = ({ route, navigation }) => {
         }}>
           <ActivityIndicator size="small" color="white" />
         </View>}
-      {modal && <PostPopUp info={modalInfo} />}
       {platform === "web" &&
         <WebBackgroundView />}
       {platform === "web" &&
@@ -356,7 +394,9 @@ const ProfileScreen = ({ route, navigation }) => {
           userName={userData.userName} />}
       {platform === "web" &&
         <WebNavigationLeftView
-          navigation={navigation} />}
+          navigation={navigation}
+          userName={userData.userName} />}
+      {modal && <PostPopUp info={modalInfo} />}
     </View>
   );
 };

@@ -11,6 +11,7 @@ import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
+import StyleContextProvider from "./data/StyleContextProvider";
 const firestore = firebase.firestore();
 
 function cacheImages(images) {
@@ -141,31 +142,34 @@ export default class App extends React.Component {
   render() {
     return (
       /* Contexts can be composed later into a single component. */
-      <SwipeCardsContext.Provider value={{
-        remaining: this.state.remaining,
-        popRemaining: this.popRemaining
-      }}>
-        <AppContext.Provider value={{
-          platform: this.platform,
-          user: this.state.user,
-          uid: this.state.uid, theme: this.state.theme,
-          setUser: this.setUser,
-          setUID: this.setUID
+      <StyleContextProvider>
+        <SwipeCardsContext.Provider value={{
+          remaining: this.state.remaining,
+          popRemaining: this.popRemaining
         }}>
-          <ThemeContextProvider>
-            <UsersContext.Provider>
-              <PostsContext.Provider value={{
-                updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
-                updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
-              }}>
-                <NavigationContainer>
-                  <RootStackNavigator />
-                </NavigationContainer>
-              </PostsContext.Provider>
-            </UsersContext.Provider>
-          </ThemeContextProvider>
-        </AppContext.Provider>
-      </SwipeCardsContext.Provider>
+          <AppContext.Provider value={{
+            platform: this.platform,
+            user: this.state.user,
+            uid: this.state.uid,
+            theme: this.state.theme,
+            setUser: this.setUser,
+            setUID: this.setUID
+          }}>
+            <ThemeContextProvider>
+              <UsersContext.Provider>
+                <PostsContext.Provider value={{
+                  updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
+                  updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
+                }}>
+                  <NavigationContainer>
+                    <RootStackNavigator />
+                  </NavigationContainer>
+                </PostsContext.Provider>
+              </UsersContext.Provider>
+            </ThemeContextProvider>
+          </AppContext.Provider>
+        </SwipeCardsContext.Provider>
+      </StyleContextProvider>
     );
   }
 }

@@ -6,12 +6,12 @@ class ThemeContextProvider extends Component {
     colors: {
         dark: {
             background: 'black',
-            homeBackground: '#111',
+            homeBackground: '#181818',
             antiBackground: 'white',
             foreground1: '#908f96',
             foreground2: '#303030',
             foreground3: '#2c2c2e',
-            foreground4: '#121111',
+            foreground4: '#222',
             blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',

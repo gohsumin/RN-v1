@@ -7,9 +7,9 @@ import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import { Entypo } from "@expo/vector-icons";
 
-function BalanceItem({title, amount, index}) {
+function BalanceItem({ title, amount, index }) {
 
-    const theme = React.useContext(AppContext).theme;
+    const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
     return (
@@ -17,13 +17,19 @@ function BalanceItem({title, amount, index}) {
             style={{
                 flexDirection: "row",
                 width: "100%",
-                paddingVertical: 6,
-                paddingLeft: 12,
+                height: 60,
+                paddingHorizontal: 12,
                 alignItems: "center",
                 backgroundColor: colors.foreground4,
+                justifyContent: platform === "web" ? "flex-start" : 'space-between'
             }}
         >
-            <View style={{ flex: 9 }}>
+            <View
+                style={{
+                    flexDirection: platform === "web" ? "row" : "column",
+                    alignItems: platform === "web" ? 'center' : 'flex-start',
+                    marginBottom: platform === "web" ? 1 : 0
+                }}>
                 <Text
                     style={{
                         fontSize: 14,
@@ -48,7 +54,10 @@ function BalanceItem({title, amount, index}) {
                 </Text>
             </View>
             <Entypo
-                style={{ flex: 1 }}
+                style={{
+                    textAlign: 'right',
+                    paddingHorizontal: 8,
+                }}
                 name="chevron-thin-right"
                 size={16}
                 color={colors.foreground1}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
+import StyleContext from "../../data/StyleContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
@@ -47,6 +48,8 @@ const HomeScreen = ({ navigation, route }) => {
   function getTimeline() {
     if (cursor === undefined) {
       console.log("cursor is undefined");
+      setRefreshing(false);
+      setLoadRequested(false);
       return;
     }
     let db = null;
@@ -59,12 +62,15 @@ const HomeScreen = ({ navigation, route }) => {
     // list of post ids to include in the timeline. Should never exceed 10 items
     let refs = [];
     db.limit(loadSize).get().then((snapshot) => {
+      console.log("about to get post ids");
       snapshot.forEach((doc) => {
         console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
 
-      if (refs.length === 0) {
+      if (Object.keys(refs).length === 0) {
+        setRefreshing(false);
+        setLoadRequested(false);
         return;
       }
 
@@ -228,9 +234,9 @@ const HomeScreen = ({ navigation, route }) => {
         <View
           style={{
             position: 'absolute',
-            width: 700,
+            width: React.useContext(StyleContext).web.centerSectionWidth,
             height: "100%",
-            backgroundColor: "#151515"
+            backgroundColor: "#1e1e1e"
           }}>
         </View>
       }

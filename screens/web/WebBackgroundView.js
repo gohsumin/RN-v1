@@ -2,12 +2,14 @@ import React from 'react';
 import { View } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
+import StyleContext from '../../data/StyleContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const WebBackgroundView = () => {
 
     const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
+    const webCenterSectionWidth = React.useContext(StyleContext).web.centerSectionWidth;
 
     return (
         <LinearGradient
@@ -22,7 +24,7 @@ const WebBackgroundView = () => {
             pointerEvents="none">
             <View
                 style={{
-                    width: 700,
+                    width: webCenterSectionWidth,
                     height: "100%",
                     borderRadius: 2,
                     top: 0,

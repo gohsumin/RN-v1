@@ -34,7 +34,8 @@ function FeedItem({
     <View
       key={item.id}
       style={{
-        width: WINDOW_WIDTH,
+        //width: WINDOW_WIDTH,
+        flex: 1,
         flexDirection: "row",
         marginVertical: marginVertical,
         justifyContent: "center",
@@ -50,9 +51,6 @@ function FeedItem({
         style={{
           width: leftGridWidth,
           height: leftGridWidth,
-          shadowColor: colors.background,
-          shadowOpacity: 0.6,
-          shadowRadius: 10,
         }}
       >
         <Image
@@ -64,6 +62,9 @@ function FeedItem({
             marginTop: -4,
             borderRadius: leftGridWidth / 2,
             alignSelf: "flex-start",
+            shadowColor: colors.background,
+            shadowOpacity: 0.6,
+            shadowRadius: 10,
           }}
         />
       </TouchableOpacity>

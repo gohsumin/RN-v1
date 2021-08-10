@@ -10,12 +10,13 @@ function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
     const colors = React.useContext(ThemeContext).colors[theme];
     const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
     const WINDOW_WIDTH = Dimensions.get('window').width;
+    const itemWidth = platform === "web" ? 300 : WINDOW_WIDTH / 2;
 
     const renderItem = ({ item }) => {
 
         return (
             <View style={{
-                width: "50%",
+                width: itemWidth,
                 aspectRatio: 1,
                 padding: 10,
             }}>
@@ -59,7 +60,6 @@ function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
             data={userFeed}
             numColumns={2}
             renderItem={renderItem}
-            //extraData={toggleRender}
             keyExtractor={(item, index) => item.id}
             ListFooterComponent={<View style={{ height: tabBarHeight }} />}
         />

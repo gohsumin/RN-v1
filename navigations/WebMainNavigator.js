@@ -35,23 +35,13 @@ const WebMainNavigator = () => {
                 <WebStack.Screen
                     name="Profile"
                     component={ProfileScreen} />
+                    <WebStack.Screen
+                    name="My Profile"
+                    component={ProfileScreen} />
                 <WebStack.Screen
                     name="Edit Profile"
                     component={UpdateUser} />
             </WebStack.Navigator>
-            <Image
-                style={{
-                    position: 'absolute',
-                    left: 50,
-                    marginTop: -5,
-                    width: 200,
-                    height: 80,
-                    shadowColor: 'black',
-                    shadowRadius: 5,
-                    shadowOpacity: 1,
-                }}
-                resizeMode='contain'
-                source={require('../assets/SoShNavLogo.png')} />
         </View>
     )
 }

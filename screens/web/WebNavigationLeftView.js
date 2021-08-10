@@ -1,140 +1,150 @@
-import React from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, Text, useWindowDimensions } from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
+import StyleContext from '../../data/StyleContext';
 
-const WebNavigationLeftView = ({ navigation }) => {
+const WebNavigationLeftView = ({ navigation, userName }) => {
 
-    const theme = React.useContext(AppContext).theme;
+    const { theme, user, uid } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
+    const {
+        getDynamicLeftViewWidth,
+        getLeftViewFontSize,
+        getLeftViewButtonWidth,
+        getLeftViewIconSize,
+        getLeftViewHeight
+    } = React.useContext(StyleContext).web;
 
     const { index, routes } = navigation.dangerouslyGetState();
-    const currentRoute = routes[index].name;
+    const routeName = routes[index].name;
+    const currentRoute =
+        routeName === "Profile" && userName === user ?
+            "Profile" :
+            routeName === "Profile" && userName !== user ?
+                "Home" : routeName;
+
+    const window = useWindowDimensions();
+    const [collapse, setCollapse] = useState(false);
+    const [horizontalPadding, setHorizontalPadding] = useState()
 
     return (
         <View
             style={{
                 position: 'absolute',
-                width: 250,
+                top: 10,
+                width: getDynamicLeftViewWidth(window.width),
+                height: getLeftViewHeight(window.width),
+                justifyContent: 'space-between',
                 top: 96,
-                left: 70,
+                left: 0,
+                padding: 7,
+                alignItems: 'center',
+                // borderWidth: 1,
+                // borderColor: 'red',
             }}>
-            {/* <View
+            <TouchableOpacity
                 style={{
-                    marginBottom: 10
+                    flexDirection: 'row',
+                    width: getLeftViewButtonWidth(window.width),
+                    alignItems: 'center',
+                    opacity: currentRoute === "Home" ? 0.8 : 0.4,
+                    // borderWidth: 1,
+                    // borderColor: 'orange',
+                }}
+                onPress={() => {
+                    navigation.navigate("Home");
                 }}>
-                <Image
+                <Icon
+                    name={currentRoute === "Home" ? "home-outline" : "home-outline"}
+                    size={getLeftViewIconSize(window.width)}
+                    color={colors.green}
                     style={{
-                        width: "100%",
-                        aspectRatio: .75,
-                        borderRadius: 15,
-                    }}
-                    source={require("../../assets/explore.jpeg")} />
-                <View>
-                    <Text style={{color: colors.antiBackground, fontWeight: '600', fontSize: 20}}>
-                        {"View more on Explore ->"}
-                    </Text>
-                </View>
-            </View> */}
-            <View
-                style={{
-                    top: 10,
-                }}>
-                <TouchableOpacity
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        opacity: currentRoute === "Home" ? 0.8 : 0.4,
-                        marginVertical: 8.2,
-                    }}
-                    onPress={() => {
-                        navigation.navigate("Home");
-                    }}>
-                    <Icon
-                        name={currentRoute === "Home" ? "home-outline" : "home-outline"}
-                        size={currentRoute === "Home" ? 27 : 25}
-                        color={colors.green}
-                        style={{
-                            textShadowColor: currentRoute === "Home" ? colors.green : 'black',
-                            textShadowRadius: 7,
-                            textShadowOpacity: 1,
-                        }} />
+                        textShadowColor: currentRoute === "Home" ? colors.green : 'black',
+                        textShadowRadius: 7,
+                        textShadowOpacity: 1,
+                    }} />
+                {!collapse &&
                     <Text
                         style={{
-                            fontSize: currentRoute === "Home" ? 27 : 25,
+                            fontSize: getLeftViewFontSize(window.width, currentRoute === "Home"),
                             color: colors.antiBackground,
-                            fontWeight: '600',
+                            fontWeight: currentRoute === "Home" ? '600' : '500',
                             textShadowColor: currentRoute === "Home" ? "#222" : 'black',
                             textShadowRadius: 7,
                             textShadowOpacity: 1,
                         }}>
                         {"  Home"}
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                    </Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={{
+                    flexDirection: 'row',
+                    width: getLeftViewButtonWidth(window.width),
+                    alignItems: 'center',
+                    opacity: currentRoute === "My Profile" ? 0.8 : 0.4,
+                    // borderWidth: 1,
+                    // borderColor: 'orange',
+                }}
+                onPress={() => {
+                    console.log("navigating to " + uid + "'s profile");
+                    navigation.navigate("My Profile", { uid: uid });
+                }}>
+                <Icon
+                    name={currentRoute === "Profile" ? "person-outline" : "person-outline"}
+                    size={getLeftViewIconSize(window.width)}
+                    color={colors.green}
                     style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        opacity: currentRoute === "Profile" ? 0.8 : 0.4,
-                        marginVertical: 8.2,
-                    }}
-                    onPress={() => {
-                        navigation.navigate("Profile");
+                        textShadowColor: currentRoute === "Profile" ? colors.green : 'black',
+                        textShadowRadius: 7,
+                        textShadowOpacity: 1,
+                    }} />
+                {!collapse && <Text
+                    style={{
+                        fontSize: getLeftViewFontSize(window.width, currentRoute === "Profile"),
+                        color: colors.antiBackground,
+                        fontWeight: currentRoute === "Profile" ? '600' : '500',
+                        textShadowColor: currentRoute === "Profile" ? "#222" : 'black',
+                        textShadowRadius: 7,
+                        textShadowOpacity: 1,
                     }}>
-                    <Icon
-                        name={currentRoute === "Profile" ? "person-outline" : "person-outline"}
-                        size={currentRoute === "Profile" ? 27 : 25}
-                        color={colors.green}
-                        style={{
-                            textShadowColor: currentRoute === "Profile" ? colors.green : 'black',
-                            textShadowRadius: 7,
-                            textShadowOpacity: 1,
-                        }} />
-                    <Text
-                        style={{
-                            fontSize: currentRoute === "Profile" ? 27 : 25,
-                            color: colors.antiBackground,
-                            fontWeight: '600',
-                            textShadowColor: currentRoute === "Profile" ? "#222" : 'black',
-                            textShadowRadius: 7,
-                            textShadowOpacity: 1,
-                        }}>
-                        {"  Profile"}
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        opacity: currentRoute === "Explore" ? 0.8 : 0.4,
-                        marginVertical: 8.2,
-                    }}
-                    onPress={() => {
+                    {"  My Profile"}
+                </Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={{
+                    flexDirection: 'row',
+                    width: getLeftViewButtonWidth(window.width),
+                    alignItems: 'center',
+                    opacity: currentRoute === "Explore" ? 0.8 : 0.4,
+                    // borderWidth: 1,
+                    // borderColor: 'orange',
+                }}
+                onPress={() => {
 
+                }}>
+                <Icon
+                    name={currentRoute === "Explore" ? "search-outline" : "search-outline"}
+                    size={getLeftViewIconSize(window.width)}
+                    color={colors.green}
+                    style={{
+                        textShadowColor: currentRoute === "Explore" ? colors.green : 'black',
+                        textShadowRadius: 7,
+                        textShadowOpacity: 1,
+                    }} />
+                {!collapse && <Text
+                    style={{
+                        fontSize: getLeftViewFontSize(window.width, currentRoute === "Explore"),
+                        color: colors.antiBackground,
+                        fontWeight: currentRoute === "Explore" ? '600' : '500',
+                        textShadowColor: currentRoute === "Explore" ? "#222" : 'black',
+                        textShadowRadius: 7,
+                        textShadowOpacity: 1,
                     }}>
-                    <Icon
-                        name={currentRoute === "Explore" ? "search-outline" : "search-outline"}
-                        size={currentRoute === "Explore" ? 32 : 25}
-                        color={colors.green}
-                        style={{
-                            textShadowColor: currentRoute === "Explore" ? colors.green : 'black',
-                            textShadowRadius: 7,
-                            textShadowOpacity: 1,
-                        }} />
-                    <Text
-                        style={{
-                            fontSize: currentRoute === "Explore" ? 32 : 25,
-                            color: colors.antiBackground,
-                            fontWeight: '600',
-                            textShadowColor: currentRoute === "Explore" ? "#222" : 'black',
-                            textShadowRadius: 7,
-                            textShadowOpacity: 1,
-                        }}>
-                        {"  Explore"}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                    {"  Explore"}
+                </Text>}
+            </TouchableOpacity>
         </View>
     )
 }
