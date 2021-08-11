@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Dimensions, RefreshControl, ActivityIndicator } from "react-native";
+import { Dimensions, RefreshControl, ActivityIndicator, useWindowDimensions } from "react-native";
 import {
   Text,
   View,
@@ -10,8 +10,8 @@ import ThemeContext from "../../data/ThemeContext";
 import StyleContext from "../../data/StyleContext";
 import Header from './components/Header';
 import WebBackgroundView from "../web/WebBackgroundView";
-import WebNavigationLeftView from "../web/WebNavigationLeftView";
-import WebNavigationTopView from "../web/WebNavigationTopView";
+import WebNavigationView from "../web/WebNavigationView";
+import WebHeaderView from "../web/WebHeaderView";
 import Bio from './components/Bio';
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
@@ -29,9 +29,19 @@ const ProfileScreen = ({ route, navigation }) => {
   const [userData, setUserData] = useState({});
   const [userFeed, setUserFeed] = useState([]);
   const [cursor, setCursor] = useState(0);
+  const [show, setShow] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [modalInfo, setModalInfo] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadRequested, setLoadRequested] = useState(false);
+
+  const theme = useContext(AppContext).theme;
   const logger = useContext(AppContext).uid;
   const { platform } = useContext(AppContext);
-  const [show, setShow] = useState(false);
+  const colors = useContext(ThemeContext).colors[theme];
+  const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
+  const window = useWindowDimensions();
+  const { getCenterSectionWidth } = useContext(StyleContext).web;
 
   function getUserData(uid, callback) {
     console.log("getUserData for user " + uid);
@@ -164,18 +174,6 @@ const ProfileScreen = ({ route, navigation }) => {
     })
   }, [route]);
 
-  const theme = useContext(AppContext).theme;
-  const colors = useContext(ThemeContext).colors[theme];
-  const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
-  const fullWidth = Dimensions.get("window").width;
-  const webCenterSectionWidth = useContext(StyleContext).web.centerSectionWidth;
-
-  const [modal, setModal] = useState(false);
-  const [modalInfo, setModalInfo] = useState(null);
-
-  const [refreshing, setRefreshing] = useState(false);
-  const [loadRequested, setLoadRequested] = useState(false);
-
   function onEndReached() {
     if (!loadRequested) {
       console.log("onEndReached!");
@@ -244,7 +242,7 @@ const ProfileScreen = ({ route, navigation }) => {
       >
         <View
           style={{
-            width: platform === "web" ? webCenterSectionWidth - 100 : "100%",
+            width: platform === "web" ? getCenterSectionWidth(window.width) - 100 : "100%",
             alignSelf: 'center'
           }}>
 
@@ -327,7 +325,7 @@ const ProfileScreen = ({ route, navigation }) => {
                     overflow: "hidden",
                     alignItems: "center",
                     marginBottom: 5,
-                    width: fullWidth,
+                    width: window.width,
                     alignSelf: 'center'
                   }}>
                   <OtherUserPosts
@@ -339,7 +337,7 @@ const ProfileScreen = ({ route, navigation }) => {
                         ...info,
                         navigate: navigation,
                         setModal: setModal,
-                        width: (platform === "web" ? webCenterSectionWidth : fullWidth) * 0.90
+                        width: (platform === "web" ? getCenterSectionWidth(window.width) : window.width) * 0.90
                       });
                     }}
                   />
@@ -362,7 +360,7 @@ const ProfileScreen = ({ route, navigation }) => {
         <View
           style={{
             position: 'absolute',
-            width: webCenterSectionWidth,
+            width: getCenterSectionWidth(window.width),
             height: "100%",
             alignSelf: 'center',
             backgroundColor: "#1e1e1e"
@@ -389,11 +387,11 @@ const ProfileScreen = ({ route, navigation }) => {
       {platform === "web" &&
         <WebBackgroundView />}
       {platform === "web" &&
-        <WebNavigationTopView
+        <WebHeaderView
           navigation={navigation}
           userName={userData.userName} />}
       {platform === "web" &&
-        <WebNavigationLeftView
+        <WebNavigationView
           navigation={navigation}
           userName={userData.userName} />}
       {modal && <PostPopUp info={modalInfo} />}

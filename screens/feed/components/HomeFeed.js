@@ -2,16 +2,18 @@ import React from 'react';
 import {
     FlatList,
     View,
-    Dimensions,
+    useWindowDimensions,
     RefreshControl,
 } from "react-native";
 import FeedItem from './FeedItem';
 import AppContext from '../../../data/AppContext';
 import ThemeContext from '../../../data/ThemeContext';
+import StyleContext from '../../../data/StyleContext';
 
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
-    const WINDOW_WIDTH = Dimensions.get("window").width;
+    const window = useWindowDimensions();
+    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
     const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
@@ -20,7 +22,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
             <View
                 style={{
                     height: 0.4,
-                    width: platform === "web" ? 600 : "85%",
+                    width: platform === "web" ? getCenterSectionWidth(window.width) * 0.85 : "85%",
                     backgroundColor: colors.foreground2,
                     opacity: 0.5,
                     alignSelf: "center",

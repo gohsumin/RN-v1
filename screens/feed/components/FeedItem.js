@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, View, Image, TouchableOpacity, Dimensions } from "react-native";
+import { Text, View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import { getElapsedTime } from "../../../helpers/postsHelpers";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
+import StyleContext from "../../../data/StyleContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
@@ -15,52 +16,69 @@ function FeedItem({
 
   const { theme, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
+  const { getCenterSectionWidth } = React.useContext(StyleContext).web;
 
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
   const itemImageRatio = 0.79;
   const titleRatio = 1 - itemImageRatio;
 
-  const marginVertical = setting === 'popup' ? 17 : 15;
-  const marginHorizontal = platform === "web" ? 150 : setting === 'popup' ? 14 : 12;
+  const marginVertical = platform === "web" ? 20 : setting === 'popup' ? 17 : 15;
+  const marginHorizontal = platform === "web" ? 20 : setting === 'popup' ? 14 : 12;
 
-  const WINDOW_WIDTH = Dimensions.get('window').width;
-  const itemTotalWidth = platform === "web" ? 900 : WINDOW_WIDTH;
-  const leftGridWidth = (itemTotalWidth - 2 * marginHorizontal) * horLeftRatio;
-  const rightGridWidth = (itemTotalWidth - 2 * marginHorizontal) * horRightRatio;
+  const window = useWindowDimensions();
 
+  const getItemTotalWidth = () => {
+    return (platform === 'web' ?
+      getCenterSectionWidth(window.width) :
+      window.width)
+  }
+
+  const getLeftGridWidth = () => {
+    return (getItemTotalWidth() - 2 * marginHorizontal) * horLeftRatio;
+  }
+
+  const getRightGridWidth = () => {
+    return (getItemTotalWidth() - 2 * marginHorizontal) * horRightRatio;
+  }
+
+  const HorPadding = () => {
+    return (
+      <View style={{
+        width: (window.width - getItemTotalWidth()) / 2 + marginHorizontal,
+      }} />
+    )
+  }
 
   return (
     <View
       key={item.id}
       style={{
-        //width: WINDOW_WIDTH,
-        flex: 1,
         flexDirection: "row",
-        marginVertical: marginVertical,
-        justifyContent: "center",
+        width: "100%",
+        marginVertical: marginVertical
       }}
     >
       {/* horizontal padding */}
-      <View style={{ width: (WINDOW_WIDTH - itemTotalWidth) / 2 }} />
+      <HorPadding />
 
       {console.log("FeedItem with key " + item.id)}
       {/* profile pic */}
       <TouchableOpacity
         onPress={navigate}
         style={{
-          width: leftGridWidth,
-          height: leftGridWidth,
+          width: getLeftGridWidth(),
+          height: getLeftGridWidth(),
         }}
       >
         <Image
           fadeDuration={0}
           source={{ uri: item.userImageURL }}
           style={{
-            width: leftGridWidth * 0.83,
-            height: leftGridWidth * 0.83,
+            width: getLeftGridWidth() * 0.83,
+            height: getLeftGridWidth() * 0.83,
             marginTop: -4,
-            borderRadius: leftGridWidth / 2,
+            borderRadius: getLeftGridWidth() / 2,
             alignSelf: "flex-start",
             shadowColor: colors.background,
             shadowOpacity: 0.6,
@@ -68,8 +86,10 @@ function FeedItem({
           }}
         />
       </TouchableOpacity>
+      
+      {/* right grid — everything to the right of profile pic */}
       <View style={{
-        width: rightGridWidth,
+        width: getRightGridWidth(),
       }}>
         {/* texts next to the profile pic: buyer name and date */}
         <View
@@ -123,7 +143,7 @@ function FeedItem({
         {/* grid with the picture */}
         <View
           style={{
-            width: rightGridWidth,
+            width: getRightGridWidth(),
             flexDirection: "row",
             marginBottom: 14.5,
           }}
@@ -140,8 +160,8 @@ function FeedItem({
               fadeDuration={0}
               source={{ uri: item.itemImageURL }}
               style={{
-                width: rightGridWidth * itemImageRatio,
-                height: rightGridWidth * itemImageRatio,
+                width: getRightGridWidth() * itemImageRatio,
+                height: getRightGridWidth() * itemImageRatio,
                 resizeMode: "contain",
                 backgroundColor: 'white',
               }}
@@ -172,13 +192,13 @@ function FeedItem({
 
         {setting === 'self'
           // two-side view with the number of purchases as a result of the post and the total payout
-          ? <CommissionsBar width={rightGridWidth * itemImageRatio} />
+          ? <CommissionsBar width={getRightGridWidth() * itemImageRatio} />
           // grid with the buttons, e.g. number of likes; maybe add share button later
-          : <FeedBottomBar numBought={item.numBought} />}
+          : <FeedBottomBar height={43} numBought={item.numBought} />}
       </View>
 
       {/* horizontal padding */}
-      <View style={{ width: (WINDOW_WIDTH - itemTotalWidth) / 2 }} />
+      <HorPadding />
     </View>
   );
 }

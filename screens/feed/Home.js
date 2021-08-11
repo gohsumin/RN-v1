@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  useWindowDimensions
+} from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import StyleContext from "../../data/StyleContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
-import WebNavigationTopView from "../web/WebNavigationTopView";
-import WebNavigationLeftView from "../web/WebNavigationLeftView";
+import WebHeaderView from "../web/WebHeaderView";
+import WebNavigationView from "../web/WebNavigationView";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,6 +34,8 @@ const HomeScreen = ({ navigation, route }) => {
   const colors = React.useContext(ThemeContext).colors[theme];
   const flatlistRef = useRef();
   const loadSize = 8;
+  const window = useWindowDimensions();
+  const { getCenterSectionWidth } = React.useContext(StyleContext).web;
 
   function listenForNewPosts() {
     console.log("listenForNewPosts");
@@ -234,7 +243,7 @@ const HomeScreen = ({ navigation, route }) => {
         <View
           style={{
             position: 'absolute',
-            width: React.useContext(StyleContext).web.centerSectionWidth,
+            width: getCenterSectionWidth(window.width),
             height: "100%",
             backgroundColor: "#1e1e1e"
           }}>
@@ -326,11 +335,11 @@ const HomeScreen = ({ navigation, route }) => {
       {platform === "web" &&
         <WebBackgroundView />}
       {platform === "web" &&
-        <WebNavigationTopView
+        <WebHeaderView
           navigation={navigation}
           route={route} />}
       {platform === "web" &&
-        <WebNavigationLeftView
+        <WebNavigationView
           navigation={navigation} />}
     </SafeAreaView>
   );

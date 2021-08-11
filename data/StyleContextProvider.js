@@ -3,30 +3,52 @@ import StyleContext from "./StyleContext";
 
 class StyleContextProvider extends Component {
 
-    centerSectionWidth = 700;
+    originalCenterSectionWidth = 700;
+
+    topSectionHeight = 80;
+
     originalLeftViewWidth = 290;
     originalLeftViewHeight = 130;
-    leftViewHeightChangePoint = 1075;
-    leftViewCollapsePoint = 1070;
-    leftViewShrinkPoint = 1262;
-    leftViewDisappearPoint = 873;
+    navigationViewHeightChangePoint = 1075;
+    leftNavigationViewCollapsePoint = 1070;
+    leftNavigationViewShrinkPoint = 1262;
+    leftNavigationViewDisappearPoint = 873;
     leftPaddingStickPoint = 1100;
-    originalLeftViewButtonWidth = 149;
+    topNavigationViewShrinkPoint = 463;
+    originalNavigationViewButtonWidth = 149;
     originalSmallFont = 25;
-    originalIconSize = 25;
-    leftViewIconMaxPoint = 1063;
-    leftViewIconIncreasePoint = 1120;
+    originalNavigationIconSize = 25;
+    navigationViewIconMaxPoint = 1063;
+    navigationViewIconIncreasePoint = 1120;
     logoCollapsePoint = 1030;
 
-    getDynamicLeftViewWidth = (windowWidth) => {
-        const leftWidth = (windowWidth - this.centerSectionWidth) / 2;
+    getCenterSectionWidth = (windowWidth) => {
+        if (windowWidth < this.originalCenterSectionWidth) {
+            return windowWidth;
+        }
+        else {
+            return this.originalCenterSectionWidth;
+        }
+    }
+
+    getNavigationViewWidth = (windowWidth) => {
+        if (windowWidth < this.topNavigationViewShrinkPoint) {
+
+        }
+        if (windowWidth < this.leftNavigationViewDisappearPoint) {
+            return 170;
+        }
+        const leftWidth = (windowWidth - this.originalCenterSectionWidth) / 2;
         const ret = leftWidth < this.originalLeftViewWidth ? leftWidth : this.originalLeftViewWidth;
         return ret;
     }
 
-    getLeftViewHeight = (windowWidth) => {
-        if (windowWidth < this.leftViewHeightChangePoint) {
-            const ratio = (this.leftViewHeightChangePoint - windowWidth) / this.leftViewHeightChangePoint;
+    getNavigationViewHeight = (windowWidth) => {
+        if (windowWidth < this.leftNavigationViewDisappearPoint) {
+            return this.topSectionHeight;
+        }
+        if (windowWidth < this.navigationViewHeightChangePoint) {
+            const ratio = (this.navigationViewHeightChangePoint - windowWidth) / this.navigationViewHeightChangePoint;
             return this.originalLeftViewHeight + 200 * ratio + 20;
         }
         else {
@@ -34,54 +56,71 @@ class StyleContextProvider extends Component {
         }
     }
 
-    getLeftViewFontSize = (windowWidth, selected) => {
-        if (windowWidth < this.leftViewCollapsePoint) {
+    getHeaderWidth = (windowWidth) => {
+        return windowWidth < this.topNavigationViewShrinkPoint
+            ? this.topNavigationViewShrinkPoint : "100%";
+    }
+
+    getHeaderScale = (windowWidth) => {
+        return windowWidth < this.topNavigationViewShrinkPoint
+            ? windowWidth / this.topNavigationViewShrinkPoint : 1;
+    }
+
+    getNavigationViewFontSize = (windowWidth, selected) => {
+        if (windowWidth < this.leftNavigationViewCollapsePoint) {
             return 0;
         }
-        if (windowWidth < this.leftViewShrinkPoint) {
-            const ratio = (this.leftViewShrinkPoint - windowWidth) / this.leftViewShrinkPoint;
+        if (windowWidth < this.leftNavigationViewShrinkPoint) {
+            const ratio = (this.leftNavigationViewShrinkPoint - windowWidth) / this.leftNavigationViewShrinkPoint;
             return (this.originalSmallFont + (selected ? 2 : 0)) - 50 * ratio;
         }
         else { return this.originalSmallFont + (selected ? 2 : 0); }
     }
 
-    getLeftViewIconSize = (windowWidth) => {
-        const multiplier = windowWidth < this.leftViewCollapsePoint + 5 ? 200 : 100;
-        if (windowWidth < this.leftViewIconMaxPoint) {
-            const ratio = (this.leftViewIconIncreasePoint - this.leftViewIconMaxPoint) / this.leftViewIconIncreasePoint;
-            return this.originalIconSize + multiplier * ratio;
+    getNavigationViewIconSize = (windowWidth) => {
+        const multiplier = windowWidth < this.leftNavigationViewCollapsePoint + 5 ? 200 : 100;
+        if (windowWidth < this.navigationViewIconMaxPoint) {
+            const ratio = (this.navigationViewIconIncreasePoint - this.navigationViewIconMaxPoint) / this.navigationViewIconIncreasePoint;
+            return this.originalNavigationIconSize + multiplier * ratio;
         }
-        if (windowWidth < this.leftViewIconIncreasePoint) {
-            const ratio = (this.leftViewIconIncreasePoint - windowWidth) / this.leftViewIconIncreasePoint;
-            return this.originalIconSize + multiplier * ratio;
+        if (windowWidth < this.navigationViewIconIncreasePoint) {
+            const ratio = (this.navigationViewIconIncreasePoint - windowWidth) / this.navigationViewIconIncreasePoint;
+            return this.originalNavigationIconSize + multiplier * ratio;
         }
         else {
-            return this.originalIconSize;
+            return this.originalNavigationIconSize;
         }
     }
 
-    stickyPadding = (this.getDynamicLeftViewWidth(this.leftPaddingStickPoint) - this.originalLeftViewButtonWidth) / 2;
+    stickyPadding = (this.getNavigationViewWidth(this.leftPaddingStickPoint) - this.originalNavigationViewButtonWidth) / 2;
 
-    getLeftViewButtonWidth = (windowWidth) => {
+    getNavigationViewButtonWidth = (windowWidth) => {
+        if (windowWidth < this.leftNavigationViewDisappearPoint) {
+            return 35;
+        }
         if (windowWidth < this.leftPaddingStickPoint) {
-            return this.getDynamicLeftViewWidth(windowWidth) - 2 * this.stickyPadding;
+            return this.getNavigationViewWidth(windowWidth) - 2 * this.stickyPadding;
         }
         else {
-            return this.originalLeftViewButtonWidth;
+            return this.originalNavigationViewButtonWidth;
         }
     }
 
     state = {
         web: {
-            centerSectionWidth: this.centerSectionWidth,
-            getDynamicLeftViewWidth: this.getDynamicLeftViewWidth,
-            getLeftViewFontSize: this.getLeftViewFontSize,
-            getLeftViewButtonWidth: this.getLeftViewButtonWidth,
-            getLeftViewIconSize: this.getLeftViewIconSize,
-            getLeftViewHeight: this.getLeftViewHeight,
+            getCenterSectionWidth: this.getCenterSectionWidth,
+            topSectionHeight: this.topSectionHeight,
+            topNavigationViewShrinkPoint: this.topNavigationViewShrinkPoint,
+            getHeaderScale: this.getHeaderScale,
+            getHeaderWidth: this.getHeaderWidth,
+            getNavigationViewWidth: this.getNavigationViewWidth,
+            getNavigationViewFontSize: this.getNavigationViewFontSize,
+            getNavigationViewButtonWidth: this.getNavigationViewButtonWidth,
+            getNavigationViewIconSize: this.getNavigationViewIconSize,
+            getNavigationViewHeight: this.getNavigationViewHeight,
             logoCollapsePoint: this.logoCollapsePoint,
             stickyPadding: this.stickyPadding,
-            leftViewDisappearPoint: this.leftViewDisappearPoint,
+            leftNavigationViewDisappearPoint: this.leftNavigationViewDisappearPoint,
         }
     };
 

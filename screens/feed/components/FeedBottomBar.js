@@ -16,11 +16,12 @@ function FeedBottomBar(props) {
                 flexDirection: "row",
                 alignSelf: "flex-start",
                 alignItems: "center",
-                height: 43,
-                width: 137,
+                justifyContent: 'center',
+                height: props.height,
+                width: 148,
                 paddingHorizontal: 8,
                 borderRadius: 8,
-                backgroundColor: colors.foreground3
+                backgroundColor: colors.foreground3,
             }}
         >
             {/* <EvilIcons name="heart" size={24} color={colors.antiBackground} />
@@ -31,9 +32,8 @@ function FeedBottomBar(props) {
                 name="users"
                 size={16}
                 color={colors.green}
-                style={{ marginRight: 3 }} />
+                style={{ marginRight: 8 }} />
             <View style={{
-                paddingLeft: 5,
                 justifyContent: 'center',
             }}>
                 <Text style={{

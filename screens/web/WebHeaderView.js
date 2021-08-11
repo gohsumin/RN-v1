@@ -5,15 +5,19 @@ import ThemeContext from '../../data/ThemeContext';
 import StyleContext from '../../data/StyleContext';
 import Icon from "react-native-vector-icons/Ionicons";
 
-const WebNavigationTopView = ({ navigation, userName }) => {
+const WebHeaderView = ({ navigation, userName }) => {
 
     const { theme, user } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
     const {
-        getLeftViewButtonWidth,
-        getDynamicLeftViewWidth,
+        topSectionHeight,
+        getHeaderWidth,
+        getHeaderScale,
+        getNavigationViewButtonWidth,
+        getNavigationViewWidth,
         logoCollapsePoint,
         stickyPadding,
+        leftNavigationViewDisappearPoint
     } = React.useContext(StyleContext).web;
 
     const { index, routes } = navigation.dangerouslyGetState();
@@ -25,12 +29,15 @@ const WebNavigationTopView = ({ navigation, userName }) => {
         <View
             style={{
                 position: 'absolute',
-                width: "100%",
-                height: 80,
+                width: getHeaderWidth(window.width),
+                height: topSectionHeight,
+                transform: [{
+                    scale:  getHeaderScale(window.width)
+                }]
             }}>
             <View
                 style={{
-                    width: 706,
+                    width: window.width < leftNavigationViewDisappearPoint ? "100%" : 706,
                     height: "100%",
                     position: 'absolute',
                     top: 5,
@@ -39,7 +46,7 @@ const WebNavigationTopView = ({ navigation, userName }) => {
                     alignSelf: 'center',
                     alignItems: 'center',
                     backgroundColor: "#222",
-                    borderRadius: 13,
+                    borderRadius: window.width < leftNavigationViewDisappearPoint ? 0 : 13,
                 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -112,17 +119,23 @@ const WebNavigationTopView = ({ navigation, userName }) => {
             <View
                 style={{
                     position: 'absolute',
-                    height: 80,
-                    width: getDynamicLeftViewWidth(window.width),
+                    top: 5,
+                    height: topSectionHeight,
+                    width: window.width < leftNavigationViewDisappearPoint ? 90 : getNavigationViewWidth(window.width),
                     justifyContent: 'center',
-                    alignItems: window.width < logoCollapsePoint ? 'flex-start' : 'center',
-                    paddingLeft: window.width < logoCollapsePoint ? stickyPadding - 6 : 0,
+                    alignItems: window.width < leftNavigationViewDisappearPoint ?
+                        'flex-end' :
+                        window.width < logoCollapsePoint ?
+                            'flex-start' :
+                            'center',
+                    alignSelf: window.width < leftNavigationViewDisappearPoint ? 'flex-end' : 'flex-start',
+                    paddingHorizontal: window.width < logoCollapsePoint ? stickyPadding - 6 : 0,
                     // borderWidth: 1,
                     // borderColor: 'red',
                 }}>
                 <Image
                     style={{
-                        width: window.width < logoCollapsePoint ? 50 : getLeftViewButtonWidth(window.width),
+                        width: window.width < logoCollapsePoint ? 50 : getNavigationViewButtonWidth(window.width),
                         height: "100%",
                         marginTop: (window.width < logoCollapsePoint) ? 0 : -2,
                         shadowColor: 'black',
@@ -140,4 +153,4 @@ const WebNavigationTopView = ({ navigation, userName }) => {
     )
 }
 
-export default WebNavigationTopView;
+export default WebHeaderView;

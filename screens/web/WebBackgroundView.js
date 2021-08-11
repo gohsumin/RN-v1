@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
 import StyleContext from '../../data/StyleContext';
@@ -9,7 +9,8 @@ const WebBackgroundView = () => {
 
     const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
-    const webCenterSectionWidth = React.useContext(StyleContext).web.centerSectionWidth;
+    const window = useWindowDimensions();
+    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
 
     return (
         <LinearGradient
@@ -24,7 +25,7 @@ const WebBackgroundView = () => {
             pointerEvents="none">
             <View
                 style={{
-                    width: webCenterSectionWidth,
+                    width: getCenterSectionWidth(window.width),
                     height: "100%",
                     borderRadius: 2,
                     top: 0,
