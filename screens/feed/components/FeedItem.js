@@ -1,17 +1,19 @@
 import React from "react";
-import { Text, View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
-import { getElapsedTime } from "../../../helpers/postsHelpers";
+import { View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import StyleContext from "../../../data/StyleContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
+import ProfileImage from "../../components/ProfileImage";
+import FeedHeaderText from "./FeedHeaderText";
 
 function FeedItem({
   item,
-  navigate,
+  navigateToProfile,
   setting,
+  width
 }) {
 
   const { theme, platform } = React.useContext(AppContext);
@@ -21,7 +23,6 @@ function FeedItem({
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
   const itemImageRatio = 0.79;
-  const titleRatio = 1 - itemImageRatio;
 
   const marginVertical = platform === "web" ? 20 : setting === 'popup' ? 17 : 15;
   const marginHorizontal = platform === "web" ? 20 : setting === 'popup' ? 14 : 12;
@@ -29,9 +30,8 @@ function FeedItem({
   const window = useWindowDimensions();
 
   const getItemTotalWidth = () => {
-    return (platform === 'web' ?
-      getCenterSectionWidth(window.width) :
-      window.width)
+    return (platform === "web" && setting === "feed")
+      ? getCenterSectionWidth(window.width) : width;
   }
 
   const getLeftGridWidth = () => {
@@ -45,7 +45,12 @@ function FeedItem({
   const HorPadding = () => {
     return (
       <View style={{
-        width: (window.width - getItemTotalWidth()) / 2 + marginHorizontal,
+        width: (platform === "web" && setting === "feed")
+          ? (window.width - getItemTotalWidth()) / 2 + marginHorizontal
+          : (width - getItemTotalWidth()) / 2 + marginHorizontal,
+        pointerEvents: 'none',
+        borderWidth: 1,
+        borderColor: 'darksalmon'
       }} />
     )
   }
@@ -56,7 +61,10 @@ function FeedItem({
       style={{
         flexDirection: "row",
         width: "100%",
-        marginVertical: marginVertical
+        marginVertical: marginVertical,
+        overflow: 'hidden',
+        borderColor: 'crimson',
+        borderWidth: 1
       }}
     >
       {/* horizontal padding */}
@@ -65,80 +73,23 @@ function FeedItem({
       {console.log("FeedItem with key " + item.id)}
       {/* profile pic */}
       <TouchableOpacity
-        onPress={navigate}
+        onPress={navigateToProfile}
         style={{
           width: getLeftGridWidth(),
           height: getLeftGridWidth(),
         }}
       >
-        <Image
-          fadeDuration={0}
-          source={{ uri: item.userImageURL }}
-          style={{
-            width: getLeftGridWidth() * 0.83,
-            height: getLeftGridWidth() * 0.83,
-            marginTop: -4,
-            borderRadius: getLeftGridWidth() / 2,
-            alignSelf: "flex-start",
-            shadowColor: colors.background,
-            shadowOpacity: 0.6,
-            shadowRadius: 10,
-          }}
-        />
+        <ProfileImage
+          sideLength={getLeftGridWidth() * 0.83}
+          source={{ uri: item.userImageURL }} />
       </TouchableOpacity>
-      
+
       {/* right grid — everything to the right of profile pic */}
       <View style={{
         width: getRightGridWidth(),
       }}>
         {/* texts next to the profile pic: buyer name and date */}
-        <View
-          style={{
-            opacity: 0.9,
-            marginBottom: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              fontSize: 17,
-              color: colors.antiBackground,
-              textShadowColor: colors.background,
-              textShadowOpacity: 0.6,
-              textShadowRadius: 10,
-            }}
-          >
-            {item.userName} bought:
-          </Text>
-          <Text
-            style={{
-              fontSize: 14.3,
-              color: colors.foreground1,
-              opacity: 0.9,
-              textShadowColor: colors.background,
-              textShadowOpacity: 0.6,
-              textShadowRadius: 10,
-            }}
-          >
-            {item.itemName}
-          </Text>
-          <Text style={{
-            fontSize: 14.3,
-            color: colors.foreground1,
-            opacity: 0.9,
-            marginTop: -2,
-            textAlignVertical: 'center',
-            textShadowColor: colors.background,
-            textShadowOpacity: 0.6,
-            textShadowRadius: 10,
-          }}>
-            {getElapsedTime(item.dateApproved.seconds)}
-            <Text style={{ fontSize: 12 }}>
-              {"  •  "}
-            </Text>
-            {item.storeName}
-          </Text>
-        </View>
+        <FeedHeaderText item={item} navigateToProfile={navigateToProfile} />
 
         {/* grid with the picture */}
         <View

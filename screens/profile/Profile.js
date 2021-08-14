@@ -243,7 +243,8 @@ const ProfileScreen = ({ route, navigation }) => {
         <View
           style={{
             width: platform === "web" ? getCenterSectionWidth(window.width) - 100 : "100%",
-            alignSelf: 'center'
+            alignSelf: 'center',
+            padding: platform === "web" ? 0 : 15,
           }}>
 
           {/* profile pic, name, bio */}
@@ -337,7 +338,6 @@ const ProfileScreen = ({ route, navigation }) => {
                         ...info,
                         navigate: navigation,
                         setModal: setModal,
-                        width: (platform === "web" ? getCenterSectionWidth(window.width) : window.width) * 0.90
                       });
                     }}
                   />
@@ -352,7 +352,7 @@ const ProfileScreen = ({ route, navigation }) => {
 
     <View style={{
       flex: 1,
-      backgroundColor: platform === "web" ? colors.homeBackground : colors.background,
+      backgroundColor: colors.eyeSafeBackground,
     }}>
 
       {/* web view background gray */}
@@ -368,13 +368,14 @@ const ProfileScreen = ({ route, navigation }) => {
         </View>
       }
 
-      {/* header */}
-      {platform !== "web" && <Header title={userData.userName} />}
-
       {show ?
         renderView()
         : <View />
       }
+
+      {/* header */}
+      {platform !== "web" && <Header title={userData.userName} />}
+
       {loadRequested &&
         <View style={{
           position: 'absolute',

@@ -59,7 +59,7 @@ const WebHeaderView = ({ navigation, userName }) => {
                         style={{
                             textShadowColor: 'black',
                             textShadowRadius: 3,
-                            textShadowOpacity: 1,
+                            //textShadowOpacity: 1,
                         }}
                     />
                 </TouchableOpacity>
@@ -84,7 +84,7 @@ const WebHeaderView = ({ navigation, userName }) => {
                                 fontWeight: '400',
                                 textShadowColor: 'black',
                                 textShadowRadius: 3,
-                                textShadowOpacity: 1,
+                                //textShadowOpacity: 1,
                             }}>
                             Profile
                         </Text>
@@ -109,7 +109,7 @@ const WebHeaderView = ({ navigation, userName }) => {
                                 fontWeight: '400',
                                 textShadowColor: 'black',
                                 textShadowRadius: 3,
-                                textShadowOpacity: 1,
+                                //textShadowOpacity: 1,
                             }}>
                             {currentRoute}
                         </Text>

@@ -235,7 +235,7 @@ const HomeScreen = ({ navigation, route }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: colors.homeBackground,
+        backgroundColor: colors.eyeSafeBackground,
         alignItems: "center",
       }}
     >

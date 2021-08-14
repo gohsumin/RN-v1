@@ -21,7 +21,7 @@ const WebMainNavigator = () => {
         headerShown: false
     }
     return (
-        <View style={{ flex: 1, backgroundColor: colors.homeBackground }}>
+        <View style={{ flex: 1, backgroundColor: colors.webMainBackground }}>
             <View style={{ width: "100%", height: 1 }} />
             <WebStack.Navigator
                 initialRouteName="Home"

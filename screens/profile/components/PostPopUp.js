@@ -2,10 +2,12 @@ import React from 'react';
 import {
     TouchableOpacity,
     Animated,
+    useWindowDimensions
 } from 'react-native';
 import FeedItem from '../../feed/components/FeedItem';
 import AppContext from '../../../data/AppContext';
 import ThemeContext from "../../../data/ThemeContext";
+import StyleContext from '../../../data/StyleContext';
 import { useEffect } from 'react/cjs/react.development';
 import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -16,13 +18,14 @@ function PostPopUp({ info }) {
         item,
         navigate,
         setModal,
-        key,
-        width
     } = info;
 
     const { platform, theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
+    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+
+    const window = useWindowDimensions();
     const headerHeight = platform === "web" ? 0 : useHeaderHeight();
     const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
 
@@ -76,7 +79,8 @@ function PostPopUp({ info }) {
             <Animated.View style={{
                 backgroundColor: colors.foreground4,
                 position: 'absolute',
-                width: width,
+                width: getCenterSectionWidth(window.width),
+                height: getCenterSectionWidth(window.width) * 0.87,
                 alignContent: 'center',
                 justifyContent: 'center',
                 borderRadius: 30,
@@ -85,10 +89,29 @@ function PostPopUp({ info }) {
             >
                 <FeedItem
                     item={item}
-                    navigate={navigate}
+                    navigateToProfile={navigate}
                     setting={'popup'}
+                    width={getCenterSectionWidth(window.width)}
                 />
             </Animated.View>
+
+            {/* <Animated.View style={{
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                flex: 1,
+                alignContent: 'center',
+                justifyContent: 'center',
+                opacity: fadeAnim
+            }}
+            >
+                <FeedItem
+                    item={item}
+                    navigateToProfile={navigate}
+                    setting={'popup'}
+                    width={getCenterSectionWidth(window.width)}
+                />
+            </Animated.View> */}
+
         </Animated.View >
     )
 }

@@ -31,9 +31,9 @@ function SelfPosts({ userFeed }) {
             renderItem={({ item }) =>
                 <FeedItem
                     item={item}
-                    navigate={() => { }}
-                    width={WINDOW_WIDTH}
+                    navigateToProfile={() => { }}
                     setting={'self'}
+                    width={WINDOW_WIDTH}
                 />
             }
             keyExtractor={(item, index) => index.toString()}

@@ -24,7 +24,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
                     height: 0.4,
                     width: platform === "web" ? getCenterSectionWidth(window.width) * 0.85 : "85%",
                     backgroundColor: colors.foreground2,
-                    opacity: 0.5,
+                    opacity: 1,
                     alignSelf: "center",
                     marginTop: 6,
                     marginBottom: 2
@@ -36,10 +36,11 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
     const renderItem = React.useCallback(({ item }) => (
         <FeedItem
             item={item}
-            navigate={() => {
+            navigateToProfile={() => {
                 navigation.navigate("Profile", { uid: item.userID });
             }}
             setting={'feed'}
+            width={window.width}
         />
     ), []);
 
@@ -51,24 +52,30 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
     const keyExtractor = React.useCallback((item) => item.id, []);
 
     return (
-        <FlatList
-            ref={flatlistRef}
-            data={posts}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
-            ListHeaderComponent={renderHeader}
-            renderItem={renderItem}
-            disableIntervalMomentum={true}
-            showsVerticalScrollIndicator={true}
-            onEndReachedThreshold={0.05}
-            onEndReached={onEndReached}
-            ItemSeparatorComponent={renderSeparator}
-            keyExtractor={keyExtractor}
-        />
+        <View
+        style={{
+            flex: 1,
+            width: "100%",
+        }}>
+            <FlatList
+                ref={flatlistRef}
+                data={posts}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+                ListHeaderComponent={renderHeader}
+                renderItem={renderItem}
+                disableIntervalMomentum={true}
+                showsVerticalScrollIndicator={true}
+                onEndReachedThreshold={0.05}
+                onEndReached={onEndReached}
+                ItemSeparatorComponent={renderSeparator}
+                keyExtractor={keyExtractor}
+            />
+        </View>
     )
 }
 
