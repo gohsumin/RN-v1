@@ -13,7 +13,7 @@ import StyleContext from '../../../data/StyleContext';
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const window = useWindowDimensions();
-    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+    const { getCenterSectionWidth, topSectionHeight, getHeaderScale } = React.useContext(StyleContext).web;
     const { theme, platform } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
@@ -46,7 +46,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
 
     const renderHeader = () => {
         if (platform !== "web") return null;
-        return <View style={{ height: 95 }} />
+        return <View style={{ height: 10 + getHeaderScale(window.width) * topSectionHeight }} />
     }
 
     const keyExtractor = React.useCallback((item) => item.id, []);
@@ -69,7 +69,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
                 ListHeaderComponent={renderHeader}
                 renderItem={renderItem}
                 disableIntervalMomentum={true}
-                showsVerticalScrollIndicator={true}
+                showsVerticalScrollIndicator={false}
                 onEndReachedThreshold={0.05}
                 onEndReached={onEndReached}
                 ItemSeparatorComponent={renderSeparator}

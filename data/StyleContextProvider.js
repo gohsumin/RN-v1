@@ -7,20 +7,22 @@ class StyleContextProvider extends Component {
 
     topSectionHeight = 80;
 
-    originalLeftViewWidth = 290;
-    originalLeftViewHeight = 130;
-    navigationViewHeightChangePoint = 1075;
-    leftNavigationViewCollapsePoint = 1070;
-    leftNavigationViewShrinkPoint = 1262;
-    leftNavigationViewDisappearPoint = 873;
-    leftPaddingStickPoint = 1100;
-    topNavigationViewShrinkPoint = 463;
-    originalNavigationViewButtonWidth = 149;
-    originalSmallFont = 25;
+    originalLeftViewWidth = 320;
+    originalLeftViewHeight = 145;
+    originalNavigationViewButtonWidth = 200;
+    originalSmallFont = 28;
     originalNavigationIconSize = 25;
-    navigationViewIconMaxPoint = 1063;
-    navigationViewIconIncreasePoint = 1120;
+
+    leftPaddingStickPoint = 1170;
+    leftNavigationViewShrinkPoint = 1136;
+    leftNavigationViewCollapsePoint = 1028;
+    navigationViewIconIncreasePoint = 1028;
+    navigationViewHeightChangePoint = 1026;
     logoCollapsePoint = 1030;
+    navigationViewIconMaxPoint = 1000;
+    leftNavigationViewDisappearPoint = 873;
+    topNavigationViewShrinkPoint = 463;
+
 
     getCenterSectionWidth = (windowWidth) => {
         if (windowWidth < this.originalCenterSectionWidth) {
@@ -72,7 +74,7 @@ class StyleContextProvider extends Component {
         }
         if (windowWidth < this.leftNavigationViewShrinkPoint) {
             const ratio = (this.leftNavigationViewShrinkPoint - windowWidth) / this.leftNavigationViewShrinkPoint;
-            return (this.originalSmallFont + (selected ? 2 : 0)) - 50 * ratio;
+            return (this.originalSmallFont + (selected ? 2 : 0)) - 110 * ratio;
         }
         else { return this.originalSmallFont + (selected ? 2 : 0); }
     }
@@ -81,11 +83,11 @@ class StyleContextProvider extends Component {
         const multiplier = windowWidth < this.leftNavigationViewCollapsePoint + 5 ? 200 : 100;
         if (windowWidth < this.navigationViewIconMaxPoint) {
             const ratio = (this.navigationViewIconIncreasePoint - this.navigationViewIconMaxPoint) / this.navigationViewIconIncreasePoint;
-            return this.originalNavigationIconSize + multiplier * ratio;
+            return this.originalNavigationIconSize + multiplier * ratio + 5;
         }
         if (windowWidth < this.navigationViewIconIncreasePoint) {
             const ratio = (this.navigationViewIconIncreasePoint - windowWidth) / this.navigationViewIconIncreasePoint;
-            return this.originalNavigationIconSize + multiplier * ratio;
+            return this.originalNavigationIconSize + multiplier * ratio + 5;
         }
         else {
             return this.originalNavigationIconSize;
@@ -120,6 +122,7 @@ class StyleContextProvider extends Component {
             getNavigationViewHeight: this.getNavigationViewHeight,
             logoCollapsePoint: this.logoCollapsePoint,
             stickyPadding: this.stickyPadding,
+            leftPaddingStickPoint: this.leftPaddingStickPoint,
             leftNavigationViewDisappearPoint: this.leftNavigationViewDisappearPoint,
         }
     };

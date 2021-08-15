@@ -17,6 +17,7 @@ function WebNavigationItem({ currentRoute, routeName, iconName, navigate }) {
         getNavigationViewFontSize,
         getNavigationViewButtonWidth,
         getNavigationViewIconSize,
+        leftNavigationViewDisappearPoint
     } = useContext(StyleContext).web;
     const window = useWindowDimensions();
 
@@ -25,10 +26,11 @@ function WebNavigationItem({ currentRoute, routeName, iconName, navigate }) {
             style={{
                 flexDirection: 'row',
                 width: getNavigationViewButtonWidth(window.width),
+                marginVertical: window.width >= leftNavigationViewDisappearPoint && 10,
                 alignItems: 'center',
                 opacity: currentRoute === routeName ? 0.8 : 0.4,
-                borderWidth: 1,
-                borderColor: 'orange',
+                // borderWidth: 1,
+                // borderColor: 'orange',
             }}
             onPress={navigate}>
             <Icon

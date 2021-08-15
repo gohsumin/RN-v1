@@ -35,7 +35,7 @@ const HomeScreen = ({ navigation, route }) => {
   const flatlistRef = useRef();
   const loadSize = 8;
   const window = useWindowDimensions();
-  const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+  const { getCenterSectionWidth, getHeaderWidth, topSectionHeight } = React.useContext(StyleContext).web;
 
   function listenForNewPosts() {
     console.log("listenForNewPosts");
@@ -239,16 +239,19 @@ const HomeScreen = ({ navigation, route }) => {
         alignItems: "center",
       }}
     >
+
       {platform === "web" &&
         <View
           style={{
             position: 'absolute',
             width: getCenterSectionWidth(window.width),
             height: "100%",
-            backgroundColor: "#1e1e1e"
+            backgroundColor: colors.webMainBackground
           }}>
         </View>
       }
+
+      {/* home header on app */}
       {platform !== "web" &&
         <LinearGradient
           style={{

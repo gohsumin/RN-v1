@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const WebHeaderView = ({ navigation, userName }) => {
 
-    const { theme, user } = React.useContext(AppContext);
+    const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
     const {
         topSectionHeight,
@@ -16,8 +16,7 @@ const WebHeaderView = ({ navigation, userName }) => {
         getNavigationViewButtonWidth,
         getNavigationViewWidth,
         logoCollapsePoint,
-        stickyPadding,
-        leftNavigationViewDisappearPoint
+        leftNavigationViewDisappearPoint,
     } = React.useContext(StyleContext).web;
 
     const { index, routes } = navigation.dangerouslyGetState();
@@ -31,22 +30,30 @@ const WebHeaderView = ({ navigation, userName }) => {
                 position: 'absolute',
                 width: getHeaderWidth(window.width),
                 height: topSectionHeight,
+                top: 5 - topSectionHeight * (1 - getHeaderScale(window.width)) / 2,
                 transform: [{
-                    scale:  getHeaderScale(window.width)
-                }]
+                    scale: getHeaderScale(window.width)
+                }],
+                // borderWidth: 1,
+                // borderColor: 'cyan'
             }}>
+
+            {/* back arrow button */}
             <View
                 style={{
                     width: window.width < leftNavigationViewDisappearPoint ? "100%" : 706,
                     height: "100%",
                     position: 'absolute',
-                    top: 5,
                     flexDirection: 'row',
                     paddingLeft: 20,
                     alignSelf: 'center',
                     alignItems: 'center',
                     backgroundColor: "#222",
                     borderRadius: window.width < leftNavigationViewDisappearPoint ? 0 : 13,
+                    shadowColor: 'black',
+                    shadowOpacity: 0.5,
+                    shadowRadius: 15,
+                    shadowOffset: { width: 0, height: 5 }
                 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -63,6 +70,8 @@ const WebHeaderView = ({ navigation, userName }) => {
                         }}
                     />
                 </TouchableOpacity>
+
+                {/* header title */}
                 <View
                     style={{
                         width: 0,
@@ -109,19 +118,19 @@ const WebHeaderView = ({ navigation, userName }) => {
                                 fontWeight: '400',
                                 textShadowColor: 'black',
                                 textShadowRadius: 3,
-                                //textShadowOpacity: 1,
                             }}>
                             {currentRoute}
                         </Text>
                     </View>
                 }
             </View>
+
+            {/* logo at top left or top right */}
             <View
                 style={{
                     position: 'absolute',
-                    top: 5,
                     height: topSectionHeight,
-                    width: window.width < leftNavigationViewDisappearPoint ? 90 : getNavigationViewWidth(window.width),
+                    width: window.width < leftNavigationViewDisappearPoint ? 100 : getNavigationViewWidth(window.width),
                     justifyContent: 'center',
                     alignItems: window.width < leftNavigationViewDisappearPoint ?
                         'flex-end' :
@@ -129,25 +138,35 @@ const WebHeaderView = ({ navigation, userName }) => {
                             'flex-start' :
                             'center',
                     alignSelf: window.width < leftNavigationViewDisappearPoint ? 'flex-end' : 'flex-start',
-                    paddingHorizontal: window.width < logoCollapsePoint ? stickyPadding - 6 : 0,
+                    right: window.width < leftNavigationViewDisappearPoint && 10,
+                    left: (window.width < logoCollapsePoint &&
+                        window.width >= leftNavigationViewDisappearPoint) && 14,
                     // borderWidth: 1,
-                    // borderColor: 'red',
+                    // borderColor: 'aqua',
                 }}>
-                <Image
+                <View
                     style={{
-                        width: window.width < logoCollapsePoint ? 50 : getNavigationViewButtonWidth(window.width),
+                        width: window.width < logoCollapsePoint ? 60 : getNavigationViewButtonWidth(window.width),
                         height: "100%",
-                        marginTop: (window.width < logoCollapsePoint) ? 0 : -2,
-                        shadowColor: 'black',
-                        shadowRadius: 5,
-                        shadowOpacity: 1,
                         // borderWidth: 1,
-                        // borderColor: 'orange',
-                    }}
-                    resizeMode='contain'
-                    source={(window.width < logoCollapsePoint) ?
-                        require('../../assets/logo.png') :
-                        require('../../assets/SoShNavLogo.png')} />
+                        // borderColor: 'red',
+                    }}>
+                    <Image
+                        style={{
+                            width: "80%",
+                            height: "100%",
+                            alignSelf: 'flex-start',
+                            shadowColor: 'black',
+                            shadowRadius: 5,
+                            shadowOpacity: 1,
+                            // borderWidth: 1,
+                            // borderColor: 'yellow',
+                        }}
+                        resizeMode='contain'
+                        source={(window.width < logoCollapsePoint) ?
+                            require('../../assets/logo.png') :
+                            require('../../assets/SoShNavLogo.png')} />
+                </View>
             </View>
         </View >
     )

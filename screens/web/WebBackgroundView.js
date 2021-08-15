@@ -20,8 +20,8 @@ const WebBackgroundView = () => {
                 width: "100%",
                 height: "100%"
             }}
-            colors={['black', 'transparent']}
-            locations={[0, 0.14]}
+            colors={['rgba(0, 0, 0, 0.3)', 'transparent']}
+            locations={[0, 0.18]}
             pointerEvents="none">
             <View
                 style={{
@@ -31,7 +31,7 @@ const WebBackgroundView = () => {
                     top: 0,
                     position: 'absolute',
                     alignSelf: 'center',
-                    shadowOpacity: 0.4,
+                    shadowOpacity: 0.5,
                     shadowColor: 'black',
                     shadowRadius: 25,
                     overflow: 'visible',

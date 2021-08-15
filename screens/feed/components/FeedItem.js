@@ -49,8 +49,8 @@ function FeedItem({
           ? (window.width - getItemTotalWidth()) / 2 + marginHorizontal
           : (width - getItemTotalWidth()) / 2 + marginHorizontal,
         pointerEvents: 'none',
-        borderWidth: 1,
-        borderColor: 'darksalmon'
+        // borderWidth: 1,
+        // borderColor: 'darksalmon'
       }} />
     )
   }
@@ -63,8 +63,8 @@ function FeedItem({
         width: "100%",
         marginVertical: marginVertical,
         overflow: 'hidden',
-        borderColor: 'crimson',
-        borderWidth: 1
+        // borderColor: 'crimson',
+        // borderWidth: 1
       }}
     >
       {/* horizontal padding */}

@@ -12,9 +12,7 @@ const WebNavigationView = ({ navigation, userName }) => {
     const {
         getNavigationViewWidth,
         getHeaderScale,
-        getNavigationViewFontSize,
-        getNavigationViewButtonWidth,
-        getNavigationViewIconSize,
+        topSectionHeight,
         getNavigationViewHeight,
         leftNavigationViewDisappearPoint
     } = React.useContext(StyleContext).web;
@@ -38,7 +36,8 @@ const WebNavigationView = ({ navigation, userName }) => {
                 position: 'absolute',
                 flexDirection: window.width < leftNavigationViewDisappearPoint ? 'row' : 'column',
                 width: getNavigationViewWidth(window.width),
-                height: getNavigationViewHeight(window.width),
+                height: window.width < leftNavigationViewDisappearPoint &&
+                    getNavigationViewHeight(window.width),
                 transform: [{
                     scale: getHeaderScale(window.width)
                 }],
@@ -47,12 +46,13 @@ const WebNavigationView = ({ navigation, userName }) => {
                     getHeaderScale(window.width) * 100,
                 marginRight: - 0.5 * getNavigationViewWidth(window.width) * (1 - getHeaderScale(window.width)),
                 top: window.width < leftNavigationViewDisappearPoint
-                    ? getHeaderScale(window.width) * 5
-                    : 96,
-                padding: 7,
+                    ? 5 - topSectionHeight * (1 - getHeaderScale(window.width)) / 2
+                    : 130,
                 alignSelf: window.width < leftNavigationViewDisappearPoint
                     ? 'flex-end' : 'flex-start',
                 alignItems: 'center',
+                // borderWidth: 1,
+                // borderColor: 'aqua'
             }}>
 
             <WebNavigationItem

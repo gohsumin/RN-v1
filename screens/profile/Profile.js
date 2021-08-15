@@ -363,7 +363,7 @@ const ProfileScreen = ({ route, navigation }) => {
             width: getCenterSectionWidth(window.width),
             height: "100%",
             alignSelf: 'center',
-            backgroundColor: "#1e1e1e"
+            backgroundColor: colors.webMainBackground
           }}>
         </View>
       }

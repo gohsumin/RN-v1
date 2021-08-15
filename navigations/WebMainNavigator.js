@@ -8,7 +8,6 @@ import ProfileScreen from '../screens/profile/Profile';
 import UpdateUser from '../screens/profile/components/UpdateUser';
 import AppContext from '../data/AppContext';
 import ThemeContext from '../data/ThemeContext';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const WebMainNavigator = () => {
 
@@ -21,7 +20,7 @@ const WebMainNavigator = () => {
         headerShown: false
     }
     return (
-        <View style={{ flex: 1, backgroundColor: colors.webMainBackground }}>
+        <View style={{ flex: 1, backgroundColor: colors.eyeSafeBackground }}>
             <View style={{ width: "100%", height: 1 }} />
             <WebStack.Navigator
                 initialRouteName="Home"
