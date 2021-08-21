@@ -34,48 +34,6 @@ const RootStackNavigator = () => {
     headerBackTitle: "Back",
   };
 
-  function Test() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          borderWidth: 1,
-          padding: 20,
-          borderColor: 'pink',
-          alignItems: 'center',
-          backgroundColor: colors.background
-        }}>
-        <FlatList
-          data={[
-            { test: "#222" },
-            { test: "#333" },
-            { test: "#444" },
-            { test: "#555" },
-            { test: "#666" },
-            { test: "#777" },
-            { test: "#888" },
-            { test: "#999" },
-            { test: "#aaa" },
-            { test: "#bbb" },
-            { test: "#ccc" },
-            { test: "#ddd" },
-            { test: "#eee" },
-            { test: "#fff" },
-          ]}
-          renderItem={({ item }) =>
-            <View style={{
-              backgroundColor: item.test,
-              width: 180,
-              height: 100,
-              margin: 20
-            }} />
-          }
-          keyExtractor={(item) => { return item.test }}
-        />
-      </View>
-    )
-  }
-
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar translucent backgroundColor="transparent" barStyle={theme === "dark" ? "light-content" : "dark-content"} />
@@ -87,9 +45,6 @@ const RootStackNavigator = () => {
             "WebMain" : "Main"}
         mode="modal"
         screenOptions={screenOptionStyle}>
-        <RootStack.Screen
-          name="Test"
-          component={Test} />
         <RootStack.Screen
           name="Sign In"
           component={SignInScreen}

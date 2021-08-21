@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
-import StyleContext from '../../../data/StyleContext';
+import WebStyleContext from '../../../data/WebStyleContext';
 import WebBackgroundView from '../../web/WebBackgroundView';
 import WebHeaderView from '../../web/WebHeaderView';
 import WebNavigationView from '../../web/WebNavigationView';
@@ -17,7 +17,7 @@ function UpdateUser({ navigation, route }) {
     const colors = useContext(ThemeContext).colors[theme];
     const {
         getCenterSectionWidth,
-    } = useContext(StyleContext).web;
+    } = useContext(WebStyleContext);
 
     return (
         <View style={{

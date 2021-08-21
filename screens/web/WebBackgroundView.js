@@ -2,7 +2,7 @@ import React from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
-import StyleContext from '../../data/StyleContext';
+import WebStyleContext from '../../data/WebStyleContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const WebBackgroundView = () => {
@@ -10,7 +10,7 @@ const WebBackgroundView = () => {
     const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
     const window = useWindowDimensions();
-    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+    const { getCenterSectionWidth } = React.useContext(WebStyleContext);
 
     return (
         <LinearGradient

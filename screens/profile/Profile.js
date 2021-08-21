@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
-import StyleContext from "../../data/StyleContext";
+import WebStyleContext from "../../data/WebStyleContext";
 import Header from './components/Header';
 import WebBackgroundView from "../web/WebBackgroundView";
 import WebNavigationView from "../web/WebNavigationView";
@@ -34,6 +34,7 @@ const ProfileScreen = ({ route, navigation }) => {
   const [modalInfo, setModalInfo] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
+  const [currentRoute, setCurrentRoute] = useState("Home");
 
   const theme = useContext(AppContext).theme;
   const logger = useContext(AppContext).uid;
@@ -41,7 +42,7 @@ const ProfileScreen = ({ route, navigation }) => {
   const colors = useContext(ThemeContext).colors[theme];
   const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
   const window = useWindowDimensions();
-  const { getCenterSectionWidth } = useContext(StyleContext).web;
+  const { getCenterSectionWidth, getProfileWidth } = useContext(WebStyleContext);
 
   function getUserData(uid, callback) {
     console.log("getUserData for user " + uid);
@@ -154,6 +155,9 @@ const ProfileScreen = ({ route, navigation }) => {
       uid = logger;
     }
     else {
+      if (platform === "web") {
+        setCurrentRoute(route.params.currentRoute);
+      }
       uid = route.params.uid;
       if (uid !== logger) {
         setIsUser(false);
@@ -234,6 +238,7 @@ const ProfileScreen = ({ route, navigation }) => {
             onRefresh={onRefresh}
           />
         }
+        showsVerticalScrollIndicator={false}
         onScroll={({ nativeEvent }) => {
           if (isCloseToBottom(nativeEvent)) {
             onEndReached();
@@ -242,9 +247,11 @@ const ProfileScreen = ({ route, navigation }) => {
       >
         <View
           style={{
-            width: platform === "web" ? getCenterSectionWidth(window.width) - 100 : "100%",
+            width: platform === "web" ? getProfileWidth(window.width) : "100%",
             alignSelf: 'center',
             padding: platform === "web" ? 0 : 15,
+            // borderWidth: 1,
+            // borderColor: 'pink'
           }}>
 
           {/* profile pic, name, bio */}
@@ -353,6 +360,7 @@ const ProfileScreen = ({ route, navigation }) => {
     <View style={{
       flex: 1,
       backgroundColor: colors.eyeSafeBackground,
+      alignItems: "center",
     }}>
 
       {/* web view background gray */}
@@ -387,14 +395,14 @@ const ProfileScreen = ({ route, navigation }) => {
         </View>}
       {platform === "web" &&
         <WebBackgroundView />}
-      {platform === "web" &&
+      {/* {platform === "web" &&
         <WebHeaderView
           navigation={navigation}
-          userName={userData.userName} />}
-      {platform === "web" &&
+          userName={userData.userName} />} */}
+      {/* {platform === "web" &&
         <WebNavigationView
-          navigation={navigation}
-          userName={userData.userName} />}
+          currentRoute={currentRoute}
+          navigation={navigation} />} */}
       {modal && <PostPopUp info={modalInfo} />}
     </View>
   );

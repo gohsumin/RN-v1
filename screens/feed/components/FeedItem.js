@@ -2,7 +2,7 @@ import React from "react";
 import { View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
-import StyleContext from "../../../data/StyleContext";
+import WebStyleContext from "../../../data/WebStyleContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
@@ -18,7 +18,7 @@ function FeedItem({
 
   const { theme, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
-  const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+  const { getCenterSectionWidth } = React.useContext(WebStyleContext);
 
   const horLeftRatio = 0.18;
   const horRightRatio = 1 - horLeftRatio;
@@ -62,7 +62,6 @@ function FeedItem({
         flexDirection: "row",
         width: "100%",
         marginVertical: marginVertical,
-        overflow: 'hidden',
         // borderColor: 'crimson',
         // borderWidth: 1
       }}

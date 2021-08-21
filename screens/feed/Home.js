@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
-import StyleContext from "../../data/StyleContext";
+import WebStyleContext from "../../data/WebStyleContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
 import AppLoading from "expo-app-loading";
@@ -30,12 +30,13 @@ const HomeScreen = ({ navigation, route }) => {
   const [newPostExists, setNewPostExists] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
+  const [currentRoute, setCurrentRoute] = useState("Home");
   const { theme, uid, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
   const flatlistRef = useRef();
   const loadSize = 8;
   const window = useWindowDimensions();
-  const { getCenterSectionWidth, getHeaderWidth, topSectionHeight } = React.useContext(StyleContext).web;
+  const { getCenterSectionWidth, getHeaderWidth, topSectionHeight } = React.useContext(WebStyleContext);
 
   function listenForNewPosts() {
     console.log("listenForNewPosts");
@@ -118,6 +119,13 @@ const HomeScreen = ({ navigation, route }) => {
       getTimeline();
     }
   }, [cursor]);
+
+  useEffect(() => {
+    if(platform === "web" && route.params !== undefined) {
+      console.log(route.params.currentRoute + "!!!");
+      setCurrentRoute(route.params.currentRoute);
+    }
+  }, [route]);
 
   useEffect(() => {
     if (refreshing) {
@@ -337,13 +345,14 @@ const HomeScreen = ({ navigation, route }) => {
       {!isReady && <AppLoading />}
       {platform === "web" &&
         <WebBackgroundView />}
-      {platform === "web" &&
+      {/* {platform === "web" &&
         <WebHeaderView
           navigation={navigation}
-          route={route} />}
-      {platform === "web" &&
+          route={route} />} */}
+      {/* {platform === "web" &&
         <WebNavigationView
-          navigation={navigation} />}
+          currentRoute={currentRoute}
+          navigation={navigation} />} */}
     </SafeAreaView>
   );
 };

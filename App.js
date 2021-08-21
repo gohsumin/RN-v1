@@ -11,7 +11,7 @@ import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
-import StyleContextProvider from "./data/StyleContextProvider";
+import WebStyleContextProvider from "./data/WebStyleContextProvider";
 const firestore = firebase.firestore();
 
 function cacheImages(images) {
@@ -142,7 +142,6 @@ export default class App extends React.Component {
   render() {
     return (
       /* Contexts can be composed later into a single component. */
-      <StyleContextProvider>
         <SwipeCardsContext.Provider value={{
           remaining: this.state.remaining,
           popRemaining: this.popRemaining
@@ -169,7 +168,6 @@ export default class App extends React.Component {
             </ThemeContextProvider>
           </AppContext.Provider>
         </SwipeCardsContext.Provider>
-      </StyleContextProvider>
     );
   }
 }

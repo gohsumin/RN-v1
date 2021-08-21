@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Image, Text, TouchableOpacity, useWindowDimensions } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
-import StyleContext from '../../data/StyleContext';
+import WebStyleContext from '../../data/WebStyleContext';
+import WebNavigationContext from '../../data/WebNavigationContext';
 import Icon from "react-native-vector-icons/Ionicons";
+import { useNavigation } from '@react-navigation/native';
 
-const WebHeaderView = ({ navigation, userName }) => {
+const WebHeaderView = () => {
 
-    const { theme } = React.useContext(AppContext);
-    const colors = React.useContext(ThemeContext).colors[theme];
+    const navigation = useNavigation();
+
+    const { theme } = useContext(AppContext);
+    const colors = useContext(ThemeContext).colors[theme];
+    const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
     const {
         topSectionHeight,
         getHeaderWidth,
@@ -17,10 +22,10 @@ const WebHeaderView = ({ navigation, userName }) => {
         getNavigationViewWidth,
         logoCollapsePoint,
         leftNavigationViewDisappearPoint,
-    } = React.useContext(StyleContext).web;
+    } = useContext(WebStyleContext);
 
-    const { index, routes } = navigation.dangerouslyGetState();
-    const currentRoute = routes[index].name;
+    const routeName = currentRoute.routeName;
+    const userName = currentRoute.userName;
 
     const window = useWindowDimensions();
 
@@ -57,6 +62,20 @@ const WebHeaderView = ({ navigation, userName }) => {
                 }}>
                 <TouchableOpacity
                     onPress={() => {
+                        // routes of the RootStackNavigator
+                        const rootStackRoutes = navigation.dangerouslyGetState();
+                        const webMainRoutes = rootStackRoutes.routes[0].state.routes;
+                        const previousIndex = webMainRoutes.length - 2;
+                        if (previousIndex < 0) {
+                            setCurrentRoute({ routeName: "Home", userName: "" });
+                        }
+                        else {
+                            const prevRouteName = webMainRoutes[previousIndex].name;
+                            const prevUserName = webMainRoutes[previousIndex].params
+                                ? webMainRoutes[previousIndex].params.userName
+                                : "";
+                            setCurrentRoute({ routeName: prevRouteName, userName: prevUserName });
+                        }
                         navigation.goBack();
                     }}>
                     <Icon
@@ -80,7 +99,7 @@ const WebHeaderView = ({ navigation, userName }) => {
                         borderWidth: 0.1,
                         marginLeft: 13
                     }} />
-                {(currentRoute === "Profile" || currentRoute === "My Profile") ?
+                {(userName !== "") ?
                     <View style={{
                         marginLeft: 14,
                         marginBottom: 3,
@@ -119,7 +138,7 @@ const WebHeaderView = ({ navigation, userName }) => {
                                 textShadowColor: 'black',
                                 textShadowRadius: 3,
                             }}>
-                            {currentRoute}
+                            {routeName}
                         </Text>
                     </View>
                 }

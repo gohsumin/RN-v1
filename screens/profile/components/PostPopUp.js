@@ -7,7 +7,7 @@ import {
 import FeedItem from '../../feed/components/FeedItem';
 import AppContext from '../../../data/AppContext';
 import ThemeContext from "../../../data/ThemeContext";
-import StyleContext from '../../../data/StyleContext';
+import WebStyleContext from '../../../data/WebStyleContext';
 import { useEffect } from 'react/cjs/react.development';
 import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -23,7 +23,7 @@ function PostPopUp({ info }) {
     const { platform, theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
-    const { getCenterSectionWidth } = React.useContext(StyleContext).web;
+    const { getCenterSectionWidth } = React.useContext(WebStyleContext);
 
     const window = useWindowDimensions();
     const headerHeight = platform === "web" ? 0 : useHeaderHeight();

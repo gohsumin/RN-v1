@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import StyleContext from "./StyleContext";
+import WebStyleContext from "./WebStyleContext";
 
-class StyleContextProvider extends Component {
+class WebStyleContextProvider extends Component {
 
     originalCenterSectionWidth = 700;
 
@@ -23,14 +23,18 @@ class StyleContextProvider extends Component {
     leftNavigationViewDisappearPoint = 873;
     topNavigationViewShrinkPoint = 463;
 
+    originalProfilePaddingSum = 100;
+    profilePaddingDecreasePoint = 860;
+    profilePaddingStickPoint = 690;
+    balanceSectionStackPoint = 480;
+
+    userInfoBarWidthStickPoint = 353;
 
     getCenterSectionWidth = (windowWidth) => {
         if (windowWidth < this.originalCenterSectionWidth) {
             return windowWidth;
         }
-        else {
-            return this.originalCenterSectionWidth;
-        }
+        return this.originalCenterSectionWidth;
     }
 
     getNavigationViewWidth = (windowWidth) => {
@@ -53,9 +57,7 @@ class StyleContextProvider extends Component {
             const ratio = (this.navigationViewHeightChangePoint - windowWidth) / this.navigationViewHeightChangePoint;
             return this.originalLeftViewHeight + 200 * ratio + 20;
         }
-        else {
-            return this.originalLeftViewHeight;
-        }
+        return this.originalLeftViewHeight;
     }
 
     getHeaderWidth = (windowWidth) => {
@@ -76,7 +78,7 @@ class StyleContextProvider extends Component {
             const ratio = (this.leftNavigationViewShrinkPoint - windowWidth) / this.leftNavigationViewShrinkPoint;
             return (this.originalSmallFont + (selected ? 2 : 0)) - 110 * ratio;
         }
-        else { return this.originalSmallFont + (selected ? 2 : 0); }
+        return this.originalSmallFont + (selected ? 2 : 0);
     }
 
     getNavigationViewIconSize = (windowWidth) => {
@@ -89,9 +91,7 @@ class StyleContextProvider extends Component {
             const ratio = (this.navigationViewIconIncreasePoint - windowWidth) / this.navigationViewIconIncreasePoint;
             return this.originalNavigationIconSize + multiplier * ratio + 5;
         }
-        else {
-            return this.originalNavigationIconSize;
-        }
+        return this.originalNavigationIconSize;
     }
 
     stickyPadding = (this.getNavigationViewWidth(this.leftPaddingStickPoint) - this.originalNavigationViewButtonWidth) / 2;
@@ -103,39 +103,60 @@ class StyleContextProvider extends Component {
         if (windowWidth < this.leftPaddingStickPoint) {
             return this.getNavigationViewWidth(windowWidth) - 2 * this.stickyPadding;
         }
-        else {
-            return this.originalNavigationViewButtonWidth;
+        return this.originalNavigationViewButtonWidth;
+    }
+
+
+    getProfileWidth = (windowWidth) => {
+        if (windowWidth < this.profilePaddingStickPoint) {
+            const ratio = (this.profilePaddingDecreasePoint - this.profilePaddingStickPoint)
+                / this.profilePaddingDecreasePoint;
+            return this.getCenterSectionWidth(windowWidth) - this.originalProfilePaddingSum + 350 * ratio;
         }
+        if (windowWidth < this.profilePaddingDecreasePoint) {
+            const ratio = (this.profilePaddingDecreasePoint - windowWidth)
+                / this.profilePaddingDecreasePoint;
+            return this.getCenterSectionWidth(windowWidth) - this.originalProfilePaddingSum + 350 * ratio;
+        }
+        return this.getCenterSectionWidth(windowWidth) - this.originalProfilePaddingSum;
+    }
+
+    getUserInfoBarWidth = (windowWidth) => {
+        if (windowWidth < this.userInfoBarWidthStickPoint) {
+            return 0;
+        }
+        return (this.getProfileWidth(windowWidth) - this.getProfileWidth(this.userInfoBarWidthStickPoint)) / 2;
     }
 
     state = {
-        web: {
-            getCenterSectionWidth: this.getCenterSectionWidth,
-            topSectionHeight: this.topSectionHeight,
-            topNavigationViewShrinkPoint: this.topNavigationViewShrinkPoint,
-            getHeaderScale: this.getHeaderScale,
-            getHeaderWidth: this.getHeaderWidth,
-            getNavigationViewWidth: this.getNavigationViewWidth,
-            getNavigationViewFontSize: this.getNavigationViewFontSize,
-            getNavigationViewButtonWidth: this.getNavigationViewButtonWidth,
-            getNavigationViewIconSize: this.getNavigationViewIconSize,
-            getNavigationViewHeight: this.getNavigationViewHeight,
-            logoCollapsePoint: this.logoCollapsePoint,
-            stickyPadding: this.stickyPadding,
-            leftPaddingStickPoint: this.leftPaddingStickPoint,
-            leftNavigationViewDisappearPoint: this.leftNavigationViewDisappearPoint,
-        }
+        getCenterSectionWidth: this.getCenterSectionWidth,
+        topSectionHeight: this.topSectionHeight,
+        topNavigationViewShrinkPoint: this.topNavigationViewShrinkPoint,
+        getHeaderScale: this.getHeaderScale,
+        getHeaderWidth: this.getHeaderWidth,
+        getNavigationViewWidth: this.getNavigationViewWidth,
+        getNavigationViewFontSize: this.getNavigationViewFontSize,
+        getNavigationViewButtonWidth: this.getNavigationViewButtonWidth,
+        getNavigationViewIconSize: this.getNavigationViewIconSize,
+        getNavigationViewHeight: this.getNavigationViewHeight,
+        logoCollapsePoint: this.logoCollapsePoint,
+        stickyPadding: this.stickyPadding,
+        leftPaddingStickPoint: this.leftPaddingStickPoint,
+        leftNavigationViewDisappearPoint: this.leftNavigationViewDisappearPoint,
+        getProfileWidth: this.getProfileWidth,
+        balanceSectionStackPoint: this.balanceSectionStackPoint,
+        getUserInfoBarWidth: this.getUserInfoBarWidth,
     };
 
     render() {
         return (
-            <StyleContext.Provider
+            <WebStyleContext.Provider
                 value={this.state}
             >
                 {this.props.children}
-            </StyleContext.Provider>
+            </WebStyleContext.Provider>
         );
     }
 }
 
-export default StyleContextProvider;
+export default WebStyleContextProvider;

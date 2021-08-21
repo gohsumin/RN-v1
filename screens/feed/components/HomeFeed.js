@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     FlatList,
     View,
@@ -8,14 +8,16 @@ import {
 import FeedItem from './FeedItem';
 import AppContext from '../../../data/AppContext';
 import ThemeContext from '../../../data/ThemeContext';
-import StyleContext from '../../../data/StyleContext';
+import WebStyleContext from '../../../data/WebStyleContext';
+import WebNavigationContext from '../../../data/WebNavigationContext';
 
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const window = useWindowDimensions();
-    const { getCenterSectionWidth, topSectionHeight, getHeaderScale } = React.useContext(StyleContext).web;
-    const { theme, platform } = React.useContext(AppContext);
-    const colors = React.useContext(ThemeContext).colors[theme];
+    const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
+    const { getCenterSectionWidth, topSectionHeight, getHeaderScale } = useContext(WebStyleContext);
+    const { theme, platform } = useContext(AppContext);
+    const colors = useContext(ThemeContext).colors[theme];
 
     const renderSeparator = () => {
         return (
@@ -37,7 +39,8 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
         <FeedItem
             item={item}
             navigateToProfile={() => {
-                navigation.navigate("Profile", { uid: item.userID });
+                setCurrentRoute({routeName: "Profile", userName: item.userName})
+                navigation.navigate("Profile", { uid: item.userID, userName: item.userName });
             }}
             setting={'feed'}
             width={window.width}

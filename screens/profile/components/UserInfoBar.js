@@ -3,31 +3,33 @@ import {
     Text,
     View,
     TouchableOpacity,
+    useWindowDimensions
 } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
+import WebStyleContext from "../../../data/WebStyleContext";
 import { firebase } from '../../../data/firebase';
 import "firebase/database";
 
-function UserInfoBar({ userData, isUser, setUserData, navigate }) {
+function UserInfoBar({ userData, isUser, navigate }) {
 
-    const { theme, uid } = React.useContext(AppContext);
+    const { theme, user, uid } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
 
     const spacing = 15;
     const leftHeight = 28;
 
+    const window = useWindowDimensions();
+
+    const { getUserInfoBarWidth } = React.useContext(WebStyleContext);
+
     var followUser = firebase.functions().httpsCallable('followUser');
     var unFollowUser = firebase.functions().httpsCallable('unFollowUser');
     const [buttonText, setButtonText] = useState("");
     const [followable, setFollowable] = useState();
-    const [action, setAction] = useState();
 
     function follow() {
         setButtonText("Unfollow");
-        /* setAction(() => {
-            unfollow();
-        }); */
         followUser({
             userID: userData.userID,
         }).then(() => {
@@ -38,9 +40,6 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
 
     function unfollow() {
         setButtonText("Follow");
-        /* setAction(() => {
-            follow();
-        }); */
         unFollowUser({
             userID: userData.userID
         }).then(() => {
@@ -52,9 +51,6 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
     useEffect(() => {
         if (isUser) {
             setButtonText("Edit Profile");
-            /* setAction(() => {
-                navigate('Edit Profile', { uid: uid });
-            }); */
         }
         else {
             const path = "/User-Profile/" + uid + "/Following";
@@ -64,17 +60,11 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                 if (res !== null && res[userData.userID] !== undefined) {
                     setFollowable(false);
                     setButtonText("Unfollow");
-                    /* setAction(() => {
-                        unfollow();
-                    }); */
                 }
                 else {
                     console.log("nope");
                     setFollowable(true);
                     setButtonText("Follow");
-                    /* setAction(() => {
-                        follow();
-                    }); */
                 }
             })
         }
@@ -83,7 +73,7 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
     function onButtonPress() {
         console.log("onButtonPress");
         if (isUser) {
-            navigate('Edit Profile', { uid: uid });
+            navigate('Edit Profile', { uid: uid, userName: user });
             // from whatever page for updating profile: on submit, call setUserData
         }
         else if (followable) {
@@ -94,20 +84,42 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
         }
     }
 
+    const VerticalBar = () => {
+        return (
+            <View style={{
+                height: leftHeight,
+                width: 0,
+                borderWidth: 0.28,
+                borderColor: '#999',
+                alignSelf: 'center'
+            }} />
+        )
+    }
+
     return (
         <View style={{
             width: "100%",
             height: 45,
             alignContent: 'center',
             flexDirection: 'row',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            // borderWidth: 1,
+            // borderColor: 'salmon'
         }}>
+
+            <View
+                style={{
+                    width: getUserInfoBarWidth(window.width)
+                }} />
 
             {/* first */}
             <TouchableOpacity style={{
-                paddingHorizontal: spacing,
+                flex: 1,
+                marginRight: spacing,
                 alignItems: 'center',
                 justifyContent: 'center',
+                // borderColor: 'pink',
+                // borderWidth: 1
             }}>
                 <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
                     {userData.followingCount}
@@ -118,13 +130,16 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
             </TouchableOpacity>
 
             {/* first vertical bar */}
-            <View style={{ height: leftHeight, width: 0, borderWidth: 0.28, borderColor: '#999', alignSelf: 'center' }} />
+            <VerticalBar />
 
             {/* middle */}
             <TouchableOpacity style={{
-                paddingHorizontal: spacing,
+                flex: 1,
+                marginHorizontal: spacing,
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                // borderColor: 'pink',
+                // borderWidth: 1
             }}>
                 <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
                     {userData.followersCount}
@@ -135,16 +150,18 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
             </TouchableOpacity>
 
             {/* second vertical bar */}
-            <View style={{ height: leftHeight, width: 0, borderWidth: 0.28, borderColor: '#999', alignSelf: 'center' }} />
+            <VerticalBar />
 
             {/* last */}
             <TouchableOpacity style={{
-                width: 130,
+                flex: 2,
                 alignItems: "center",
                 justifyContent: 'center',
                 backgroundColor: colors.blue,
-                marginHorizontal: spacing,
+                marginLeft: spacing,
                 borderRadius: 4,
+                // borderColor: 'pink',
+                // borderWidth: 1
             }}
                 onPress={onButtonPress}>
                 <Text style={{
@@ -155,6 +172,12 @@ function UserInfoBar({ userData, isUser, setUserData, navigate }) {
                     {buttonText}
                 </Text>
             </TouchableOpacity>
+
+            <View
+                style={{
+                    width: getUserInfoBarWidth(window.width)
+                }} />
+
         </View>
     )
 }
