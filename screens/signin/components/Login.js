@@ -13,7 +13,7 @@ function Login({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { setUser, setUID } = useContext(AppContext);
+    const { setUser, setUID, platform } = useContext(AppContext);
 
     const textInputBackground = 'rgba(255, 255, 255, 0.2)';
     const textInputHeight = 45;
@@ -31,7 +31,7 @@ function Login({ navigation }) {
                     if (doc.exists) {
                         setUser(doc.data().userName);
                         setUID(uid);
-                        navigation.navigate("Main", { uid: uid });
+                        navigation.navigate((platform === "web" ? "WebMain" : "Main"), { uid: uid });
                     }
                     else {
                         console.log("No such document!");

@@ -2,9 +2,10 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import PopupWrapper from './PopUpWrapper';
 import AppContext from '../../../data/AppContext';
-import { firebase } from '../../../data/firebase';
+import { firebase, storageRef } from '../../../data/firebase';
 import "firebase/firestore";
 import "firebase/auth";
+import defaultPic from "../../../assets/defaultProfilePicture.jpeg";
 
 function SignUp({ navigation }) {
 
@@ -14,36 +15,54 @@ function SignUp({ navigation }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { setUser, setUID } = useContext(AppContext);
+    const { setUser, setUID, platform } = useContext(AppContext);
 
     const textInputBackground = 'rgba(255, 255, 255, 0.2)';
     const textInputHeight = 45;
     const spacing = 15;
 
+    const uploadImage = async (uri, uid) => {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        var metadata = {
+            contentType: 'image/jpeg',
+        };
+        var ref = storageRef.child("User-Profile-Images/" + uid + ".jpg");
+        return ref.put(blob, metadata);
+    }
+
     function createUser() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 console.log("user created");
-                var data = {
-                    userName: userName,
-                    email: email,
-                    password: password,
-                    followersCount: 0,
-                    followingCount: 0,
-                    timestamp: new Date() / 1000,
-                    userDescription: "🌱",
-                    userImageURL: "https://pbs.twimg.com/profile_images/634514155261833216/czgYrPLQ_400x400.jpg",
-                }
-                console.log("!!!signed in currently with uid: " + firebase.auth().currentUser.uid + " === " + userCredential.user.uid);
-                firestore.collection("User-Profile").doc(userCredential.user.uid).set(data).then(() => { });
-                setUser(userName);
-                setUID(firebase.auth().currentUser.uid);
-                getTimeline();
-                navigation.navigate("Main", { user: userName });
+                const newUID = firebase.auth().currentUser.uid;
+                uploadImage(platform === "web" ? defaultPic : Image.resolveAssetSource(defaultPic).uri,
+                    newUID).then(() => {
+                        storageRef.child("User-Profile-Images/" + newUID + ".jpg")
+                            .getDownloadURL().then((url) => {
+                                console.log("image url: " + url);
+                                var data = {
+                                    userName: userName,
+                                    email: email,
+                                    password: password,
+                                    followersCount: 0,
+                                    followingCount: 0,
+                                    timestamp: new Date() / 1000,
+                                    userDescription: "🌱",
+                                    userImageURL: url,
+                                }
+                                console.log("!!!signed in currently with uid: " + newUID + " === " + userCredential.user.uid);
+                                firestore.collection("User-Profile").doc(newUID).set(data).then(() => { });
+                                setUser(userName);
+                                setUID(newUID);
+                                navigation.navigate((platform === "web" ? "WebMain" : "Main"), { user: userName });
+                            })
+                    });
             })
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
+                console.log(errorMessage);
                 Alert.alert(
                     "Please try again:",
                     errorMessage,

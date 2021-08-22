@@ -16,6 +16,7 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
         getNavigationViewWidth,
         getHeaderScale,
         topSectionHeight,
+        topSectionMargin,
         getNavigationViewHeight,
         leftNavigationViewDisappearPoint
     } = React.useContext(WebStyleContext);
@@ -39,7 +40,7 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
                     getHeaderScale(window.width) * 100,
                 marginRight: - 0.5 * getNavigationViewWidth(window.width) * (1 - getHeaderScale(window.width)),
                 top: window.width < leftNavigationViewDisappearPoint
-                    ? 5 - topSectionHeight * (1 - getHeaderScale(window.width)) / 2
+                    ? topSectionMargin - topSectionHeight * (1 - getHeaderScale(window.width)) / 2
                     : 130,
                 alignSelf: window.width < leftNavigationViewDisappearPoint
                     ? 'flex-end' : 'flex-start',
@@ -53,7 +54,7 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
                 routeName={"Home"}
                 iconName={"home-outline"}
                 navigate={() => {
-                    setCurrentRoute({routeName: "Home", userName: ""});
+                    setCurrentRoute({ routeName: "Home", userName: "" });
                     navigation.navigate("Home");
                 }} />
 
@@ -62,18 +63,18 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
                 routeName={"Explore"}
                 iconName={"search-outline"}
                 navigate={() => {
-                    setCurrentRoute({routeName: "Explore", userName: ""});
+                    setCurrentRoute({ routeName: "Explore", userName: "" });
                     navigation.navigate("Explore");
                 }} />
 
-                <WebNavigationItem
-                    currentRoute={currentRoute}
-                    routeName={"My Profile"}
-                    iconName={"person-outline"}
-                    navigate={() => {
-                        setCurrentRoute({routeName: "My Profile", userName: user});
-                        navigation.navigate("My Profile", { uid: uid, userName: user });
-                    }} />
+            <WebNavigationItem
+                currentRoute={currentRoute}
+                routeName={"My Profile"}
+                iconName={"person-outline"}
+                navigate={() => {
+                    setCurrentRoute({ routeName: "My Profile", userName: user });
+                    navigation.navigate("My Profile", { uid: uid, userName: user });
+                }} />
 
         </View>
     )

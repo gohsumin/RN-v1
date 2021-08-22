@@ -11,7 +11,8 @@ import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
-import WebStyleContextProvider from "./data/WebStyleContextProvider";
+import WebStyleContextProvider from './data/WebStyleContextProvider';
+import WebNavigationContext from './data/WebNavigationContext';
 const firestore = firebase.firestore();
 
 function cacheImages(images) {
@@ -31,9 +32,10 @@ export default class App extends React.Component {
     this.state = {
       remaining: [],
       images: images, // make this a context so cached images can keep updating
-      user: "rihanna",
-      uid: "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
+      user: "",// "rihanna",
+      uid: "",// "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
       theme: "dark",
+      currentRoute: { routeName: "Home", userName: "" },
     };
     this.platform = Platform.OS;
     this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
@@ -126,6 +128,10 @@ export default class App extends React.Component {
     this.setState({ uid: uid });
   }
 
+  setCurrentRoute = routeInfo => {
+    this.setState({ currentRoute: routeInfo });
+  }
+
   async _loadAssetsAsync() {
     // TO-DO 1: grab these images from the posts and user data that's grabbed
     // TO-DO 2: when new posts are loaded ("new posts available" button) or the
@@ -142,32 +148,39 @@ export default class App extends React.Component {
   render() {
     return (
       /* Contexts can be composed later into a single component. */
-        <SwipeCardsContext.Provider value={{
-          remaining: this.state.remaining,
-          popRemaining: this.popRemaining
-        }}>
-          <AppContext.Provider value={{
-            platform: this.platform,
-            user: this.state.user,
-            uid: this.state.uid,
-            theme: this.state.theme,
-            setUser: this.setUser,
-            setUID: this.setUID
+      <WebNavigationContext.Provider value={{
+        currentRoute: this.state.currentRoute,
+        setCurrentRoute: this.setCurrentRoute
+      }}>
+        <WebStyleContextProvider>
+          <SwipeCardsContext.Provider value={{
+            remaining: this.state.remaining,
+            popRemaining: this.popRemaining
           }}>
-            <ThemeContextProvider>
-              <UsersContext.Provider>
-                <PostsContext.Provider value={{
-                  updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
-                  updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
-                }}>
-                  <NavigationContainer>
-                    <RootStackNavigator />
-                  </NavigationContainer>
-                </PostsContext.Provider>
-              </UsersContext.Provider>
-            </ThemeContextProvider>
-          </AppContext.Provider>
-        </SwipeCardsContext.Provider>
+            <AppContext.Provider value={{
+              platform: this.platform,
+              user: this.state.user,
+              uid: this.state.uid,
+              theme: this.state.theme,
+              setUser: this.setUser,
+              setUID: this.setUID
+            }}>
+              <ThemeContextProvider>
+                <UsersContext.Provider>
+                  <PostsContext.Provider value={{
+                    updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
+                    updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
+                  }}>
+                    <NavigationContainer>
+                      <RootStackNavigator />
+                    </NavigationContainer>
+                  </PostsContext.Provider>
+                </UsersContext.Provider>
+              </ThemeContextProvider>
+            </AppContext.Provider>
+          </SwipeCardsContext.Provider>
+        </WebStyleContextProvider>
+      </WebNavigationContext.Provider>
     );
   }
 }

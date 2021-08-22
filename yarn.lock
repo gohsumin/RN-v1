@@ -2282,6 +2282,11 @@
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
+"@react-native-firebase/storage@^12.7.2":
+  version "12.7.2"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-12.7.2.tgz#1dcebb55c28e79afffe8604016bf702cce37d8e1"
+  integrity sha512-niOs9J8LL4l0PH+MLmNLgykmswESXP/yr+rzGH48bdHm3trKaTmDHaBTHApKEbGOaagv84zNkI7RBKvLIVFszg==
+
 "@react-native-picker/picker@1.9.11":
   version "1.9.11"
   resolved "https://registry.yarnpkg.com/@react-native-picker/picker/-/picker-1.9.11.tgz#490c752417c17d687e2941659b3c0bff9cb79b83"

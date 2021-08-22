@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     Text,
     View,
@@ -6,13 +6,16 @@ import {
     Image,
     ScrollView,
     Dimensions,
+    useWindowDimensions,
     StatusBar,
 } from 'react-native';
+import AppContext from '../../data/AppContext';
 
 function SignIn({ navigation }) {
 
-    const windowHeight = Dimensions.get('window').height - StatusBar.currentHeight;
-    const windowWidth = Dimensions.get('window').width;
+    const window = useWindowDimensions();
+
+    const { platform } = useContext(AppContext);
 
     const buttonFontSize = 23;
     const buttonBorderRadius = 15;
@@ -21,9 +24,11 @@ function SignIn({ navigation }) {
         <ScrollView style={{ flex: 1 }}>
             <View
                 style={{
-                    width: windowWidth,
-                    height: windowHeight,
+                    width: window.width,
+                    height: window.height - (platform === "web" ? 0 : StatusBar.currentHeight),
                     backgroundColor: 'black',
+                    borderColor: 'pink',
+                    borderWidth: 1
                 }}
             >
                 <Image

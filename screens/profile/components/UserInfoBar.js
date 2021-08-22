@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
     Text,
     View,
@@ -8,20 +8,23 @@ import {
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from "../../../data/WebStyleContext";
+import WebNavigationContext from '../../../data/WebNavigationContext';
 import { firebase } from '../../../data/firebase';
 import "firebase/database";
 
 function UserInfoBar({ userData, isUser, navigate }) {
 
-    const { theme, user, uid } = React.useContext(AppContext);
-    const colors = React.useContext(ThemeContext).colors[theme];
+    const { theme, user, uid } = useContext(AppContext);
+    const colors = useContext(ThemeContext).colors[theme];
 
     const spacing = 15;
     const leftHeight = 28;
 
     const window = useWindowDimensions();
 
-    const { getUserInfoBarWidth } = React.useContext(WebStyleContext);
+    const { getUserInfoBarWidth } = useContext(WebStyleContext);
+
+    const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
 
     var followUser = firebase.functions().httpsCallable('followUser');
     var unFollowUser = firebase.functions().httpsCallable('unFollowUser');
@@ -73,8 +76,8 @@ function UserInfoBar({ userData, isUser, navigate }) {
     function onButtonPress() {
         console.log("onButtonPress");
         if (isUser) {
+            setCurrentRoute({ routeName: "Edit Profile", userName: user });
             navigate('Edit Profile', { uid: uid, userName: user });
-            // from whatever page for updating profile: on submit, call setUserData
         }
         else if (followable) {
             follow();

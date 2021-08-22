@@ -16,6 +16,7 @@ const WebHeaderView = () => {
     const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
     const {
         topSectionHeight,
+        topSectionMargin,
         getHeaderWidth,
         getHeaderScale,
         getNavigationViewButtonWidth,
@@ -35,7 +36,8 @@ const WebHeaderView = () => {
                 position: 'absolute',
                 width: getHeaderWidth(window.width),
                 height: topSectionHeight,
-                top: 5 - topSectionHeight * (1 - getHeaderScale(window.width)) / 2,
+                top: topSectionMargin - topSectionHeight * (1 - getHeaderScale(window.width)) / 2,
+                left: 0 - getHeaderWidth(window.width) * (1 - getHeaderScale(window.width)) / 2,
                 transform: [{
                     scale: getHeaderScale(window.width)
                 }],
@@ -53,12 +55,12 @@ const WebHeaderView = () => {
                     paddingLeft: 20,
                     alignSelf: 'center',
                     alignItems: 'center',
-                    backgroundColor: "#222",
-                    borderRadius: window.width < leftNavigationViewDisappearPoint ? 0 : 13,
+                    backgroundColor: "#333",
+                    //borderRadius: window.width < leftNavigationViewDisappearPoint ? 0 : 13,
                     shadowColor: 'black',
-                    shadowOpacity: 0.5,
+                    shadowOpacity: 0.2,
                     shadowRadius: 15,
-                    shadowOffset: { width: 0, height: 5 }
+                    shadowOffset: { width: 0, height: 0 }
                 }}>
                 <TouchableOpacity
                     onPress={() => {
@@ -114,7 +116,7 @@ const WebHeaderView = () => {
                                 textShadowRadius: 3,
                                 //textShadowOpacity: 1,
                             }}>
-                            Profile
+                            {routeName}
                         </Text>
                         <Text
                             style={{
@@ -178,6 +180,7 @@ const WebHeaderView = () => {
                             shadowColor: 'black',
                             shadowRadius: 5,
                             shadowOpacity: 1,
+                            opacity: 0.7,
                             // borderWidth: 1,
                             // borderColor: 'yellow',
                         }}

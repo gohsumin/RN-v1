@@ -21,6 +21,29 @@ import { LinearGradient } from "expo-linear-gradient";
 import WebBackgroundView from "../web/WebBackgroundView";
 const firestore = firebase.firestore();
 
+const HomeScreenasdf = () => {
+  const { platform } = React.useContext(AppContext);
+  const { getCenterSectionWidth } = React.useContext(WebStyleContext);
+
+  return (
+    <View style={{
+      flex: 1,
+      backgroundColor: 'salmon',
+      paddingHorizontal: 20,
+      paddingVertical: 50,
+    }}>
+      <Text style={{
+        color: "white",
+        fontWeight: "bold",
+      }}>
+        platform: {platform}
+        {"\n"}
+        platform === "web": {platform === "web"}
+      </Text>
+    </View>
+  )
+}
+
 const HomeScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   const [isReady, setIsReady] = useState(false);
@@ -121,7 +144,7 @@ const HomeScreen = ({ navigation, route }) => {
   }, [cursor]);
 
   useEffect(() => {
-    if(platform === "web" && route.params !== undefined) {
+    if (platform === "web" && route.params !== undefined) {
       console.log(route.params.currentRoute + "!!!");
       setCurrentRoute(route.params.currentRoute);
     }
@@ -345,14 +368,6 @@ const HomeScreen = ({ navigation, route }) => {
       {!isReady && <AppLoading />}
       {platform === "web" &&
         <WebBackgroundView />}
-      {/* {platform === "web" &&
-        <WebHeaderView
-          navigation={navigation}
-          route={route} />} */}
-      {/* {platform === "web" &&
-        <WebNavigationView
-          currentRoute={currentRoute}
-          navigation={navigation} />} */}
     </SafeAreaView>
   );
 };

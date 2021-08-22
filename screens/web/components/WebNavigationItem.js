@@ -42,9 +42,9 @@ function WebNavigationItem({ routeName, iconName, navigate }) {
             <Icon
                 name={iconName}
                 size={getNavigationViewIconSize(window.width)}
-                color={colors.green}
+                color={/* colors.green */ colors.antiBackground}
                 style={{
-                    textShadowColor: selected ? colors.green : 'black',
+                    textShadowColor: selected ? /* colors.green */ "#222" : 'black',
                     textShadowRadius: 7,
                 }} />
             <Text

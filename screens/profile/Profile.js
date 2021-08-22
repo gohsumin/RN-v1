@@ -76,8 +76,14 @@ const ProfileScreen = ({ route, navigation }) => {
             userBalanceDB.get().then((userBalance) => {
               console.log("getting user balance");
               const balance = userBalance.data();
-              ret.available = balance.activeBalance;
-              ret.pending = balance.pendingBalance;
+              if (balance) {
+                ret.available = balance.activeBalance;
+                ret.pending = balance.pendingBalance;
+              }
+              else {
+                ret.available = 0;
+                ret.pending = 0;
+              }
               callback(ret);
             })
           }

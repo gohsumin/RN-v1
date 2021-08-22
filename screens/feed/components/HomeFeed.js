@@ -14,8 +14,12 @@ import WebNavigationContext from '../../../data/WebNavigationContext';
 function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, navigation }) {
 
     const window = useWindowDimensions();
-    const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
-    const { getCenterSectionWidth, topSectionHeight, getHeaderScale } = useContext(WebStyleContext);
+    const { setCurrentRoute } = useContext(WebNavigationContext);
+    const {
+        getCenterSectionWidth,
+        topSectionHeight,
+        topSectionMargin,
+        getHeaderScale } = useContext(WebStyleContext);
     const { theme, platform } = useContext(AppContext);
     const colors = useContext(ThemeContext).colors[theme];
 
@@ -39,7 +43,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
         <FeedItem
             item={item}
             navigateToProfile={() => {
-                setCurrentRoute({routeName: "Profile", userName: item.userName})
+                setCurrentRoute({ routeName: "Profile", userName: item.userName })
                 navigation.navigate("Profile", { uid: item.userID, userName: item.userName });
             }}
             setting={'feed'}
@@ -49,17 +53,20 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
 
     const renderHeader = () => {
         if (platform !== "web") return null;
-        return <View style={{ height: 10 + getHeaderScale(window.width) * topSectionHeight }} />
+        return <View
+            style={{
+                height: 2 + getHeaderScale(window.width) * (topSectionHeight + topSectionMargin)
+            }} />
     }
 
     const keyExtractor = React.useCallback((item) => item.id, []);
 
     return (
         <View
-        style={{
-            flex: 1,
-            width: "100%",
-        }}>
+            style={{
+                flex: 1,
+                width: "100%",
+            }}>
             <FlatList
                 ref={flatlistRef}
                 data={posts}

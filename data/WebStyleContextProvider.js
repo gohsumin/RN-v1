@@ -5,7 +5,8 @@ class WebStyleContextProvider extends Component {
 
     originalCenterSectionWidth = 700;
 
-    topSectionHeight = 80;
+    topSectionHeight = 75;
+    topSectionMargin = 15;
 
     originalLeftViewWidth = 320;
     originalLeftViewHeight = 145;
@@ -131,6 +132,7 @@ class WebStyleContextProvider extends Component {
     state = {
         getCenterSectionWidth: this.getCenterSectionWidth,
         topSectionHeight: this.topSectionHeight,
+        topSectionMargin: this.topSectionMargin,
         topNavigationViewShrinkPoint: this.topNavigationViewShrinkPoint,
         getHeaderScale: this.getHeaderScale,
         getHeaderWidth: this.getHeaderWidth,

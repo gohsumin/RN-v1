@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     TouchableOpacity,
     Animated,
@@ -8,8 +8,6 @@ import FeedItem from '../../feed/components/FeedItem';
 import AppContext from '../../../data/AppContext';
 import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from '../../../data/WebStyleContext';
-import { useEffect } from 'react/cjs/react.development';
-import { useHeaderHeight } from "@react-navigation/stack";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 function PostPopUp({ info }) {
@@ -26,7 +24,6 @@ function PostPopUp({ info }) {
     const { getCenterSectionWidth } = React.useContext(WebStyleContext);
 
     const window = useWindowDimensions();
-    const headerHeight = platform === "web" ? 0 : useHeaderHeight();
     const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
 
     const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -79,8 +76,8 @@ function PostPopUp({ info }) {
             <Animated.View style={{
                 backgroundColor: colors.foreground4,
                 position: 'absolute',
-                width: getCenterSectionWidth(window.width),
-                height: getCenterSectionWidth(window.width) * 0.87,
+                width: platform === "web" ? getCenterSectionWidth(window.width) : "94%",
+                height: platform === "web" ? getCenterSectionWidth(window.width) * 0.87 : 400,
                 alignContent: 'center',
                 justifyContent: 'center',
                 borderRadius: 30,
@@ -91,7 +88,7 @@ function PostPopUp({ info }) {
                     item={item}
                     navigateToProfile={navigate}
                     setting={'popup'}
-                    width={getCenterSectionWidth(window.width)}
+                    width={platform === "web" ? getCenterSectionWidth(window.width) : window.width * 0.94}
                 />
             </Animated.View>
 
