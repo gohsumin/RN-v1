@@ -5,23 +5,27 @@ class WebStyleContextProvider extends Component {
 
     originalCenterSectionWidth = 700;
 
-    topSectionHeight = 75;
-    topSectionMargin = 15;
+    topSectionHeight = 60;
+    topSectionMargin = 0;
+
+    leftNavigationTopMargin = 100;
 
     originalLeftViewWidth = 320;
     originalLeftViewHeight = 145;
     originalNavigationViewButtonWidth = 200;
-    originalSmallFont = 28;
+    originalSmallFont = 26;
     originalNavigationIconSize = 25;
 
     leftPaddingStickPoint = 1170;
     leftNavigationViewShrinkPoint = 1136;
     leftNavigationViewCollapsePoint = 1028;
+
     navigationViewIconIncreasePoint = 1028;
     navigationViewHeightChangePoint = 1026;
     logoCollapsePoint = 1030;
     navigationViewIconMaxPoint = 1000;
-    leftNavigationViewDisappearPoint = 873;
+
+    leftNavigationViewDisappearPoint = 895;
     topNavigationViewShrinkPoint = 463;
 
     originalProfilePaddingSum = 100;
@@ -63,7 +67,7 @@ class WebStyleContextProvider extends Component {
 
     getHeaderWidth = (windowWidth) => {
         return windowWidth < this.topNavigationViewShrinkPoint
-            ? this.topNavigationViewShrinkPoint : "100%";
+            ? this.topNavigationViewShrinkPoint : windowWidth;
     }
 
     getHeaderScale = (windowWidth) => {
@@ -107,7 +111,6 @@ class WebStyleContextProvider extends Component {
         return this.originalNavigationViewButtonWidth;
     }
 
-
     getProfileWidth = (windowWidth) => {
         if (windowWidth < this.profilePaddingStickPoint) {
             const ratio = (this.profilePaddingDecreasePoint - this.profilePaddingStickPoint)
@@ -131,8 +134,10 @@ class WebStyleContextProvider extends Component {
 
     state = {
         getCenterSectionWidth: this.getCenterSectionWidth,
+        originalCenterSectionWidth: this.originalCenterSectionWidth,
         topSectionHeight: this.topSectionHeight,
         topSectionMargin: this.topSectionMargin,
+        leftNavigationTopMargin: this.leftNavigationTopMargin,
         topNavigationViewShrinkPoint: this.topNavigationViewShrinkPoint,
         getHeaderScale: this.getHeaderScale,
         getHeaderWidth: this.getHeaderWidth,

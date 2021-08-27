@@ -5,7 +5,7 @@ import ThemeContext from '../../data/ThemeContext';
 import WebStyleContext from '../../data/WebStyleContext';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const WebBackgroundView = () => {
+const TopGradient = () => {
 
     const { theme } = React.useContext(AppContext);
     const colors = React.useContext(ThemeContext).colors[theme];
@@ -20,24 +20,11 @@ const WebBackgroundView = () => {
                 width: "100%",
                 height: "100%"
             }}
-            colors={['rgba(0, 0, 0, 0.3)', 'transparent']}
+            colors={['rgba(0, 0, 0, 0.35)', 'transparent']}
             locations={[0, 0.18]}
             pointerEvents="none">
-            <View
-                style={{
-                    width: getCenterSectionWidth(window.width),
-                    height: "100%",
-                    borderRadius: 2,
-                    top: 0,
-                    position: 'absolute',
-                    alignSelf: 'center',
-                    shadowOpacity: 0.5,
-                    shadowColor: 'black',
-                    shadowRadius: 25,
-                    overflow: 'visible',
-                }} />
         </LinearGradient>
     )
 }
 
-export default WebBackgroundView;
+export default TopGradient;

@@ -17,6 +17,7 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
         getHeaderScale,
         topSectionHeight,
         topSectionMargin,
+        leftNavigationTopMargin,
         getNavigationViewHeight,
         leftNavigationViewDisappearPoint
     } = React.useContext(WebStyleContext);
@@ -41,7 +42,7 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
                 marginRight: - 0.5 * getNavigationViewWidth(window.width) * (1 - getHeaderScale(window.width)),
                 top: window.width < leftNavigationViewDisappearPoint
                     ? topSectionMargin - topSectionHeight * (1 - getHeaderScale(window.width)) / 2
-                    : 130,
+                    : leftNavigationTopMargin,
                 alignSelf: window.width < leftNavigationViewDisappearPoint
                     ? 'flex-end' : 'flex-start',
                 alignItems: 'center',

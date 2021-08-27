@@ -9,6 +9,7 @@ import ThemeContextProvider from "./data/ThemeContextProvider";
 import SwipeCardsContext from "./data/SwipeCardsContext";
 import { Asset } from "expo-asset";
 import { images, remaining, posts, users } from './data/dummydata';
+import styled from 'styled-components/native';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
@@ -32,8 +33,8 @@ export default class App extends React.Component {
     this.state = {
       remaining: [],
       images: images, // make this a context so cached images can keep updating
-      user: "",// "rihanna",
-      uid: "",// "yZdwQLMTvgT1nvCwJFyzLUnfvX83",
+      user: "rihanna",
+      uid: "qtk0kT3hNBg0iEk8kR90pljYNBF2",
       theme: "dark",
       currentRoute: { routeName: "Home", userName: "" },
     };
@@ -72,7 +73,7 @@ export default class App extends React.Component {
     // followingUID's posts
     const posts = firestore.collection('Posts').where('type', '==', 1).where('userID', '==', followingUID);
     posts.get().then((docs) => {
-      //console.log(docs);
+      console.log(docs);
       docs.forEach((doc) => {
         console.log("post id: " + doc.id);
         db.doc(doc.id).set({

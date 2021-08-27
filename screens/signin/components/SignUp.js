@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import PopupWrapper from './PopUpWrapper';
+import LoginFormWrapper from './LoginFormWrapper';
 import AppContext from '../../../data/AppContext';
 import { firebase, storageRef } from '../../../data/firebase';
 import "firebase/firestore";
@@ -136,7 +136,7 @@ function SignUp({ navigation }) {
     }
 
     return (
-        <PopupWrapper>
+        <LoginFormWrapper>
             {renderUpInputs()}
             <TouchableOpacity
                 onPress={() => {
@@ -158,7 +158,7 @@ function SignUp({ navigation }) {
                     Sign Up
                 </Text>
             </TouchableOpacity>
-        </PopupWrapper>
+        </LoginFormWrapper>
     )
 }
 

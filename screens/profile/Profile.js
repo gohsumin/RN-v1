@@ -9,7 +9,7 @@ import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import WebStyleContext from "../../data/WebStyleContext";
 import Header from './components/Header';
-import WebBackgroundView from "../web/WebBackgroundView";
+import TopGradient from "../web/TopGradient";
 import WebNavigationView from "../web/WebNavigationView";
 import WebHeaderView from "../web/WebHeaderView";
 import Bio from './components/Bio';
@@ -255,7 +255,7 @@ const ProfileScreen = ({ route, navigation }) => {
           style={{
             width: platform === "web" ? getProfileWidth(window.width) : "100%",
             alignSelf: 'center',
-            padding: platform === "web" ? 0 : 15,
+            paddingHorizontal: platform === "web" ? 0 : 15,
             // borderWidth: 1,
             // borderColor: 'pink'
           }}>
@@ -400,7 +400,7 @@ const ProfileScreen = ({ route, navigation }) => {
           <ActivityIndicator size="small" color="white" />
         </View>}
       {platform === "web" &&
-        <WebBackgroundView />}
+        <TopGradient />}
       {/* {platform === "web" &&
         <WebHeaderView
           navigation={navigation}

@@ -15,6 +15,9 @@ const WebHeaderView = () => {
     const colors = useContext(ThemeContext).colors[theme];
     const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
     const {
+        getCenterSectionWidth,
+        originalCenterSectionWidth,
+        leftPaddingStickPoint,
         topSectionHeight,
         topSectionMargin,
         getHeaderWidth,
@@ -30,6 +33,32 @@ const WebHeaderView = () => {
 
     const window = useWindowDimensions();
 
+    function back() {
+        // routes of the RootStackNavigator
+        const rootStackRoutes = navigation.dangerouslyGetState();
+
+        console.log(rootStackRoutes);
+
+        // routes of WebMain
+        const webMainRoutes = rootStackRoutes.routes[1].state.routes;
+
+        console.log(webMainRoutes);
+
+        const previousIndex = webMainRoutes.length - 2;
+        if (previousIndex < 0) {
+            setCurrentRoute({ routeName: "Home", userName: "" });
+            navigation.navigate("Home");
+        }
+        else {
+            const prevRouteName = webMainRoutes[previousIndex].name;
+            const prevUserName = webMainRoutes[previousIndex].params
+                ? webMainRoutes[previousIndex].params.userName
+                : "";
+            setCurrentRoute({ routeName: prevRouteName, userName: prevUserName });
+            navigation.navigate(prevRouteName);
+        }
+    }
+
     return (
         <View
             style={{
@@ -37,7 +66,7 @@ const WebHeaderView = () => {
                 width: getHeaderWidth(window.width),
                 height: topSectionHeight,
                 top: topSectionMargin - topSectionHeight * (1 - getHeaderScale(window.width)) / 2,
-                left: 0 - getHeaderWidth(window.width) * (1 - getHeaderScale(window.width)) / 2,
+                left: -1 * getHeaderWidth(window.width) * (1 - getHeaderScale(window.width)) / 2,
                 transform: [{
                     scale: getHeaderScale(window.width)
                 }],
@@ -45,65 +74,69 @@ const WebHeaderView = () => {
                 // borderColor: 'cyan'
             }}>
 
-            {/* back arrow button */}
+            {/* header background */}
             <View
                 style={{
-                    width: window.width < leftNavigationViewDisappearPoint ? "100%" : 706,
+                    width: "100%", //window.width < leftNavigationViewDisappearPoint ? "100%" : 706,
                     height: "100%",
                     position: 'absolute',
-                    flexDirection: 'row',
                     paddingLeft: 20,
-                    alignSelf: 'center',
-                    alignItems: 'center',
-                    backgroundColor: "#333",
-                    //borderRadius: window.width < leftNavigationViewDisappearPoint ? 0 : 13,
+                    backgroundColor: "#222",
+                    // borderRadius: window.width < leftNavigationViewDisappearPoint ? 0  : 10,
                     shadowColor: 'black',
                     shadowOpacity: 0.2,
                     shadowRadius: 15,
                     shadowOffset: { width: 0, height: 0 }
                 }}>
+            </View>
+
+            {/* middle section */}
+            <View style={{
+                width: window.width < originalCenterSectionWidth
+                    ? "100%" : getCenterSectionWidth(window.width),
+                height: "100%",
+                position: 'absolute',
+                flexDirection: 'row',
+                alignSelf: 'center',
+                alignItems: 'center',
+                paddingLeft: window.width > originalCenterSectionWidth + 90 ? 0 : 35,
+                // borderWidth: 1,
+                // borderColor: 'pink',
+            }}>
                 <TouchableOpacity
-                    onPress={() => {
-                        // routes of the RootStackNavigator
-                        const rootStackRoutes = navigation.dangerouslyGetState();
-                        const webMainRoutes = rootStackRoutes.routes[0].state.routes;
-                        const previousIndex = webMainRoutes.length - 2;
-                        if (previousIndex < 0) {
-                            setCurrentRoute({ routeName: "Home", userName: "" });
-                        }
-                        else {
-                            const prevRouteName = webMainRoutes[previousIndex].name;
-                            const prevUserName = webMainRoutes[previousIndex].params
-                                ? webMainRoutes[previousIndex].params.userName
-                                : "";
-                            setCurrentRoute({ routeName: prevRouteName, userName: prevUserName });
-                        }
-                        navigation.goBack();
-                    }}>
+                    style={{
+                        //width: 50,
+                        height: "100%",
+                        position: 'absolute',
+                        justifyContent: 'center',
+                        left: window.width > originalCenterSectionWidth + 90 ? -35 : 4,
+                        // borderWidth: 1,
+                        // borderColor: 'blue',
+                    }}
+                    onPress={back}>
                     <Icon
                         name="chevron-back"
-                        size={30}
+                        size={27}
                         color={colors.foreground1}
                         style={{
                             textShadowColor: 'black',
                             textShadowRadius: 3,
-                            //textShadowOpacity: 1,
+                            // borderWidth: 1,
+                            // borderColor: 'red',
                         }}
                     />
                 </TouchableOpacity>
 
-                {/* header title */}
                 <View
                     style={{
                         width: 0,
                         height: 45,
                         borderColor: colors.foreground2,
                         borderWidth: 0.1,
-                        marginLeft: 13
                     }} />
                 {(userName !== "") ?
                     <View style={{
-                        marginLeft: 14,
+                        marginLeft: 16,
                         marginBottom: 3,
                     }}>
                         <Text
@@ -128,7 +161,7 @@ const WebHeaderView = () => {
                         </Text>
                     </View> :
                     <View style={{
-                        marginLeft: 14,
+                        marginLeft: 16,
                         marginBottom: 3,
                     }}>
                         <Text
@@ -162,6 +195,7 @@ const WebHeaderView = () => {
                     right: window.width < leftNavigationViewDisappearPoint && 10,
                     left: (window.width < logoCollapsePoint &&
                         window.width >= leftNavigationViewDisappearPoint) && 14,
+                    marginLeft: window.width > leftPaddingStickPoint && topSectionHeight - 75,
                     // borderWidth: 1,
                     // borderColor: 'aqua',
                 }}>
@@ -169,18 +203,19 @@ const WebHeaderView = () => {
                     style={{
                         width: window.width < logoCollapsePoint ? 60 : getNavigationViewButtonWidth(window.width),
                         height: "100%",
+                        justifyContent: 'center',
                         // borderWidth: 1,
                         // borderColor: 'red',
                     }}>
                     <Image
                         style={{
                             width: "80%",
-                            height: "100%",
+                            height: "60%",
                             alignSelf: 'flex-start',
                             shadowColor: 'black',
                             shadowRadius: 5,
                             shadowOpacity: 1,
-                            opacity: 0.7,
+                            opacity: 0.85,
                             // borderWidth: 1,
                             // borderColor: 'yellow',
                         }}

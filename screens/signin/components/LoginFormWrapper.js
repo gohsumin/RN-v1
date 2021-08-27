@@ -1,29 +1,34 @@
 import React from 'react';
 import { ScrollView, View, Image, Dimensions } from 'react-native';
+//import img from "../../../assets/SoShNavLogo.png";
+import img from "../../../assets/logo.png";
+import AppContext from '../../../data/AppContext';
 
-function PopupWrapper({ children }) {
+function LoginFormWrapper({ children }) {
 
     const popUpBackground = "#202225";
     const WINDOW_HEIGHT = Dimensions.get('window').height;
+    const { platform } = React.useContext(AppContext);
 
     return (
             <View
                 style={{
                     flex: 1,
-                    paddingHorizontal: 30,
+                    padding: 30,
                 }}>
                 <Image
                     style={{
                         alignSelf: 'center',
-                        top: 50,
-                        height: 45,
+                        height: platform === "web" ? 100 : 45,
+                        width: "100%",
+                        opacity: 0.9
                     }}
                     resizeMode={'contain'}
                     fadeDuration={0}
-                    source={require("../../../assets/SoShNavLogo.png")} />
+                    source={img} />
                 {children}
             </View>
     )
 }
 
-export default PopupWrapper;
+export default LoginFormWrapper;

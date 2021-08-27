@@ -33,7 +33,7 @@ const ExploreScreen = ({ navigation }) => {
                     }).then(function (res) {
                         console.log("after following");
                     });
-                    //updateTimelineAfterFollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
+                    updateTimelineAfterFollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}
                 style={{
                     borderRadius: 25,
@@ -57,7 +57,7 @@ const ExploreScreen = ({ navigation }) => {
                     }).then(() => {
                         console.log("after unfollowing");
                     });
-                    //updateTimelineAfterUnfollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
+                    updateTimelineAfterUnfollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}
                 style={{
                     borderRadius: 25,

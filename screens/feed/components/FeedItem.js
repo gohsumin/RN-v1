@@ -1,12 +1,12 @@
 import React from "react";
-import { View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
+import { View, Image, Text, TouchableOpacity, useWindowDimensions } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from "../../../data/WebStyleContext";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
-import ProfileImage from "../../components/ProfileImage";
+import MiniProfileImage from "../../components/MiniProfileImage";
 import FeedHeaderText from "./FeedHeaderText";
 
 function FeedItem({
@@ -20,9 +20,10 @@ function FeedItem({
   const colors = React.useContext(ThemeContext).colors[theme];
   const { getCenterSectionWidth } = React.useContext(WebStyleContext);
 
-  const horLeftRatio = 0.18;
+  const horLeftRatio = 0.17;
   const horRightRatio = 1 - horLeftRatio;
-  const itemImageRatio = 0.79;
+  const itemImageRatio = 0.67;
+  const itemTextRatio = 1 - itemImageRatio;
 
   const marginVertical = platform === "web" ? 20 : setting === 'popup' ? 17 : 15;
   const marginHorizontal = platform === "web" ? 20 : setting === 'popup' ? 14 : 12;
@@ -71,17 +72,19 @@ function FeedItem({
 
       {console.log("FeedItem with key " + item.id)}
       {/* profile pic */}
-      <TouchableOpacity
-        onPress={navigateToProfile}
+      <View
         style={{
           width: getLeftGridWidth(),
           height: getLeftGridWidth(),
+          // borderColor: 'crimson',
+          // borderWidth: 1
         }}
       >
-        <ProfileImage
-          sideLength={getLeftGridWidth() * 0.83}
-          source={{ uri: item.userImageURL }} />
-      </TouchableOpacity>
+        <MiniProfileImage
+          sideLength={getLeftGridWidth() * 0.8}
+          source={{ uri: item.userImageURL }}
+          navigate={navigateToProfile} />
+      </View>
 
       {/* right grid — everything to the right of profile pic */}
       <View style={{
@@ -95,12 +98,18 @@ function FeedItem({
           style={{
             width: getRightGridWidth(),
             flexDirection: "row",
-            marginBottom: 14.5,
+            alignItems: 'center',
+            marginBottom: 10,
+            // borderColor: 'crimson',
+            // borderWidth: 1
           }}
         >
           <TouchableOpacity
+            onPress={() => {
+
+            }}
             style={{
-              borderRadius: 20,
+              borderRadius: 17,
               overflow: 'hidden',
               shadowColor: colors.background,
               shadowOpacity: 0.6,
@@ -121,30 +130,58 @@ function FeedItem({
               style={{
                 position: 'absolute',
                 backgroundColor: 'black',
-                borderRadius: 3,
+                borderRadius: 5,
                 overflow: 'hidden',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: 20,
-                height: 20,
+                width: 24,
+                height: 24,
                 top: 13,
                 right: 13,
               }} >
               <MaterialCommunityIcons
                 name="arrow-top-right"
-                size={13}
+                size={16}
                 color={colors.green}
                 style={{
                 }} />
             </View>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+
+            }}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: colors.foreground1,
+                opacity: 1,
+                width: getRightGridWidth() * itemTextRatio,
+                textShadowColor: colors.background,
+                textShadowRadius: 10,
+                paddingLeft: 10,
+                // borderWidth: 1,
+                // borderColor: 'blue',
+              }}
+            >
+              {item.itemName}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {setting === 'self'
-          // two-side view with the number of purchases as a result of the post and the total payout
-          ? <CommissionsBar width={getRightGridWidth() * itemImageRatio} />
-          // grid with the buttons, e.g. number of likes; maybe add share button later
-          : <FeedBottomBar height={43} numBought={item.numBought} />}
+        <View
+          style={{
+            width: getRightGridWidth() * itemImageRatio,
+            // borderWidth: 1,
+            // borderColor: 'blue',
+          }}>
+          {setting === 'self'
+            // two-side view with the number of purchases as a result of the post and the total payout
+            ? <CommissionsBar width={getRightGridWidth() * itemImageRatio} />
+            // grid with the buttons, e.g. number of likes; maybe add share button later
+            : <FeedBottomBar height={43} numBought={item.numBought} />}
+        </View>
+
       </View>
 
       {/* horizontal padding */}

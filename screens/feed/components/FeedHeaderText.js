@@ -14,6 +14,8 @@ function FeedHeaderText({ item, navigateToProfile }) {
             style={{
                 opacity: 0.9,
                 marginBottom: 10,
+                // borderColor: 'crimson',
+                // borderWidth: 1
             }}
         >
             <TouchableOpacity
@@ -25,27 +27,16 @@ function FeedHeaderText({ item, navigateToProfile }) {
                         color: colors.antiBackground,
                         textShadowColor: colors.background,
                         textShadowRadius: 10,
+                        marginBottom: 0
                     }}
                 >
                     {item.userName} bought:
                 </Text>
             </TouchableOpacity>
-            <Text
-                style={{
-                    fontSize: 14.3,
-                    color: colors.foreground1,
-                    opacity: 0.9,
-                    textShadowColor: colors.background,
-                    textShadowRadius: 10,
-                }}
-            >
-                {item.itemName}
-            </Text>
             <Text style={{
                 fontSize: 14.3,
                 color: colors.foreground1,
                 opacity: 0.9,
-                marginTop: -2,
                 textAlignVertical: 'center',
                 textShadowColor: colors.background,
                 textShadowRadius: 10,

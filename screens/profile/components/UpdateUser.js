@@ -11,7 +11,7 @@ import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from '../../../data/WebStyleContext';
 import { useHeaderHeight } from '@react-navigation/stack';
-import WebBackgroundView from '../../web/WebBackgroundView';
+import TopGradient from '../../web/TopGradient';
 import WebNavigationContext from '../../../data/WebNavigationContext';
 import Header from './Header';
 import * as ImagePicker from 'expo-image-picker';
@@ -45,7 +45,8 @@ function UpdateUser({ navigation, route }) {
 
     const textInputBackground = 'rgba(255, 255, 255, 0.2)';
     const textInputHeight = 45;
-    const spacing = 15;
+    const submitButtonHeight = 50;
+    const spacing = 17;
 
     function getUserData(uid, callback) {
         console.log("getUserData for user " + uid);
@@ -120,7 +121,7 @@ function UpdateUser({ navigation, route }) {
     return (
         <View style={{
             flex: 1,
-            backgroundColor: colors.background,
+            backgroundColor: colors.eyeSafeBackground,
             alignItems: 'center',
         }}>
             {platform === "web" &&
@@ -145,7 +146,8 @@ function UpdateUser({ navigation, route }) {
                 }}>
                 <TouchableOpacity
                     style={{
-                        alignSelf: 'center'
+                        alignSelf: 'center',
+                        marginBottom: 10
                     }}
                     onPress={() => {
                         pickImage().then(() => {
@@ -156,8 +158,8 @@ function UpdateUser({ navigation, route }) {
                         fadeDuration={0}
                         source={{ uri: imagePreview }}
                         style={{
-                            width: 160,
-                            height: 160,
+                            width: 140,
+                            height: 140,
                             borderRadius: 12,
                             shadowColor: 'black',
                             shadowOpacity: 0.3,
@@ -193,7 +195,7 @@ function UpdateUser({ navigation, route }) {
                     style={{
                         color: colors.antiBackground,
                         marginTop: spacing,
-                        marginBottom: 10,
+                        marginBottom: 7,
                         marginLeft: 10,
                         fontSize: 16
                     }}>
@@ -219,7 +221,7 @@ function UpdateUser({ navigation, route }) {
                     style={{
                         color: colors.antiBackground,
                         marginTop: spacing,
-                        marginBottom: 10,
+                        marginBottom: 7,
                         marginLeft: 10,
                         fontSize: 16
                     }}>
@@ -246,14 +248,22 @@ function UpdateUser({ navigation, route }) {
                 <TouchableOpacity
                     onPress={submit}
                     style={{
-                        marginTop: spacing,
+                        marginTop: spacing + 13,
                         borderRadius: 10,
-                        height: textInputHeight,
+                        height: submitButtonHeight,
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: colors.green
                     }}>
-
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                            marginVertical: 10
+                        }}>
+                            Save
+                    </Text>
                 </TouchableOpacity>
             </View>
 
@@ -261,7 +271,7 @@ function UpdateUser({ navigation, route }) {
             {platform !== "web" && <Header />}
 
             {platform === "web" &&
-                <WebBackgroundView />}
+                <TopGradient />}
 
             {loading &&
                 <ActivityIndicator size="large" />}

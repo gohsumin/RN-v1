@@ -12,13 +12,14 @@ import ThemeContext from "../../data/ThemeContext";
 import WebStyleContext from "../../data/WebStyleContext";
 import { AntDesign } from '@expo/vector-icons';
 import HomeFeed from "./components/HomeFeed";
+import CenterBackground from "../web/CenterBackground";
 import AppLoading from "expo-app-loading";
 import WebHeaderView from "../web/WebHeaderView";
 import WebNavigationView from "../web/WebNavigationView";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 import { LinearGradient } from "expo-linear-gradient";
-import WebBackgroundView from "../web/WebBackgroundView";
+import TopGradient from "../web/TopGradient";
 const firestore = firebase.firestore();
 
 const HomeScreenasdf = () => {
@@ -100,6 +101,8 @@ const HomeScreen = ({ navigation, route }) => {
         console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
+
+      console.log(Object.keys(refs).length === 0);
 
       if (Object.keys(refs).length === 0) {
         setRefreshing(false);
@@ -271,15 +274,9 @@ const HomeScreen = ({ navigation, route }) => {
       }}
     >
 
+      {/* background in the center section */}
       {platform === "web" &&
-        <View
-          style={{
-            position: 'absolute',
-            width: getCenterSectionWidth(window.width),
-            height: "100%",
-            backgroundColor: colors.webMainBackground
-          }}>
-        </View>
+        <CenterBackground />
       }
 
       {/* home header on app */}
@@ -287,11 +284,11 @@ const HomeScreen = ({ navigation, route }) => {
         <LinearGradient
           style={{
             width: "100%",
-            height: 108,
+            height: 105,
             justifyContent: 'flex-end',
           }}
           colors={colors.homeHeaderGradient}
-          locations={[0, 0.7]}
+          locations={[0, 1]}
         >
           <Text
             style={{
@@ -305,6 +302,7 @@ const HomeScreen = ({ navigation, route }) => {
             Home
           </Text>
         </LinearGradient>}
+
       <HomeFeed
         posts={posts}
         onEndReached={onEndReached}
@@ -367,7 +365,7 @@ const HomeScreen = ({ navigation, route }) => {
         </TouchableOpacity>}
       {!isReady && <AppLoading />}
       {platform === "web" &&
-        <WebBackgroundView />}
+        <TopGradient />}
     </SafeAreaView>
   );
 };

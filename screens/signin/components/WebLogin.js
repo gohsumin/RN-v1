@@ -1,21 +1,25 @@
 import React, { useState, useRef, useContext } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
-import LoginFormWrapper from './LoginFormWrapper';
+import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
 import AppContext from '../../../data/AppContext';
+import styled from 'styled-components/native';
 import { firebase } from '../../../data/firebase';
 import "firebase/firestore";
 import "firebase/auth";
 
-function Login({ navigation }) {
+function WebLogin({ navigation }) {
 
     const firestore = firebase.firestore();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [emailFocus, setEmailFocus] = useState(false);
+    const [passwordFocus, setPasswordFocus] = useState(false);
+
     const { setUser, setUID, platform } = useContext(AppContext);
 
-    const textInputBackground = 'rgba(255, 255, 255, 0.2)';
+    const textInputFocusBackground = 'rgba(255, 255, 255, 0.2)';
+    const textInputBlurBackground = 'rgba(255, 255, 255, 0.07)';
     const textInputHeight = 45;
     const spacing = 15;
 
@@ -31,7 +35,8 @@ function Login({ navigation }) {
                     if (doc.exists) {
                         setUser(doc.data().userName);
                         setUID(uid);
-                        navigation.navigate((platform === "web" ? "WebMain" : "Main"), { uid: uid });
+                        console.log("trying to navigate...");
+                        navigation.navigate("WebMain", { uid: uid });
                     }
                     else {
                         console.log("No such document!");
@@ -68,36 +73,33 @@ function Login({ navigation }) {
                     alignSelf: 'center',
                     alignContent: 'center',
                     width: "100%",
+                    height: 2 * textInputHeight + spacing,
+                    justifyContent: 'space-between'
                 }}>
                 <TextInput
-                    style={{
-                        fontSize: 18,
-                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                        color: 'white',
-                        justifyContent: 'center',
-                        paddingHorizontal: 13,
-                        height: textInputHeight,
-                        borderRadius: 10,
-                        backgroundColor: textInputBackground
-                    }}
+                    style={[styles.textInput,
+                    {
+                        backgroundColor: emailFocus ?
+                            textInputFocusBackground : textInputBlurBackground
+                    }]}
+                    height={textInputHeight}
+                    onFocus={() => { setEmailFocus(true); }}
+                    onBlur={() => { setEmailFocus(false); }}
                     onChangeText={setEmail}
                     placeholder="Email"
                     placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
                     keyboardType="email-address"
                 />
                 <TextInput
-                    style={{
-                        fontSize: 18,
-                        borderBottomColor: 'rgba(255, 255, 255, 0.5)',
-                        color: 'white',
-                        justifyContent: 'center',
-                        paddingHorizontal: 13,
-                        height: textInputHeight,
-                        marginTop: spacing,
-                        borderRadius: 10,
-                        backgroundColor: textInputBackground
-                    }}
+                    style={[styles.textInput,
+                    {
+                        backgroundColor: passwordFocus ?
+                            textInputFocusBackground : textInputBlurBackground
+                    }]}
+                    height={textInputHeight}
                     secureTextEntry={true}
+                    onFocus={() => { setPasswordFocus(true); }}
+                    onBlur={() => { setPasswordFocus(false); }}
                     onChangeText={setPassword}
                     placeholder="Password"
                     placeholderTextColor={"rgba(255, 255, 255, 0.6)"}
@@ -105,6 +107,19 @@ function Login({ navigation }) {
             </View>
         )
     }
+
+    const styles = StyleSheet.create({
+        textInput: {
+            fontSize: 18,
+            borderRadius: 5,
+            borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+            borderBottomWidth: 0.1,
+            color: 'white',
+            justifyContent: 'center',
+            paddingHorizontal: 13,
+            height: textInputHeight,
+        },
+    })
 
     return (
         <View style={{
@@ -119,15 +134,15 @@ function Login({ navigation }) {
                 style={{
                     width: "100%",
                     marginTop: 2 * spacing,
-                    backgroundColor: "#83F52C",
-                    borderRadius: 10,
+                    backgroundColor: email !== "" && password !== "" ? "#6ccc23" : "#84b360",
+                    borderRadius: 5,
                 }}>
                 <Text
                     style={{
-                        fontSize: 20,
+                        fontSize: 24,
                         textAlign: 'center',
                         fontWeight: 'bold',
-                        marginVertical: 10
+                        marginVertical: 16
                     }}>
                     Login
                 </Text>
@@ -136,4 +151,4 @@ function Login({ navigation }) {
     )
 }
 
-export default Login;
+export default WebLogin;

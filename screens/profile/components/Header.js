@@ -22,10 +22,10 @@ function Header(props) {
                 borderBottomWidth: 0.17,
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-                paddingBottom: 10
+                paddingBottom: 10,
             }}
             colors={colors.headerGradient}
-            locations={[0, 1]}>
+            locations={[0.3, 1]}>
         </LinearGradient>
     )
 }

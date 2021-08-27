@@ -14,13 +14,13 @@ function FeedBottomBar(props) {
         <View
             style={{
                 flexDirection: "row",
-                alignSelf: "flex-start",
+                alignSelf: "flex-end",
                 alignItems: "center",
                 justifyContent: 'center',
                 height: props.height,
                 width: 148,
                 paddingHorizontal: 8,
-                borderRadius: 8,
+                borderRadius: 13,
                 backgroundColor: colors.foreground3,
             }}
         >

@@ -6,8 +6,8 @@ class ThemeContextProvider extends Component {
     colors: {
         dark: {
             background: 'black',
-            eyeSafeBackground: '#111',
-            webMainBackground: '#232323',
+            eyeSafeBackground: '#0d0d0d',
+            webMainBackground: '#1a1a1a',
             antiBackground: 'white',
             foreground1: '#908f96',
             foreground2: '#303030',
@@ -16,8 +16,8 @@ class ThemeContextProvider extends Component {
             blue: '#3586f8',
             availableBalance: '#3CB371',
             pendingBalance: '#ff7400',
-            homeHeaderGradient: ['#070707','#0d0d0d'],
-            headerGradient: ['#070707', '#111'],
+            homeHeaderGradient: ['#0d0d0d','#0d0d0d'],
+            headerGradient: ['#040202', '#151515'],
             tabBarGradient: ['#151515', '#020000'],
             tabBarInactiveTint: '#e0e0e0',
             green: "#75fa4d",

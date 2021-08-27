@@ -5,11 +5,12 @@ import {
     TouchableOpacity,
     Image,
     ScrollView,
-    Dimensions,
     useWindowDimensions,
     StatusBar,
 } from 'react-native';
 import AppContext from '../../data/AppContext';
+import WebStyleContext from '../../data/WebStyleContext';
+import WebSignIn from './WebSignIn';
 
 function SignIn({ navigation }) {
 
@@ -17,8 +18,16 @@ function SignIn({ navigation }) {
 
     const { platform } = useContext(AppContext);
 
+    const { getCenterSectionWidth } = useContext(WebStyleContext);
+
     const buttonFontSize = 23;
     const buttonBorderRadius = 15;
+
+    if (platform === "web") {
+        return (
+            <WebSignIn navigation={navigation}/>
+        )
+    }
 
     return (
         <ScrollView style={{ flex: 1 }}>
@@ -27,8 +36,9 @@ function SignIn({ navigation }) {
                     width: window.width,
                     height: window.height - (platform === "web" ? 0 : StatusBar.currentHeight),
                     backgroundColor: 'black',
-                    borderColor: 'pink',
-                    borderWidth: 1
+                    alignSelf: 'center',
+                    // borderColor: 'pink',
+                    // borderWidth: 1
                 }}
             >
                 <Image

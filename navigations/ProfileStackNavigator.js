@@ -32,22 +32,24 @@ const ProfileStackNavigator = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName={""} screenOptions={screenOptionStyle}>
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerLeft: null,
-          gestureEnabled: false,
-        }}
-      >
-      </Stack.Screen>
-      <Stack.Screen
-        name="Edit Profile"
-        component={UpdateUser}
-      >
-      </Stack.Screen>
-    </Stack.Navigator>
+    <View style={{ flex: 1, backgroundColor: colors.background }} >
+      <Stack.Navigator initialRouteName={""} screenOptions={screenOptionStyle}>
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            headerLeft: null,
+            gestureEnabled: false,
+          }}
+        >
+        </Stack.Screen>
+        <Stack.Screen
+          name="Edit Profile"
+          component={UpdateUser}
+        >
+        </Stack.Screen>
+      </Stack.Navigator>
+    </View>
   );
 };
 
