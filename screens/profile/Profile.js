@@ -52,44 +52,27 @@ const ProfileScreen = ({ route, navigation }) => {
     const userProfileDB = firestore.collection('User-Profile').doc(uid);
 
     userProfileDB.get().then((doc) => {
-      // TO-DO: also get the folollowing list from 'Following' collection
-      const following = userProfileDB.collection('Following');
-      const followers = userProfileDB.collection('Followers');
       const userBalanceDB = firestore.collection('User-Balance').doc(uid);
-      following.get().then((following) => {
-        followers.get().then((followers) => {
-
-          let ret = doc.data();
-          ret.userID = uid;
-          ret.following = [];
-          ret.followers = [];
-
-          following.forEach((followingDoc) => {
-            ret.following.push(followingDoc.id);
-          })
-          followers.forEach((followersDoc) => {
-            ret.followers.push(followersDoc.id);
-          })
-          if (uid !== logger) {
-            callback(ret);
+      let ret = doc.data();
+      ret.userID = uid;
+      if (uid !== logger) {
+        callback(ret);
+      }
+      else {
+        userBalanceDB.get().then((userBalance) => {
+          console.log("getting user balance");
+          const balance = userBalance.data();
+          if (balance) {
+            ret.available = balance.activeBalance;
+            ret.pending = balance.pendingBalance;
           }
           else {
-            userBalanceDB.get().then((userBalance) => {
-              console.log("getting user balance");
-              const balance = userBalance.data();
-              if (balance) {
-                ret.available = balance.activeBalance;
-                ret.pending = balance.pendingBalance;
-              }
-              else {
-                ret.available = 0;
-                ret.pending = 0;
-              }
-              callback(ret);
-            })
+            ret.available = 0;
+            ret.pending = 0;
           }
+          callback(ret);
         })
-      })
+      }
     }).catch((error) => { console.log(error) });
   }
 
@@ -132,30 +115,66 @@ const ProfileScreen = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    var uid = "";
-    if (route.params === undefined) {
+    console.log("Object.keys(route.params): " + Object.keys(route.params));
+    if (route.params.app === "uid" && route.params.id !== undefined) {
+      let uid = route.params.id;
+      getUserData(uid, (userData) => {
+        console.log("from getUserData, userID: " + userData.userID);
+        navigation.setOptions({ title: userData.userName });
+        setUserData(userData);
+        getUserFeed(uid, cursor, (newItems, newCursor) => {
+          setCursor(newCursor);
+          setUserFeed(userFeed.concat(newItems));
+          setShow(true);
+        })
+      })
+    }
+    else if (route.params.app === "ig" && route.params.id !== undefined) {
+      console.log("else if: " + route.params.id);
+      // check if ig exists
+      const userProfileDB = firestore.collection('User-Profile');
+      userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
+        if (snapshot !== null) {
+          snapshot.forEach((doc) => {
+            console.log("doc w insta handle found");
+            getUserData(doc.id, (userData) => {
+              console.log("from getUserData, userID: " + userData.userID);
+              navigation.setOptions({ title: userData.userName });
+              setUserData(userData);
+              getUserFeed(doc.id, cursor, (newItems, newCursor) => {
+                setCursor(newCursor);
+                setUserFeed(userFeed.concat(newItems));
+                setShow(true);
+              })
+            })
+          })
+        }
+        else {
+          // 404 not found
+        }
+      });
+    }
+    else if (route.params === undefined) { // should be deprecated
       console.log("this is how we know it's a user's me page");
-      uid = logger;
+      let uid = logger;
+      getUserData(doc.id, (userData) => {
+        console.log("from getUserData, userID: " + userData.userID);
+        navigation.setOptions({ title: userData.userName });
+        setUserData(userData);
+        getUserFeed(doc.id, cursor, (newItems, newCursor) => {
+          setCursor(newCursor);
+          setUserFeed(userFeed.concat(newItems));
+          setShow(true);
+        })
+      })
     }
     else {
-      uid = route.params.uid;
-      if (uid !== logger) {
-        setIsUser(false);
-      }
+      // 404 not found
     }
-    getUserData(uid, (userData) => {
-      console.log("from getUserData, userID: " + userData.userID);
-      navigation.setOptions({ title: userData.userName });
-      setUserData(userData);
-      getUserFeed(uid, cursor, (newItems, newCursor) => {
-        setCursor(newCursor);
-        setUserFeed(userFeed.concat(newItems));
-        setShow(true);
-      })
-    })
   }, []);
 
   useEffect(() => {
+    console.log("Object.keys(route.params): " + Object.keys(route.params));
     var uid = "";
     if (route.params === undefined) {
       console.log("this is how we know it's a user's me page");

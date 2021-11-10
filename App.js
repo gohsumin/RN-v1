@@ -13,6 +13,7 @@ import { firebase } from './data/firebase';
 import "firebase/firestore";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
 import WebNavigationContext from './data/WebNavigationContext';
+import WebMainSimpleNavigator from "./navigations/WebMainSimple";
 const firestore = firebase.firestore();
 
 export default class App extends React.Component {
@@ -31,8 +32,7 @@ export default class App extends React.Component {
     this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
     this.linking = {
       config: {
-        Home: "",
-        RootStackNavigator: "id?/:insta_id",
+        Profile: "/:app/:id",
         NotFound: "404",
       },
     };
@@ -150,8 +150,8 @@ export default class App extends React.Component {
                     updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
                     updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
                   }}>
-                    <NavigationContainer>
-                      <RootStackNavigator />
+                    <NavigationContainer linking={this.linking}>
+                      {this.platform === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
                     </NavigationContainer>
                   </PostsContext.Provider>
                 </UsersContext.Provider>
