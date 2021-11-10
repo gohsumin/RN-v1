@@ -65,12 +65,12 @@ const HomeScreen = ({ navigation, route }) => {
   function listenForNewPosts() {
     console.log("listenForNewPosts");
     const db = firestore.collection('Feeds').doc(uid).collection('Timeline');
-    /* const listener =  */db.orderBy('dateApproved', 'desc').limit(1).onSnapshot((snapshot) => {
+    /* const listener =  */db.orderBy('timestamp', 'desc').limit(1).onSnapshot((snapshot) => {
       console.log("onSnapshot");
       const changes = snapshot.docChanges();
       changes.forEach((change) => {
-        if (change.type === 'added' && change.doc.data().dateApproved.seconds > latestDateApproved.current.seconds) {
-          console.log("change.doc.data().dateApproved.seconds: " + change.doc.data().dateApproved.seconds);
+        if (change.type === 'added' && change.doc.data().timestamp.seconds > latestDateApproved.current.seconds) {
+          console.log("change.doc.data().timestamp.seconds: " + change.doc.data().timestamp.seconds);
           console.log("change.doc.id: " + change.doc.id);
           setNewPostExists(true);
         }
@@ -88,10 +88,10 @@ const HomeScreen = ({ navigation, route }) => {
     }
     let db = null;
     if (cursor === 0) {
-      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("dateApproved", "desc");
+      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("timestamp", "desc");
     }
     else {
-      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("dateApproved", "desc").startAfter(cursor);
+      db = firestore.collection('Feeds').doc(uid).collection('Timeline').orderBy("timestamp", "desc").startAfter(cursor);
     }
     // list of post ids to include in the timeline. Should never exceed 10 items
     let refs = [];
@@ -200,11 +200,11 @@ const HomeScreen = ({ navigation, route }) => {
     }).then((post) => {
       // for now, just add post to the user's own timeline
       firestore.collection('Feeds').doc('yZdwQLMTvgT1nvCwJFyzLUnfvX83').collection('Timeline').doc(post.id).set({
-        dateApproved: dateApproved,
+        timestamp: timestamp,
         dateBought: dateBought
       });
       firestore.collection('Feeds').doc('yZdwQLMTvgT1nvCwJFyzLUnfvX83').collection('User').doc(post.id).set({
-        dateApproved: dateApproved,
+        timestamp: timestamp,
         dateBought: dateBought
       });
     })
@@ -223,7 +223,7 @@ const HomeScreen = ({ navigation, route }) => {
   function loadNewPosts() {
     console.log("loadNewPosts");
     const db = firestore.collection('Feeds').doc(uid).collection('Timeline');
-    db.where('dateApproved.seconds', '>', latestDateApproved.current.seconds).get().then((snapshot) => {
+    db.where('timestamp.seconds', '>', latesttimestamp.current.seconds).get().then((snapshot) => {
       let refs = [];
       snapshot.forEach((doc) => {
         refs.push(doc.id);
@@ -242,8 +242,8 @@ const HomeScreen = ({ navigation, route }) => {
           newObj.id = documentId;
           ret.push(newObj);
         });
-        ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
-        latestDateApproved.current = ret[0].dateApproved;
+        ret.sort((a, b) => (a.timestamp.seconds < b.timestamp.seconds) ? 1 : - 1);
+        latesttimestamp.current = ret[0].timestamp;
         setPosts([...ret, ...posts]);
         return;
       })

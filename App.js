@@ -8,7 +8,6 @@ import AppContext from "./data/AppContext";
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import SwipeCardsContext from "./data/SwipeCardsContext";
 import { Asset } from "expo-asset";
-import { images, remaining, posts, users } from './data/dummydata';
 import styled from 'styled-components/native';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
@@ -16,31 +15,27 @@ import WebStyleContextProvider from './data/WebStyleContextProvider';
 import WebNavigationContext from './data/WebNavigationContext';
 const firestore = firebase.firestore();
 
-function cacheImages(images) {
-  return images.map((image) => {
-    if (typeof image === "string") {
-      return Image.prefetch(image);
-    } else {
-      return Asset.fromModule(image).downloadAsync();
-    }
-  });
-}
-
 export default class App extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       remaining: [],
-      images: images, // make this a context so cached images can keep updating
-      user: "rihanna",
-      uid: "qtk0kT3hNBg0iEk8kR90pljYNBF2",
+      user: "realhunion",
+      uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
       theme: "dark",
       currentRoute: { routeName: "Home", userName: "" },
     };
     this.platform = Platform.OS;
     this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
     this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
+    this.linking = {
+      config: {
+        Home: "",
+        RootStackNavigator: "id?/:insta_id",
+        NotFound: "404",
+      },
+    };
   }
 
   /* grabs freshly-approved posts with type: 0 */
@@ -113,10 +108,6 @@ export default class App extends React.Component {
     this.setState(prev => ({ remaining: newRemaining }));
   }
 
-  setImages = images => {
-    this.images.setState({ images });
-  }
-
   setUser = user => {
     this.setState({ user: user });
   }
@@ -131,19 +122,6 @@ export default class App extends React.Component {
 
   setCurrentRoute = routeInfo => {
     this.setState({ currentRoute: routeInfo });
-  }
-
-  async _loadAssetsAsync() {
-    // TO-DO 1: grab these images from the posts and user data that's grabbed
-    // TO-DO 2: when new posts are loaded ("new posts available" button) or the
-    //          user pulls down for refresh, grab new images and user data
-    //          again from backend and cache them
-    // TO-D0 3: when some post data, images, and user data are out of view after
-    //          a reload and it's no longer necessary to have them around,
-    //          empty that cache
-    const imageAssets = cacheImages(images);
-
-    await Promise.all([...imageAssets]);
   }
 
   render() {

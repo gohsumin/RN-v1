@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, Text, TouchableOpacity, useWindowDimensions } from "react-native";
+import { View, Image, Text, TouchableOpacity, useWindowDimensions, Linking } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from "../../../data/WebStyleContext";
@@ -106,7 +106,13 @@ function FeedItem({
         >
           <TouchableOpacity
             onPress={() => {
-
+              Linking.canOpenURL(item.itemURL).then(supported => {
+                if (supported) {
+                  Linking.openURL(item.itemURL);
+                } else {
+                  console.log("Can't open URL: " + item.itemURL);
+                }
+              });
             }}
             style={{
               borderRadius: 17,
@@ -134,14 +140,14 @@ function FeedItem({
                 overflow: 'hidden',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: 24,
-                height: 24,
-                top: 13,
-                right: 13,
+                width: 20,
+                height: 20,
+                top: 11,
+                right: 11,
               }} >
               <MaterialCommunityIcons
                 name="arrow-top-right"
-                size={16}
+                size={14}
                 color={colors.green}
                 style={{
                 }} />
@@ -149,7 +155,13 @@ function FeedItem({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-
+              Linking.canOpenURL(item.itemURL).then(supported => {
+                if (supported) {
+                  Linking.openURL(item.itemURL);
+                } else {
+                  console.log("Can't open URL: " + item.itemURL);
+                }
+              });
             }}>
             <Text
               style={{

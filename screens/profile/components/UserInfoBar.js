@@ -101,9 +101,10 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
     return (
         <View style={{
-            width: "100%",
+            width: "95%",
             height: 45,
             alignContent: 'center',
+            alignSelf: 'center',
             flexDirection: 'row',
             justifyContent: 'center',
             // borderWidth: 1,
@@ -117,17 +118,27 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
             {/* first */}
             <TouchableOpacity style={{
-                flex: 1,
                 marginRight: spacing,
                 alignItems: 'center',
                 justifyContent: 'center',
                 // borderColor: 'pink',
                 // borderWidth: 1
             }}>
-                <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
+                <Text style={{
+                    color: colors.antiBackground,
+                    fontWeight: 'bold',
+                    fontSize: 18
+                }}>
                     {userData.followingCount}
                 </Text>
-                <Text style={{ fontSize: 13, color: colors.foreground1, fontWeight: 'bold', marginTop: -4 }}>
+                <Text style={{
+                    fontSize: 13,
+                    color: colors.foreground1,
+                    fontWeight: 'bold',
+                    marginTop: -4,
+                    // borderColor: 'salmon',
+                    // borderWidth: 1
+                }}>
                     Following
                 </Text>
             </TouchableOpacity>
@@ -137,17 +148,25 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
             {/* middle */}
             <TouchableOpacity style={{
-                flex: 1,
                 marginHorizontal: spacing,
                 alignItems: 'center',
                 justifyContent: 'center',
                 // borderColor: 'pink',
                 // borderWidth: 1
             }}>
-                <Text style={{ color: colors.antiBackground, fontWeight: 'bold', fontSize: 18 }}>
+                <Text style={{
+                    color: colors.antiBackground,
+                    fontWeight: 'bold',
+                    fontSize: 18
+                }}>
                     {userData.followersCount}
                 </Text>
-                <Text style={{ fontSize: 13, color: colors.foreground1, fontWeight: 'bold', marginTop: -4 }}>
+                <Text style={{
+                    fontSize: 13,
+                    color: colors.foreground1,
+                    fontWeight: 'bold',
+                    marginTop: -4
+                }}>
                     Followers
                 </Text>
             </TouchableOpacity>
@@ -157,10 +176,10 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
             {/* last */}
             <TouchableOpacity style={{
-                flex: 2,
                 alignItems: "center",
                 justifyContent: 'center',
-                backgroundColor: colors.blue,
+                backgroundColor: colors.foreground3, //colors.blue,
+                paddingHorizontal: 27,
                 marginLeft: spacing,
                 borderRadius: 4,
                 // borderColor: 'pink',

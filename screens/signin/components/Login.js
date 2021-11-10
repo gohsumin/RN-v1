@@ -1,5 +1,7 @@
+/* Regular log in on an app, not web. */
 import React, { useState, useRef, useContext } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginFormWrapper from './LoginFormWrapper';
 import AppContext from '../../../data/AppContext';
 import { firebase } from '../../../data/firebase';
@@ -31,7 +33,14 @@ function Login({ navigation }) {
                     if (doc.exists) {
                         setUser(doc.data().userName);
                         setUID(uid);
+                        /* checking for web vs. app is unnecessary here */
                         navigation.navigate((platform === "web" ? "WebMain" : "Main"), { uid: uid });
+                        try {
+                            AsyncStorage.setItem('@logger:key', uid);
+                        }
+                        catch(error) {
+                            console.log("Error saving login info: " + error);
+                        }
                     }
                     else {
                         console.log("No such document!");

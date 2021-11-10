@@ -43,6 +43,7 @@ const ProfileScreen = ({ route, navigation }) => {
   const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
   const window = useWindowDimensions();
   const { getCenterSectionWidth, getProfileWidth } = useContext(WebStyleContext);
+  const paddingHorizontal = platform === "web" ? 0 : 12;
 
   function getUserData(uid, callback) {
     console.log("getUserData for user " + uid);
@@ -98,7 +99,7 @@ const ProfileScreen = ({ route, navigation }) => {
       callback([], cursor);
       return;
     }
-    let db = firestore.collection('Feeds').doc(uid).collection('User').orderBy("dateApproved", "desc");
+    let db = firestore.collection('Feeds').doc(uid).collection('User').orderBy("timestamp", "desc");
     if (cursor !== 0) {
       db = db.startAfter(cursor);
     }
@@ -255,7 +256,7 @@ const ProfileScreen = ({ route, navigation }) => {
           style={{
             width: platform === "web" ? getProfileWidth(window.width) : "100%",
             alignSelf: 'center',
-            paddingHorizontal: platform === "web" ? 0 : 15,
+            paddingHorizontal: paddingHorizontal,
             // borderWidth: 1,
             // borderColor: 'pink'
           }}>
@@ -298,7 +299,7 @@ const ProfileScreen = ({ route, navigation }) => {
               <View
                 style={{
                   borderRadius: 9,
-                  backgroundColor: colors.foreground4,
+                  backgroundColor: platform === "web" ? colors.foreground4 : 'transparent',
                   overflow: "hidden",
                   alignItems: "center",
                   marginBottom: 5,
@@ -306,6 +307,9 @@ const ProfileScreen = ({ route, navigation }) => {
               >
                 <SelfPosts
                   userFeed={userFeed}
+                  width={(platform === "web" ?
+                    getProfileWidth(window.width) : window.width)
+                    - 2 * paddingHorizontal}
                 />
               </View> :
               (isUser && (userFeed.length === 0)) ?

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useContext } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Alert, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppContext from '../../../data/AppContext';
 import styled from 'styled-components/native';
 import { firebase } from '../../../data/firebase';
@@ -37,6 +38,12 @@ function WebLogin({ navigation }) {
                         setUID(uid);
                         console.log("trying to navigate...");
                         navigation.navigate("WebMain", { uid: uid });
+                        try {
+                            AsyncStorage.setItem('@logger:key', uid);
+                        }
+                        catch(error) {
+                            console.log("Error saving login info: " + error);
+                        }
                     }
                     else {
                         console.log("No such document!");
