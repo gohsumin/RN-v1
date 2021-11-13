@@ -132,6 +132,27 @@ class WebStyleContextProvider extends Component {
         return (this.getProfileWidth(windowWidth) - this.getProfileWidth(this.userInfoBarWidthStickPoint)) / 2;
     }
 
+    getFeedFontSize = (windowWidth, fontSize) => {
+        if (windowWidth < 400) {
+            return fontSize - 2.5;
+        }
+        return fontSize;
+    }
+
+    getFeedImageRatio = (windowWidth) => {
+        if (windowWidth < 400) {
+            return 0.75;
+        }
+        return 0.75;
+    }
+
+    getFeedLeftRatio = (windowWidth) => {
+        if (windowWidth < 520) {
+            return 0.2;
+        }
+        return 0.2;
+    }
+
     state = {
         getCenterSectionWidth: this.getCenterSectionWidth,
         originalCenterSectionWidth: this.originalCenterSectionWidth,
@@ -153,6 +174,9 @@ class WebStyleContextProvider extends Component {
         getProfileWidth: this.getProfileWidth,
         balanceSectionStackPoint: this.balanceSectionStackPoint,
         getUserInfoBarWidth: this.getUserInfoBarWidth,
+        getFeedFontSize: this.getFeedFontSize,
+        getFeedImageRatio: this.getFeedImageRatio,
+        getFeedLeftRatio: this.getFeedLeftRatio,
     };
 
     render() {

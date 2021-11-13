@@ -20,15 +20,16 @@ function Bio({ userData }) {
     return (
         <View style={{
             alignItems: 'center',
-            paddingTop: platform === "web" ? 120 : headerHeight + 40,
+            paddingTop: platform === "web" ? 50 //120
+            : headerHeight + 40,
         }}>
             {/* profile image */}
             <Image
                 fadeDuration={0}
                 source={{ uri: userData.userImageURL }}
                 style={{
-                    width: 160,
-                    height: 160,
+                    width: 140,
+                    height: 140,
                     borderRadius: 12,
                     shadowColor: 'black',
                     shadowOpacity: 0.3,

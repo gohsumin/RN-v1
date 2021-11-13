@@ -1,56 +1,87 @@
-import React from 'react';
-import { View, Text, } from 'react-native';
+import React, { useContext } from 'react';
+import { View, Text, Image, useWindowDimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
 
+import shopIcon from "../../../assets/shopIcon.png";
+import WebStyleContext from '../../../data/WebStyleContext';
+
 function FeedBottomBar(props) {
 
-    const theme = React.useContext(AppContext).theme;
-    const colors = React.useContext(ThemeContext).colors[theme];
+    const theme = useContext(AppContext).theme;
+    const colors = useContext(ThemeContext).colors[theme];
+    const { getFeedFontSize } = useContext(WebStyleContext);
+    const window = useWindowDimensions();
 
     return (
         /* grid with the buttons, e.g. number of likes; maybe add share button later */
-        <View
-            style={{
-                flexDirection: "row",
-                alignSelf: "flex-end",
-                alignItems: "center",
-                justifyContent: 'center',
-                height: props.height,
-                width: 148,
-                paddingHorizontal: 8,
-                borderRadius: 13,
-                backgroundColor: colors.foreground3,
-            }}
-        >
-            {/* <EvilIcons name="heart" size={24} color={colors.antiBackground} />
-          <Text style={{ paddingLeft: 5, color: colors.antiBackground, fontWeight: "200" }}>
-            {likes}
-          </Text> */}
-            <Icon
-                name="users"
-                size={16}
-                color={colors.green}
-                style={{ marginRight: 8 }} />
+        <View style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 0,
+            // borderColor: 'orange',
+            // borderWidth: 1
+        }}>
             <View style={{
                 justifyContent: 'center',
             }}>
                 <Text style={{
-                    fontSize: 17.5,
+                    fontSize: getFeedFontSize(window.width, 20),
                     fontWeight: 'bold',
                     color: colors.green,
                 }}>
-                    {props.numBought}
+                    {props.numBought} Followers
                 </Text>
                 <Text style={{
-                    fontSize: 13,
-                    marginTop: -2.5,
+                    fontSize: getFeedFontSize(window.width, 18),
+                    marginTop: 0,
                     color: colors.foreground1,
-                    //fontWeight: 'bold'
                 }}>
-                    Followers Bought
+                    went to buy
                 </Text>
+            </View>
+
+
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignSelf: "flex-end",
+                    alignItems: "center",
+                    height: props.height,
+                    padding: 12,
+                    borderRadius: 12,
+                    backgroundColor: colors.foreground3,
+                    // borderColor: 'orange',
+                    // borderWidth: 1
+                }}
+            >
+                <View style={{
+                    width: "100%",
+                    height: "100%",
+                    flexDirection: "row",
+                    justifyContent: 'space-between',
+                    alignItems: "center",
+                    // borderColor: 'pink',
+                    // borderWidth: 1
+                }}>
+                    <Image source={shopIcon}
+                        style={{
+                            width: 20,
+                            height: 20,
+                            tintColor: colors.green,
+                        }} />
+                    <Text style={{
+                        fontSize: getFeedFontSize(window.width, 18),
+                        color: colors.green,
+                        fontWeight: 'bold',
+                        // borderColor: 'orange',
+                        // borderWidth: 1
+                    }}>
+                        {" Buy"}
+                    </Text>
+                </View>
             </View>
         </View>
     )

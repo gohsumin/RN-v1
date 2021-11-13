@@ -22,8 +22,8 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       remaining: [],
-      user: "realhunion",
-      uid: "b5aU5qla3eVPqX1asJviRcpYuDq1",
+      user: "", //"realhunion",
+      uid: "", //"b5aU5qla3eVPqX1asJviRcpYuDq1",
       theme: "dark",
       currentRoute: { routeName: "Home", userName: "" },
     };

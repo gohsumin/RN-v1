@@ -23,6 +23,13 @@ function WebMainSimpleHome({ navigation }) {
 
     const columnHeightStickyPoint = 630;
 
+    function getHorLayoutHeight(windowHeight) {
+        return windowHeight > 700 ?
+            700 :
+            windowHeight < 620 ?
+                620 : windowHeight;
+    }
+
     return (
         window.width < collapsePoint ?
 
@@ -130,36 +137,59 @@ function WebMainSimpleHome({ navigation }) {
             <View
                 style={{
                     flex: 1,
+                    height: getHorLayoutHeight(window.height),
                     backgroundColor: 'black',
                     alignItems: 'center',
                     flexDirection: 'row',
-                    paddingVertical: 140,
                     justifyContent: 'center',
-                    // borderColor: 'pink',
-                    // borderWidth: 1
+                    borderColor: 'pink',
+                    borderWidth: 1
                 }}
             >
 
                 {/* Left section with logo */}
                 <View
                     style={{
-                        height: "100%",
-                        alignItems: 'flex-end',
+                        height: getHorLayoutHeight(window.height) - 175,
+                        alignItems: 'space-between',
                         // borderWidth: 1,
                         // borderColor: 'gray'
                     }}>
+
+                    <Image
+                        source={img}
+                        style={{
+                            width: 200,
+                            height: 120,
+                            alignSelf: 'center',
+                            opacity: 0.8,
+                            // borderWidth: 1,
+                            // borderColor: 'gray'
+                        }}
+                        resizeMode="contain"
+                    />
                     <View
                         style={{
                             width: 380,
                             height: "100%",
+                            flex: 1,
                             justifyContent: 'space-between',
                             // borderWidth: 1,
                             // borderColor: 'red',
                         }}>
+                        <View style={{
+                            flexBasis: 25,
+                            flexShrink: 1,
+                            flexGrow: 1,
+                            // borderWidth: 1,
+                            // borderColor: 'cyan',
+                        }} />
                         <Text
                             style={{
                                 top: 0,
-                                fontSize: '4rem', //65,
+                                fontSize: 45,
+                                flexGrow: 1,
+                                flexShrink: 2,
                                 fontWeight: '200',
                                 color: 'white',
                                 textAlign: 'right',
@@ -169,11 +199,20 @@ function WebMainSimpleHome({ navigation }) {
                             }}>
                             Real purchases{"\n"}
                         </Text>
+                        <View style={{
+                            flexBasis: 25,
+                            flexShrink: 1,
+                            flexGrow: 1,
+                            // borderWidth: 1,
+                            // borderColor: 'cyan',
+                        }} />
                         <Text
                             style={{
                                 bottom: 0,
                                 width: "100%",
-                                fontSize: 65,
+                                fontSize: 45,
+                                flexGrow: 1,
+                                flexShrink: 2,
                                 fontWeight: '600',
                                 color: "#ff458c",
                                 textAlign: 'left',
@@ -183,6 +222,21 @@ function WebMainSimpleHome({ navigation }) {
                             }}>
                             By the people you admire.
                         </Text>
+                        <View style={{
+                            flexBasis: 25,
+                            flexShrink: 1,
+                            flexGrow: 1,
+                            // borderWidth: 1,
+                            // borderColor: 'cyan',
+                        }} />
+                        <View style={{
+                            flexBasis: 60,
+                            flexShrink: 1,
+                            flexGrow: 1,
+                            flexDirection: "row"
+                        }}>
+
+                        </View>
                     </View>
                 </View>
 
@@ -190,7 +244,8 @@ function WebMainSimpleHome({ navigation }) {
                 <View
                     style={{
                         width: 0,
-                        height: "110%",
+                        height: getHorLayoutHeight(window.height) - 160,
+                        marginVertical: 80,
                         marginHorizontal: window.width * 0.04,
                         borderWidth: 0.1,
                         borderColor: "#db2e70",
@@ -199,7 +254,7 @@ function WebMainSimpleHome({ navigation }) {
                 {/* view on the right side */}
                 <View
                     style={{
-                        height: "100%",
+                        height: getHorLayoutHeight(window.height) - 175,
                         alignItems: 'flex-start',
                         // borderWidth: 1,
                         // borderColor: 'pink'
@@ -215,17 +270,6 @@ function WebMainSimpleHome({ navigation }) {
                             // borderWidth: 1,
                             // borderColor: 'pink'
                         }}>
-
-                        <Image
-                            source={img}
-                            style={{
-                                width: "70%",
-                                height: "15%",
-                                alignSelf: 'center',
-                                opacity: 0.8
-                            }}
-                            resizeMode="contain"
-                        />
 
                         <WebLogin navigation={navigation} />
                         <TouchableOpacity

@@ -1,25 +1,25 @@
+/* This navigation only for the web has the following features:
+   ** A simplified, temporary home page that is half a visual intro to sosh
+      and half the search bar that yields links to sosh profiles based on
+      instagram/sosh ids
+   ** A page for every sosh uid or instagram id on record at the address
+      "soshwrld.com/uid/sosh_uid" or "soshwrld.com/ig/ig_id"
+   */
+
 import React, { useEffect, useState } from "react";
-import { Text, View, StatusBar, FlatList } from "react-native";
+import { View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import TabBar from "../navigations/TabBar";
-import WebMainNavigator from "./WebMainNavigator";
-import SignInScreen from "../screens/signin/SignIn";
-import LoginScreen from "../screens/signin/components/Login";
-import SignUpScreen from "../screens/signin/components/SignUp";
-import SwipeCards from "../screens/swipe/SwipeCards";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
-import FlashMessage from "react-native-flash-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import WebMainSimpleHome from "../screens/web/WebMainSimpleHome";
-import IG from "../screens/web/components/IG";
 import ProfileScreen from "../screens/profile/Profile";
 
 const WebMainSimple = createStackNavigator();
 
 const WebMainSimpleNavigator = () => {
 
-  const { theme, user, platform } = React.useContext(AppContext);
+  const { theme, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
   const [initialRoute, setInitialRoute] = useState("");
 

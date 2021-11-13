@@ -18,29 +18,31 @@ function FeedItem({
 
   const { theme, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
-  const { getCenterSectionWidth } = React.useContext(WebStyleContext);
-
-  const horLeftRatio = 0.17;
-  const horRightRatio = 1 - horLeftRatio;
-  const itemImageRatio = 0.67;
-  const itemTextRatio = 1 - itemImageRatio;
+  const {
+    getCenterSectionWidth,
+    getProfileWidth,
+    getFeedFontSize,
+    getFeedImageRatio,
+    getFeedLeftRatio, } = React.useContext(WebStyleContext);
 
   const marginVertical = platform === "web" ? 20 : setting === 'popup' ? 17 : 15;
-  const marginHorizontal = platform === "web" ? 20 : setting === 'popup' ? 14 : 12;
+  const marginHorizontal = platform === "web" ? 0 : setting === 'popup' ? 14 : 12;
 
   const window = useWindowDimensions();
 
   const getItemTotalWidth = () => {
-    return (platform === "web" && setting === "feed")
-      ? getCenterSectionWidth(window.width) : width;
+    return (platform == "web" && setting === "others") ?
+      getProfileWidth() :
+      (platform === "web" && setting === "feed") ? getCenterSectionWidth(window.width)
+        : width;
   }
 
   const getLeftGridWidth = () => {
-    return (getItemTotalWidth() - 2 * marginHorizontal) * horLeftRatio;
+    return (getItemTotalWidth() - 2 * marginHorizontal) * getFeedLeftRatio(window.width);
   }
 
   const getRightGridWidth = () => {
-    return (getItemTotalWidth() - 2 * marginHorizontal) * horRightRatio;
+    return (getItemTotalWidth() - 2 * marginHorizontal) * (1 - getFeedLeftRatio(window.width));
   }
 
   const HorPadding = () => {
@@ -61,9 +63,10 @@ function FeedItem({
       key={item.id}
       style={{
         flexDirection: "row",
+        justifyContent: "space-between",
         width: "100%",
         marginVertical: marginVertical,
-        // borderColor: 'crimson',
+        // borderColor: 'violet',
         // borderWidth: 1
       }}
     >
@@ -81,8 +84,9 @@ function FeedItem({
         }}
       >
         <MiniProfileImage
-          sideLength={getLeftGridWidth() * 0.8}
-          source={{ uri: item.userImageURL }}
+          sideLength={getLeftGridWidth() * 0.85}
+          rightShift={getLeftGridWidth() * 0}
+          source={{ uri: "https://images.unsplash.com/photo-1636557343665-dcf9adcead85?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=772&q=80" }}
           navigate={navigateToProfile} />
       </View>
 
@@ -104,6 +108,7 @@ function FeedItem({
             // borderWidth: 1
           }}
         >
+
           <TouchableOpacity
             onPress={() => {
               Linking.canOpenURL(item.itemURL).then(supported => {
@@ -115,44 +120,43 @@ function FeedItem({
               });
             }}
             style={{
-              borderRadius: 17,
+              borderRadius: 24,
               overflow: 'hidden',
               shadowColor: colors.background,
               shadowOpacity: 0.6,
               shadowRadius: 10,
             }}>
-            <Image
-              fadeDuration={0}
-              source={{ uri: item.itemImageURL }}
-              style={{
-                width: getRightGridWidth() * itemImageRatio,
-                height: getRightGridWidth() * itemImageRatio,
-                resizeMode: "contain",
-                backgroundColor: 'white',
-              }}
-            />
-            <View
-              color="black"
-              style={{
-                position: 'absolute',
-                backgroundColor: 'black',
-                borderRadius: 5,
-                overflow: 'hidden',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 20,
-                height: 20,
-                top: 11,
-                right: 11,
-              }} >
-              <MaterialCommunityIcons
-                name="arrow-top-right"
-                size={14}
-                color={colors.green}
+
+            <View style={{
+              width: getRightGridWidth() * getFeedImageRatio(window.width),
+              height: getRightGridWidth() * getFeedImageRatio(window.width),
+              borderRadius: 24,
+              backgroundColor: 'white',
+              overflow: 'hidden',
+              shadowColor: colors.background,
+              shadowOpacity: 0.6,
+              shadowRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              // borderColor: 'crimson',
+              // borderWidth: 1
+            }}>
+              <Image
+                fadeDuration={0}
+                source={{ uri: item.itemImageURL }}
                 style={{
-                }} />
+                  width: getRightGridWidth() * getFeedImageRatio(window.width) - 64,
+                  height: getRightGridWidth() * getFeedImageRatio(window.width) - 64,
+                  resizeMode: "contain",
+                  backgroundColor: 'white',
+                  alignItems: 'center',
+                  // borderColor: 'orange',
+                  // borderWidth: 1
+                }}
+              />
             </View>
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => {
               Linking.canOpenURL(item.itemURL).then(supported => {
@@ -164,34 +168,35 @@ function FeedItem({
               });
             }}>
             <Text
+              numberOfLines={4}
               style={{
-                fontSize: 13,
+                fontSize: getFeedFontSize(window.width, 15.2),
                 color: colors.foreground1,
                 opacity: 1,
-                width: getRightGridWidth() * itemTextRatio,
+                width: getRightGridWidth() * (1 - getFeedImageRatio(window.width)),
                 textShadowColor: colors.background,
                 textShadowRadius: 10,
-                paddingLeft: 10,
-                // borderWidth: 1,
-                // borderColor: 'blue',
+                paddingLeft: 12,
+                // borderColor: 'crimson',
+                // borderWidth: 1
               }}
             >
-              {item.itemName}
+            {item.itemName}
             </Text>
           </TouchableOpacity>
         </View>
 
         <View
           style={{
-            width: getRightGridWidth() * itemImageRatio,
+            width: getRightGridWidth() * getFeedImageRatio(window.width),
             // borderWidth: 1,
             // borderColor: 'blue',
           }}>
           {setting === 'self'
             // two-side view with the number of purchases as a result of the post and the total payout
-            ? <CommissionsBar width={getRightGridWidth() * itemImageRatio} />
+            ? <CommissionsBar width={getRightGridWidth() * getFeedImageRatio(window.width)} />
             // grid with the buttons, e.g. number of likes; maybe add share button later
-            : <FeedBottomBar height={43} numBought={item.numBought} />}
+            : <FeedBottomBar numBought={item.numBought} />}
         </View>
 
       </View>
@@ -203,7 +208,7 @@ function FeedItem({
 }
 
 function areEqual(prevProps, newProps) {
-  return prevProps.item.id === newProps.item.id;
+  return prevProps.width === newProps.width && prevProps.item.id === newProps.item.id;
 }
 
 export default React.memo(FeedItem, areEqual);

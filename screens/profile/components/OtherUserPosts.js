@@ -1,66 +1,44 @@
-import React, { useState } from "react";
-import { View, FlatList, TouchableOpacity, Image, Dimensions } from "react-native";
+import React, { useContext } from "react";
+import { View, FlatList, Dimensions } from "react-native";
+import FeedItem from "../../feed/components/FeedItem";
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import AppContext from "../../../data/AppContext";
-import ThemeContext from "../../../data/ThemeContext";
 
-function OtherUserPosts({ navigation, userFeed, setModal, setModalInfo }) {
+function OtherUserPosts({ userFeed, width }) {
 
-    const { theme, platform } = React.useContext(AppContext);
-    const colors = React.useContext(ThemeContext).colors[theme];
-    const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
+    const { platform } = useContext(AppContext);
     const WINDOW_WIDTH = Dimensions.get('window').width;
-    const itemWidth = platform === "web" ? 300 : WINDOW_WIDTH / 2;
+    const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
 
-    const renderItem = ({ item }) => {
-
+    const renderSeparator = () => {
         return (
-            <View style={{
-                width: itemWidth,
-                aspectRatio: 1,
-                padding: 10,
-            }}>
-                <TouchableOpacity style={{
-                    borderRadius: 12,
-                    borderWidth: 0.4,
-                    borderColor: colors.foreground2,
-                    overflow: 'hidden',
-                    backgroundColor: 'white',
-                    width: "100%",
-                    height: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'center'
+            <View
+                style={{
+                    height: 0.4,
+                    width: width * 0.92,
+                    marginVertical: 12,
+                    backgroundColor: "#808080",
+                    opacity: 0,
+                    alignSelf: "center",
                 }}
-                    onPress={() => {
-                        setModalInfo(
-                            {
-                                item: item,
-                                navigate: navigation.navigate,
-                                setModal: setModal,
-                                key: item.id,
-                            }
-                        );
-                        setModal(true);
-                    }}>
-                    <Image
-                        fadeDuration={0}
-                        style={{
-                            width: "84%",
-                            height: "84%",
-                            resizeMode: 'contain',
-                        }}
-                        source={{ uri: item.itemImageURL }} />
-                </TouchableOpacity>
-            </View>
-        )
-    }
+            />
+        );
+    };
 
     return (
         <FlatList
             data={userFeed}
-            numColumns={2}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => item.id}
+            numColumns={1}
+            renderItem={({ item }) =>
+                <FeedItem
+                    item={item}
+                    navigateToProfile={() => { }}
+                    setting={'other'}
+                    width={width}
+                />
+            }
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={renderSeparator}
             ListFooterComponent={<View style={{ height: tabBarHeight }} />}
         />
     )

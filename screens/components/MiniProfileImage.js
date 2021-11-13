@@ -3,7 +3,7 @@ import { Image, TouchableOpacity } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
 
-function MiniProfileImage({ sideLength, source, navigate }) {
+function MiniProfileImage({ sideLength, rightShift, source, navigate }) {
 
     const { theme } = useContext(AppContext);
     const colors = useContext(ThemeContext).colors[theme];
@@ -17,7 +17,8 @@ function MiniProfileImage({ sideLength, source, navigate }) {
                 style={{
                     width: sideLength,
                     height: sideLength,
-                    marginTop: -4,
+                    marginLeft: rightShift,
+                    marginTop: 0,
                     borderRadius: sideLength / 2,
                     alignSelf: "flex-start",
                     shadowColor: colors.background,

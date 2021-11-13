@@ -125,6 +125,7 @@ const ProfileScreen = ({ route, navigation }) => {
         getUserFeed(uid, cursor, (newItems, newCursor) => {
           setCursor(newCursor);
           setUserFeed(userFeed.concat(newItems));
+          setIsUser(logger === uid);
           setShow(true);
         })
       })
@@ -144,6 +145,7 @@ const ProfileScreen = ({ route, navigation }) => {
               getUserFeed(doc.id, cursor, (newItems, newCursor) => {
                 setCursor(newCursor);
                 setUserFeed(userFeed.concat(newItems));
+                setIsUser(logger === doc.id);
                 setShow(true);
               })
             })
@@ -185,12 +187,6 @@ const ProfileScreen = ({ route, navigation }) => {
         setCurrentRoute(route.params.currentRoute);
       }
       uid = route.params.uid;
-      if (uid !== logger) {
-        setIsUser(false);
-      }
-      else {
-        setIsUser(true);
-      }
     }
     getUserData(uid, (userData) => {
       console.log("from getUserData, userID: " + userData.userID);
@@ -199,6 +195,7 @@ const ProfileScreen = ({ route, navigation }) => {
       getUserFeed(uid, cursor, (newItems, newCursor) => {
         setCursor(newCursor);
         setUserFeed(newItems);
+        setIsUser(logger === uid);
         setShow(true);
       })
     })
@@ -273,7 +270,7 @@ const ProfileScreen = ({ route, navigation }) => {
       >
         <View
           style={{
-            width: platform === "web" ? getProfileWidth(window.width) : "100%",
+            width: "100%",
             alignSelf: 'center',
             paddingHorizontal: paddingHorizontal,
             // borderWidth: 1,
@@ -318,7 +315,7 @@ const ProfileScreen = ({ route, navigation }) => {
               <View
                 style={{
                   borderRadius: 9,
-                  backgroundColor: platform === "web" ? colors.foreground4 : 'transparent',
+                  backgroundColor: 'transparent',
                   overflow: "hidden",
                   alignItems: "center",
                   marginBottom: 5,
@@ -326,9 +323,7 @@ const ProfileScreen = ({ route, navigation }) => {
               >
                 <SelfPosts
                   userFeed={userFeed}
-                  width={(platform === "web" ?
-                    getProfileWidth(window.width) : window.width)
-                    - 2 * paddingHorizontal}
+                  width={window.width - 2 * paddingHorizontal}
                 />
               </View> :
               (isUser && (userFeed.length === 0)) ?
@@ -343,7 +338,7 @@ const ProfileScreen = ({ route, navigation }) => {
                     marginBottom: tabBarHeight + 5,
                     justifyContent: 'center',
                     shadowColor: 'black',
-                    shadowOpacity: platform === "web" ? 0.3 : 0,
+                    shadowOpacity: 0,
                     shadowRadius: 5,
                     shadowOffset: { width: 1, height: 1 }
                   }}>
@@ -357,25 +352,16 @@ const ProfileScreen = ({ route, navigation }) => {
                 </View> :
                 <View
                   style={{
-                    flex: 1,
                     borderRadius: 9,
+                    backgroundColor: 'transparent',
                     overflow: "hidden",
                     alignItems: "center",
                     marginBottom: 5,
-                    width: window.width,
-                    alignSelf: 'center'
-                  }}>
+                  }}
+                >
                   <OtherUserPosts
-                    navigation={navigation}
                     userFeed={userFeed}
-                    setModal={setModal}
-                    setModalInfo={(info) => {
-                      setModalInfo({
-                        ...info,
-                        navigate: navigation,
-                        setModal: setModal,
-                      });
-                    }}
+                    width={window.width - 2 * paddingHorizontal}
                   />
                 </View>}
           </View>
@@ -384,16 +370,82 @@ const ProfileScreen = ({ route, navigation }) => {
     )
   }
 
-  return (
+  const renderWebView = () => {
+    return (
+      <ScrollView
+        style={{
+          flex: 1,
+          width: "100%",
+          alignSelf: 'center',
+        }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        showsVerticalScrollIndicator={false}
+        onScroll={({ nativeEvent }) => {
+          if (isCloseToBottom(nativeEvent)) {
+            onEndReached();
+          }
+        }}
+      >
+        <View
+          style={{
+            width: getProfileWidth(window.width),
+            alignSelf: 'center',
+            paddingHorizontal: 0,
+            // borderWidth: 1,
+            // borderColor: 'white'
+          }}>
 
-    <View style={{
-      flex: 1,
-      backgroundColor: colors.eyeSafeBackground,
-      alignItems: "center",
-    }}>
+          {/* profile pic, name, bio */}
+          <Bio userData={userData} />
 
-      {/* web view background gray */}
-      {platform === "web" &&
+          <View style={{ height: 35 }} />
+
+          {/* following | followers | edit/follow */}
+          <UserInfoBar
+            userData={userData}
+            isUser={isUser}
+            setUserData={setUserData}
+            navigate={navigation.navigate}
+          />
+
+          <View style={{ height: 30 }} />
+
+          <View
+            style={{
+              borderRadius: 9,
+              backgroundColor: 'transparent',
+              //backgroundColor: colors.foreground4,
+              overflow: "hidden",
+              alignItems: "center",
+              marginBottom: 30,
+              // borderColor: "pink",
+              // borderWidth: 1
+            }}
+          >
+            <OtherUserPosts
+              userFeed={userFeed}
+              width={getProfileWidth(window.width)}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    )
+  }
+
+  if (platform === "web") {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: colors.eyeSafeBackground,
+        alignItems: "center",
+      }}>
+
+        {/* web view background gray */}
         <View
           style={{
             position: 'absolute',
@@ -403,37 +455,54 @@ const ProfileScreen = ({ route, navigation }) => {
             backgroundColor: colors.webMainBackground
           }}>
         </View>
-      }
 
-      {show ?
-        renderView()
-        : <View />
-      }
+        {show ?
+          renderWebView()
+          : <View />
+        }
 
-      {/* header */}
-      {platform !== "web" && <Header title={userData.userName} />}
+        {loadRequested &&
+          <View style={{
+            position: 'absolute',
+            alignItems: 'center',
+            alignSelf: 'center',
+            bottom: 10,
+          }}>
+            <ActivityIndicator size="small" color="white" />
+          </View>}
+        <TopGradient />
+        {modal && <PostPopUp info={modalInfo} />}
+      </View>
+    )
+  }
+  else {
+    return (
+      <View style={{
+        flex: 1,
+        backgroundColor: colors.eyeSafeBackground,
+        alignItems: "center",
+      }}>
 
-      {loadRequested &&
-        <View style={{
-          position: 'absolute',
-          alignItems: 'center',
-          alignSelf: 'center',
-          bottom: 10,
-        }}>
-          <ActivityIndicator size="small" color="white" />
-        </View>}
-      {platform === "web" &&
-        <TopGradient />}
-      {/* {platform === "web" &&
-        <WebHeaderView
-          navigation={navigation}
-          userName={userData.userName} />} */}
-      {/* {platform === "web" &&
-        <WebNavigationView
-          currentRoute={currentRoute}
-          navigation={navigation} />} */}
-      {modal && <PostPopUp info={modalInfo} />}
-    </View>
-  );
+        {show ?
+          renderView()
+          : <View />
+        }
+
+        {/* header */}
+        <Header title={userData.userName} />
+
+        {loadRequested &&
+          <View style={{
+            position: 'absolute',
+            alignItems: 'center',
+            alignSelf: 'center',
+            bottom: 10,
+          }}>
+            <ActivityIndicator size="small" color="white" />
+          </View>}
+        {modal && <PostPopUp info={modalInfo} />}
+      </View>
+    )
+  }
 };
 export default ProfileScreen;
