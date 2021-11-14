@@ -106,21 +106,23 @@ function UserInfoBar({ userData, isUser, navigate }) {
             alignContent: 'center',
             alignSelf: 'center',
             flexDirection: 'row',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             // borderWidth: 1,
             // borderColor: 'salmon'
         }}>
 
             <View
                 style={{
-                    width: getUserInfoBarWidth(window.width)
+                    width: getUserInfoBarWidth(window.width),
+                    // borderWidth: 1,
+                    // borderColor: 'salmon'
                 }} />
 
             {/* first */}
             <TouchableOpacity style={{
                 marginRight: spacing,
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-evenly',
                 // borderColor: 'pink',
                 // borderWidth: 1
             }}>
@@ -150,7 +152,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
             <TouchableOpacity style={{
                 marginHorizontal: spacing,
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'space-evenly',
                 // borderColor: 'pink',
                 // borderWidth: 1
             }}>
@@ -188,7 +190,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
                 onPress={onButtonPress}>
                 <Text style={{
                     fontSize: 15,
-                    color: colors.antiBackground,
+                    color: colors.foreground1,
                     fontWeight: "bold"
                 }}>
                     {buttonText}

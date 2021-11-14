@@ -267,32 +267,11 @@ function WebMainSimpleHome({ navigation }) {
                             justifyContent: 'space-between',
                             paddingTop: 20,
                             paddingBottom: 10,
-                            // borderWidth: 1,
-                            // borderColor: 'pink'
+                            borderWidth: 1,
+                            borderColor: 'pink'
                         }}>
 
-                        <WebLogin navigation={navigation} />
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate("Sign Up");
-                            }}
-                            style={{
-                                justifyContent: 'center',
-                                // borderWidth: 1,
-                                // borderColor: 'pink'
-                            }}>
-                            <Text style={{
-                                textAlign: 'center',
-                                color: 'gray',
-                                fontSize: buttonFontSize,
-                            }}>
-                                Don't have an account?
-                                <Text
-                                    style={{
-                                        fontWeight: 'bold'
-                                    }}> Sign Up </Text>
-                            </Text>
-                        </TouchableOpacity>
+                        asdf
                     </View>
                 </View>
             </View>

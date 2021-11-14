@@ -18,7 +18,9 @@ const TopGradient = () => {
                 flex: 1,
                 position: 'absolute',
                 width: "100%",
-                height: "100%"
+                height: "100%",
+                // borderWidth: 1,
+                // borderColor: "salmon"
             }}
             colors={['rgba(0, 0, 0, 0.35)', 'transparent']}
             locations={[0, 0.18]}

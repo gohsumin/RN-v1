@@ -7,7 +7,7 @@ import ThemeContext from "../../../data/ThemeContext";
 import shopIcon from "../../../assets/shopIcon.png";
 import WebStyleContext from '../../../data/WebStyleContext';
 
-function FeedBottomBar(props) {
+function FeedBottomBar({ numTapped }) {
 
     const theme = useContext(AppContext).theme;
     const colors = useContext(ThemeContext).colors[theme];
@@ -32,7 +32,7 @@ function FeedBottomBar(props) {
                     fontWeight: 'bold',
                     color: colors.green,
                 }}>
-                    {props.numBought} Followers
+                    {numTapped} Followers
                 </Text>
                 <Text style={{
                     fontSize: getFeedFontSize(window.width, 18),
@@ -49,8 +49,7 @@ function FeedBottomBar(props) {
                     flexDirection: "row",
                     alignSelf: "flex-end",
                     alignItems: "center",
-                    height: props.height,
-                    padding: 12,
+                    padding: 10,
                     borderRadius: 12,
                     backgroundColor: colors.foreground3,
                     // borderColor: 'orange',

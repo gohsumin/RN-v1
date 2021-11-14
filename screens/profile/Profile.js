@@ -18,6 +18,7 @@ import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import OtherUserPosts from "./components/OtherUserPosts";
+import SocialMediaLinks from "./components/SocialMediaLinks";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
@@ -96,7 +97,6 @@ const ProfileScreen = ({ route, navigation }) => {
         callback([], cursor);
         return;
       }
-      console.log("typeof refs.length: " + (typeof refs.length));
       console.log("refs.length === 0: " + (refs.length === 0));
       const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
       posts.get().then((feedSnapshot) => {
@@ -116,7 +116,7 @@ const ProfileScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     console.log("Object.keys(route.params): " + Object.keys(route.params));
-    if (route.params.app === "uid" && route.params.id !== undefined) {
+    if (route.params.app === "uid" && route.params.id != undefined) {
       let uid = route.params.id;
       getUserData(uid, (userData) => {
         console.log("from getUserData, userID: " + userData.userID);
@@ -130,12 +130,12 @@ const ProfileScreen = ({ route, navigation }) => {
         })
       })
     }
-    else if (route.params.app === "ig" && route.params.id !== undefined) {
+    else if (route.params.app === "ig" && route.params.id != undefined) {
       console.log("else if: " + route.params.id);
       // check if ig exists
       const userProfileDB = firestore.collection('User-Profile');
       userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
-        if (snapshot !== null) {
+        if (snapshot != null) {
           snapshot.forEach((doc) => {
             console.log("doc w insta handle found");
             getUserData(doc.id, (userData) => {
@@ -175,31 +175,31 @@ const ProfileScreen = ({ route, navigation }) => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("Object.keys(route.params): " + Object.keys(route.params));
-    var uid = "";
-    if (route.params === undefined) {
-      console.log("this is how we know it's a user's me page");
-      uid = logger;
-    }
-    else {
-      if (platform === "web") {
-        setCurrentRoute(route.params.currentRoute);
-      }
-      uid = route.params.uid;
-    }
-    getUserData(uid, (userData) => {
-      console.log("from getUserData, userID: " + userData.userID);
-      navigation.setOptions({ title: userData.userName });
-      setUserData(userData);
-      getUserFeed(uid, cursor, (newItems, newCursor) => {
-        setCursor(newCursor);
-        setUserFeed(newItems);
-        setIsUser(logger === uid);
-        setShow(true);
-      })
-    })
-  }, [route]);
+  // useEffect(() => {
+  //   console.log("Object.keys(route.params): " + Object.keys(route.params));
+  //   var uid = "";
+  //   if (route.params === undefined) {
+  //     console.log("this is how we know it's a user's me page");
+  //     uid = logger;
+  //   }
+  //   else {
+  //     if (platform === "web") {
+  //       setCurrentRoute(route.params.currentRoute);
+  //     }
+  //     uid = route.params.uid;
+  //   }
+  //   getUserData(uid, (userData) => {
+  //     console.log("from getUserData, userID: " + userData.userID);
+  //     navigation.setOptions({ title: userData.userName });
+  //     setUserData(userData);
+  //     getUserFeed(uid, cursor, (newItems, newCursor) => {
+  //       setCursor(newCursor);
+  //       setUserFeed(newItems);
+  //       setIsUser(logger === uid);
+  //       setShow(true);
+  //     })
+  //   })
+  // }, [route]);
 
   function onEndReached() {
     if (!loadRequested) {
@@ -403,7 +403,7 @@ const ProfileScreen = ({ route, navigation }) => {
           {/* profile pic, name, bio */}
           <Bio userData={userData} />
 
-          <View style={{ height: 35 }} />
+          <View style={{ height: 18 }} />
 
           {/* following | followers | edit/follow */}
           <UserInfoBar
@@ -413,7 +413,11 @@ const ProfileScreen = ({ route, navigation }) => {
             navigate={navigation.navigate}
           />
 
-          <View style={{ height: 30 }} />
+          <View style={{ height: 18 }} />
+
+          <SocialMediaLinks userData={userData} />
+
+          <View style={{ height: 25 }} />
 
           <View
             style={{
@@ -455,6 +459,7 @@ const ProfileScreen = ({ route, navigation }) => {
             backgroundColor: colors.webMainBackground
           }}>
         </View>
+        <TopGradient />
 
         {show ?
           renderWebView()
@@ -470,7 +475,6 @@ const ProfileScreen = ({ route, navigation }) => {
           }}>
             <ActivityIndicator size="small" color="white" />
           </View>}
-        <TopGradient />
         {modal && <PostPopUp info={modalInfo} />}
       </View>
     )

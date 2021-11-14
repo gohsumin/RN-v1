@@ -170,7 +170,7 @@ function FeedItem({
             <Text
               numberOfLines={4}
               style={{
-                fontSize: getFeedFontSize(window.width, 15.2),
+                fontSize: getFeedFontSize(window.width, 16.5),
                 color: colors.foreground1,
                 opacity: 1,
                 width: getRightGridWidth() * (1 - getFeedImageRatio(window.width)),
@@ -196,7 +196,7 @@ function FeedItem({
             // two-side view with the number of purchases as a result of the post and the total payout
             ? <CommissionsBar width={getRightGridWidth() * getFeedImageRatio(window.width)} />
             // grid with the buttons, e.g. number of likes; maybe add share button later
-            : <FeedBottomBar numBought={item.numBought} />}
+            : <FeedBottomBar numTapped={item.followersTapped.length} />}
         </View>
 
       </View>

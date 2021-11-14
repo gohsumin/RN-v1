@@ -143,7 +143,7 @@ class WebStyleContextProvider extends Component {
         if (windowWidth < 400) {
             return 0.75;
         }
-        return 0.75;
+        return 0.7;
     }
 
     getFeedLeftRatio = (windowWidth) => {
