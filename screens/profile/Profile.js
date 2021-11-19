@@ -403,7 +403,7 @@ const ProfileScreen = ({ route, navigation }) => {
           {/* profile pic, name, bio */}
           <Bio userData={userData} />
 
-          <View style={{ height: 18 }} />
+          <View style={{ height: 22 }} />
 
           {/* following | followers | edit/follow */}
           <UserInfoBar
@@ -413,11 +413,11 @@ const ProfileScreen = ({ route, navigation }) => {
             navigate={navigation.navigate}
           />
 
-          <View style={{ height: 18 }} />
+          <View style={{ height: 20 }} />
 
           <SocialMediaLinks userData={userData} />
 
-          <View style={{ height: 25 }} />
+          <View style={{ height: 29 }} />
 
           <View
             style={{

@@ -28,14 +28,14 @@ function FeedBottomBar({ numTapped }) {
                 justifyContent: 'center',
             }}>
                 <Text style={{
-                    fontSize: getFeedFontSize(window.width, 20),
+                    fontSize: getFeedFontSize(window.width, 18.5),
                     fontWeight: 'bold',
                     color: colors.green,
                 }}>
                     {numTapped} Followers
                 </Text>
                 <Text style={{
-                    fontSize: getFeedFontSize(window.width, 18),
+                    fontSize: getFeedFontSize(window.width, 17.5),
                     marginTop: 0,
                     color: colors.foreground1,
                 }}>
@@ -51,7 +51,7 @@ function FeedBottomBar({ numTapped }) {
                     alignItems: "center",
                     padding: 10,
                     borderRadius: 12,
-                    backgroundColor: colors.foreground3,
+                    backgroundColor: colors.foreground2,
                     // borderColor: 'orange',
                     // borderWidth: 1
                 }}

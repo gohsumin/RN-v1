@@ -11,6 +11,7 @@ import WebStyleContext from "../../../data/WebStyleContext";
 import WebNavigationContext from '../../../data/WebNavigationContext';
 import { firebase } from '../../../data/firebase';
 import "firebase/database";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 function UserInfoBar({ userData, isUser, navigate }) {
 
@@ -187,7 +188,13 @@ function UserInfoBar({ userData, isUser, navigate }) {
                 // borderColor: 'pink',
                 // borderWidth: 1
             }}
-                onPress={onButtonPress}>
+                onPress={() => {
+                    //onButtonPress
+                    showMessage({
+                        message: "Get the iOS app for full experience!",
+                        type: "info",
+                    })
+                    }}>
                 <Text style={{
                     fontSize: 15,
                     color: colors.foreground1,

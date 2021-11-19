@@ -19,9 +19,9 @@ function SocialMediaLinks({ userData }) {
             {apps.map((app) => {
                 const handle = app + "Handle";
                     return <View style={{
-                        paddingHorizontal: 6,
-                        paddingVertical: 5,
-                        backgroundColor: colors.foreground3,
+                        padding: 5,
+                        paddingRight: 6,
+                        backgroundColor: colors.foreground4,
                         borderRadius: 8,
                         flexDirection: "row",
                         alignItems: "center",

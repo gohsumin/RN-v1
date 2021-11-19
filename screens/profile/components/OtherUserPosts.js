@@ -16,7 +16,7 @@ function OtherUserPosts({ userFeed, width }) {
                 style={{
                     height: 0.4,
                     width: width * 0.92,
-                    marginVertical: 12,
+                    marginVertical: 10,
                     backgroundColor: "#808080",
                     opacity: 0,
                     alignSelf: "center",

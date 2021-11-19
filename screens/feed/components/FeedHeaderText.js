@@ -24,7 +24,7 @@ function FeedHeaderText({ item, navigateToProfile }) {
                 <Text
                     style={{
                         fontWeight: "bold",
-                        fontSize: getFeedFontSize(window.width, 21),
+                        fontSize: getFeedFontSize(window.width, 19),
                         color: colors.antiBackground,
                         textShadowColor: colors.background,
                         textShadowRadius: 10,

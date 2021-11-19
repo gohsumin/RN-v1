@@ -14,6 +14,7 @@ import ThemeContext from "../data/ThemeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import WebMainSimpleHome from "../screens/web/WebMainSimpleHome";
 import ProfileScreen from "../screens/profile/Profile";
+import FlashMessage from 'react-native-flash-message';
 
 const WebMainSimple = createStackNavigator();
 
@@ -45,6 +46,7 @@ const WebMainSimpleNavigator = () => {
     (initialRoute === "") ?
       <View style={{ backgroundColor: 'red' }}></View> :
       <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <FlashMessage position="top" />
         <WebMainSimple.Navigator
           initialRouteName={"Home"}>
           <WebMainSimple.Screen
