@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     TextInput,
@@ -16,6 +16,7 @@ import {
 import { EvilIcons } from '@expo/vector-icons';
 import Hit from './Hit';
 import HitsPerPage from './HitsPerPage';
+import Featured from './Featured';
 
 function Search({ topHeight }) {
 
@@ -23,17 +24,35 @@ function Search({ topHeight }) {
     const window = useWindowDimensions();
 
     const [keyword, setKeyword] = useState("");
+    const [searchWord, setSearchWord] = useState("");
 
     const hitHeight = 60;
+    const searchBoxHeight = 50;
+    const hitsPerPageHeight = 35;
+    const paddingHorizontal = 15;
+
+    function getFeedHeight(windowHeight) {
+        return windowHeight < 730 ?
+            730 - topHeight - hitsPerPageHeight - searchBoxHeight :
+            windowHeight - topHeight - hitsPerPageHeight - searchBoxHeight;
+    }
+
+    function getFullWidth(windowWidth) {
+        return windowWidth < 550 ?
+            windowWidth * 0.9 :
+            windowWidth < 850 ?
+                windowWidth * 0.8 :
+                windowWidth * 0.6;
+    }
 
     const SearchBox = React.memo(({ currentRefinement, isSearchStalled, refine }) => (
         <View style={{
             flexDirection: "row",
             alignItems: "center",
             alignSelf: "center",
-            width: window.width < 500 ? window.width * 0.9 : window.width * 0.6,
-            height: 50,
-            paddingHorizontal: 15,
+            width: getFullWidth(window.width),
+            height: searchBoxHeight,
+            paddingHorizontal: paddingHorizontal,
             backgroundColor: "#181818",
             borderRadius: 25,
             // borderWidth: 1,
@@ -52,8 +71,9 @@ function Search({ topHeight }) {
                 color="gray" />
             <TextInput
                 style={{
-                    fontSize: 14,
-                    color: "white",
+                    fontSize: 14.5,
+                    fontWeight: "400",
+                    color: "#aaa",
                     outlineStyle: 'none',
                     outlineWidth: 0.1,
                     flexGrow: 1,
@@ -65,6 +85,7 @@ function Search({ topHeight }) {
                 }}
                 autoFocus={true}
                 onSubmitEditing={() => {
+                    setSearchWord(keyword);
                     refine(keyword);
                 }}
             />
@@ -90,7 +111,7 @@ function Search({ topHeight }) {
         return (
             <View style={{
                 flex: 1,
-                width: window.width < 500 ? window.width * 0.9 : window.width * 0.6,
+                width: getFullWidth(window.width),
                 // borderWidth: 0.1,
                 // borderColor: 'salmon'
             }}>
@@ -107,6 +128,7 @@ function Search({ topHeight }) {
 
     return (
         <View style={{
+            // alignItems: "center",
             // borderWidth: 1,
             // borderColor: "white",
         }}>
@@ -115,21 +137,27 @@ function Search({ topHeight }) {
                 indexName={"Search UserProfile"}>
                 {/* <Configure hitsPerPage={8} /> */}
                 <CustomSearchBox />
-                <CustomHitsPerPage
+                {searchWord !== "" && <CustomHitsPerPage
                     defaultRefinement={10}
                     items={[
                         { value: 10, label: '10' },
-                      ]} />
-                <ScrollView
-                    persistentScrollbar={false}
-                    style={{
-                        height: window.height - topHeight - hitHeight,
-                        // overflow: "visible",
-                        // borderWidth: 1,
-                        // borderColor: "red",
-                    }}>
-                    <CustomHits />
-                </ScrollView>
+                    ]}
+                    hitsPerPageHeight={hitsPerPageHeight} />}
+                {searchWord === "" ?
+                    <Featured
+                        height={getFeedHeight(window.height)}
+                        width={getFullWidth(window.width)}
+                    />
+                    : <ScrollView
+                        persistentScrollbar={false}
+                        style={{
+                            height: getFeedHeight(window.height),
+                            // overflow: "visible",
+                            // borderWidth: 1,
+                            // borderColor: "red",
+                        }}>
+                        <CustomHits />
+                    </ScrollView>}
             </InstantSearch>
         </View>
     )

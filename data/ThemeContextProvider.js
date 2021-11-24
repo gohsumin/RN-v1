@@ -7,7 +7,7 @@ class ThemeContextProvider extends Component {
         dark: {
             background: 'black',
             eyeSafeBackground: '#0a0a0a',
-            webMainBackground: '#191919',
+            webMainBackground: '#0e0e0e',
             antiBackground: 'white',
             foreground1: '#bbb',
             foreground2: '#303030',

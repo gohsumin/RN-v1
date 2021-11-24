@@ -11,17 +11,21 @@ import Search from './components/search';
 import { LinearGradient } from 'expo-linear-gradient';
 
 function WebMainSimpleHome() {
-    const window = useWindowDimensions();
 
+    const window = useWindowDimensions();
     const topHeight = 140;
-    const topLogoHeight = 45;
-    const paddingTop = 40;
+    const topLogoHeight = 50;
+    const paddingTop = 45;
     const paddingBottom = (topHeight - topLogoHeight) / 2 - paddingTop;
+
+    function getWidth(windowWidth) {
+        return windowWidth < 400 ? 400 : windowWidth;
+    }
 
     return (
         <View style={{
             flex: 1,
-            width: "100%",
+            width: getWidth(window.width),
             alignSelf: "center",
             alignItems: "center",
             justifyContent: "center",
@@ -37,8 +41,11 @@ function WebMainSimpleHome() {
                 <Image
                     source={logo_big}
                     style={{
-                        width: 200,
+                        width: 250,
                         height: topLogoHeight,
+                        shadowColor: "black",
+                        shadowOffset: { width: 2, height: 2 },
+                        shadowRadius: 8,
                         // borderWidth: 1,
                         // borderColor: 'orange',
                     }}
@@ -51,7 +58,7 @@ function WebMainSimpleHome() {
                     position: 'absolute',
                     bottom: 0,
                     width: "100%",
-                    height: window.height * 0.09,
+                    height: window.height * 0.05,
                 }}
                 locations={[0, 1]}
                 colors={['transparent', 'black']}

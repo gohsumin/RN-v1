@@ -27,7 +27,7 @@ const Hit = React.memo(props => {
                 alignItems: "center",
                 alignSelf: "center",
                 justifyContent: "flex-start",
-                marginVertical: 10,
+                marginVertical: 5,
                 padding: 10,
                 backgroundColor: focused === props.hit.userName ? "#111" : 'transparent',
                 shadowColor: 'black',
@@ -76,10 +76,7 @@ const Hit = React.memo(props => {
                         fontSize: 13,
                         fontStyle: 'italic',
                     }}>
-                        Followers:
-                        <Text>
-                            {" " + props.hit.followersCount}
-                        </Text>
+                        {"Followers: " + props.hit.followersCount}
                     </Text>
                 </View>
             </View>

@@ -2,22 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import NumberPlease from "react-native-number-please";
 
-const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL }) => {
+const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL, hitsPerPageHeight }) => {
 
     const [hits, setHits] = useState(null);
-    const hitRange = [{ id: "hits", label: "", min: 10, max: 50 }];
+    const hitRange = [{ id: "hits", label: "", min: 1, max: 50 }];
+    const defaultHits = 10;
 
     useEffect(() => {
         // initialize hits once
-        setHits([{ id: "hits", value: 10 }]);
+        setHits([{ id: "hits", value: defaultHits }]);
     }, []);
 
     useEffect(() => {
         if (hits == null) {
+            // if the hits state changed back to null, set it to the previous refinement
             console.log("hits are null");
             setHits([{ id: "hits", value: currentRefinement }]);
         }
         else {
+            // if the hits state were updated manually, refine search again
             refine(hits[0]["value"]);
         }
     }, [hits]);
@@ -26,13 +29,15 @@ const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL })
     return (
         <View style={{
             flexDirection: "row",
-            margin: 7,
+            height: hitsPerPageHeight,
+            paddingHorizontal: 10,
             // borderWidth: 1,
             // borderColor: 'salmon',
         }}>
             <Text style={{
                 alignSelf: "center",
                 color: "#555",
+                fontSize: 14,
                 // borderWidth: 1,
                 // borderColor: 'yellow',
             }}>
@@ -42,11 +47,13 @@ const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL })
             <View style={{
                 overflow: "hidden",
                 marginHorizontal: 6,
+                alignSelf: "center"
             }}>
                 <NumberPlease
                     pickerStyle={{
                         color: "#555",
                         backgroundColor: "transparent",
+                        fontSize: 14,
                         // borderWidth: 1,
                         // borderColor: 'yellow',
                     }}
@@ -61,10 +68,11 @@ const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL })
             <Text style={{
                 alignSelf: "center",
                 color: "#555",
+                fontSize: 14,
                 // borderWidth: 1,
                 // borderColor: 'yellow',
             }}>
-                Results.
+                {currentRefinement === 1 ? "result." : "results."}
             </Text>
         </View>
     )

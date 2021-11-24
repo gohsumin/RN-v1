@@ -32,7 +32,7 @@ function FeedBottomBar({ numTapped }) {
                     fontWeight: 'bold',
                     color: colors.green,
                 }}>
-                    {numTapped} Followers
+                    {numTapped + (numTapped === 1 ? " Follower" : " Followers")}
                 </Text>
                 <Text style={{
                     fontSize: getFeedFontSize(window.width, 17.5),
