@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Image,
     Text,
     useWindowDimensions,
 } from 'react-native';
-import logo from "../../assets/logo.png";
 import logo_big from "../../assets/SoShNavLogo.png";
 import Search from './components/search';
 import { LinearGradient } from 'expo-linear-gradient';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { BlurView } from 'expo-blur';
+import { EvilIcons } from '@expo/vector-icons';
 
 function WebMainSimpleHome() {
 
@@ -17,9 +19,42 @@ function WebMainSimpleHome() {
     const topLogoHeight = 50;
     const paddingTop = 45;
     const paddingBottom = (topHeight - topLogoHeight) / 2 - paddingTop;
+    const badgeCollapsePoint = 850;
+    const badgeTabWidth = 30;
+    const badgeHeight = 120;
+    const [badgeCollapsed, setBadgeCollapsed] = useState(
+        window.width > badgeCollapsePoint ? false : true
+    );
+
+    useEffect(() => {
+        if (window.width > badgeCollapsePoint) {
+            setBadgeCollapsed(false);
+        }
+    });
 
     function getWidth(windowWidth) {
         return windowWidth < 400 ? 400 : windowWidth;
+    }
+
+    function getBadgeMarginRight(windowWidth) {
+        return windowWidth > 1400 ?
+            40 :
+            windowWidth > 1050 ?
+                20 :
+                windowWidth > badgeCollapsePoint ?
+                    15 : 0;
+    }
+
+    function getBadgeHeaderFontSize(windowWidth) {
+        return windowWidth > 1400 ?
+            27 :
+            windowWidth > 1000 ? 25 :
+                windowWidth > 920 ? 22 : 20;
+    }
+
+    function getBadgeWidth(windowWidth) {
+        return windowWidth > 1000 ? 170 :
+            windowWidth > 920 ? 140 : 130;
     }
 
     return (
@@ -63,6 +98,10 @@ function WebMainSimpleHome() {
                 locations={[0, 1]}
                 colors={['transparent', 'black']}
             />
+
+            
+
+
         </View>)
 }
 

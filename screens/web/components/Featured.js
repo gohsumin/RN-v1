@@ -22,7 +22,7 @@ function Featured({ height, width }) {
     const scrollViewHeight = totalHeight - paddingTop - paddingBottom;
     const borderRadius = 35;
     const profileImageHeight = scrollViewHeight - 80;
-    const profileMargin = 1;
+    const profileMargin = 0;
     const cardWidth = profileImageHeight + profileMargin * 2;
     const blurTint = "dark";
 
@@ -38,17 +38,17 @@ function Featured({ height, width }) {
         });
     }, []);
 
-    function FeaturedProfile({ profile }) {
+    function FeaturedProfile({ key, profile }) {
         return (
             <TouchableOpacity
+                key={key}
                 onPress={() => {
                     const uid = profile.userID;
-                    console.log("uid: "+uid);
+                    console.log("uid: " + uid);
                     const link = "/uid/" + uid;
                     linkTo(link);
                 }} >
                 <View
-                    key={profile.userID}
                     style={{
                         width: cardWidth,
                         height: scrollViewHeight,
@@ -106,7 +106,7 @@ function Featured({ height, width }) {
                         }}>
                             <Text style={{
                                 color: blurTint === "dark" ?
-                                    "rgba(255, 255, 255, 0.8)" :
+                                    "rgba(255, 255, 255, 1)" :
                                     "rgba(0, 0, 0, 0.7)",
                                 fontSize: 27.5,
                                 fontWeight: "300",
@@ -176,7 +176,7 @@ function Featured({ height, width }) {
                 shadowRadius: 20,
                 //shadowColor: '#111',
                 borderWidth: 0.3,
-                borderColor: '#2f2f2f'
+                borderColor: '#444'
             }}>
 
                 <LinearGradient
@@ -187,12 +187,12 @@ function Featured({ height, width }) {
                         top: 0,
                         left: 0,
                     }}
-                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 0.2 }}
                     locations={[0, 0.3, 0.7, 1]}
-                    colors={['rgba(22, 21, 20, 0.5)',
-                        'rgba(12, 10, 10, 0.5)',
-                        'rgba(15, 18, 17, 0.5)',
-                        'rgba(21, 23, 24, 0.5)',]} />
+                    colors={['rgba(30, 18, 6, 0.6)',
+                        'rgba(25, 25, 10, 0.6)',
+                        'rgba(15, 24, 19, 0.6)',
+                        'rgba(21, 20, 27, 0.6)',]} />
 
                 <View style={{
                     position: 'absolute',
@@ -225,7 +225,9 @@ function Featured({ height, width }) {
                         // borderColor: 'blue',
                         // borderWidth: 1
                     }} >
-                    {data.map((profile) => <FeaturedProfile profile={profile} />)}
+                    {data.map((profile) =>
+                        <FeaturedProfile key={profile.userID} profile={profile} />
+                    )}
                 </ScrollView>
             </View>
     )
