@@ -226,7 +226,7 @@ function Featured({ height, width, footerHeight, marginTop }) {
                         // borderWidth: 1
                     }} >
                     {data.map((profile) =>
-                        <FeaturedProfile key={profile.userID} profile={profile} />
+                        <View key={profile.userID}><FeaturedProfile profile={profile} /></View>
                     )}
                 </ScrollView>
             </View>

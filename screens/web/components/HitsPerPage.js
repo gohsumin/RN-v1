@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import NumberPlease from "react-native-number-please";
 
-const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL, hitsPerPageHeight }) => {
+const HitsPerPage = React.memo(({ currentRefinement, refine, hitsPerPageHeight }) => {
 
     const [hits, setHits] = useState(null);
+    const [hitsChanged, setHitsChanged] = useState(false);
     const hitRange = [{ id: "hits", label: "", min: 1, max: 50 }];
     const defaultHits = 10;
 
@@ -21,7 +22,11 @@ const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL, h
         }
         else {
             // if the hits state were updated manually, refine search again
-            refine(hits[0]["value"]);
+            if (hitsChanged) {
+                console.log("hitsChanged");
+                refine(hits[0]["value"]);
+                setHitsChanged(false);
+            }
         }
     }, [hits]);
 
@@ -60,7 +65,8 @@ const HitsPerPage = React.memo(({ items, currentRefinement, refine, createURL, h
                     digits={hitRange}
                     values={hits}
                     onChange={(values) => {
-                        console.log("values[0][value]: " + values[0]["value"]);
+                        console.log("picker value changed");
+                        setHitsChanged(true);
                         setHits(values);
                     }} />
             </View>
