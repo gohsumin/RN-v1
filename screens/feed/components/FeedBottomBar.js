@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, Image, useWindowDimensions } from 'react-native';
+import { View, Text, TouchableOpacity, useWindowDimensions, Linking } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
@@ -7,7 +7,7 @@ import ThemeContext from "../../../data/ThemeContext";
 import shopIcon from "../../../assets/shopIcon.png";
 import WebStyleContext from '../../../data/WebStyleContext';
 
-function FeedBottomBar({ numTapped }) {
+function FeedBottomBar({ numTapped, link, incrementViews }) {
 
     const theme = useContext(AppContext).theme;
     const colors = useContext(ThemeContext).colors[theme];
@@ -28,14 +28,14 @@ function FeedBottomBar({ numTapped }) {
                 justifyContent: 'center',
             }}>
                 <Text style={{
-                    fontSize: getFeedFontSize(window.width, 18.5),
+                    fontSize: getFeedFontSize(window.width, 19.5),
                     fontWeight: 'bold',
                     color: colors.green,
                 }}>
                     {numTapped + (numTapped === 1 ? " Follower" : " Followers")}
                 </Text>
                 <Text style={{
-                    fontSize: getFeedFontSize(window.width, 17.5),
+                    fontSize: getFeedFontSize(window.width, 18.5),
                     marginTop: 0,
                     color: colors.foreground1,
                 }}>
@@ -49,14 +49,15 @@ function FeedBottomBar({ numTapped }) {
                     flexDirection: "row",
                     alignSelf: "flex-end",
                     alignItems: "center",
-                    padding: 10,
+                    paddingHorizontal: 17,
+                    paddingVertical: 12,
                     borderRadius: 12,
-                    backgroundColor: colors.foreground2,
+                    backgroundColor: "white", //colors.foreground2,
                     // borderColor: 'orange',
                     // borderWidth: 1
                 }}
             >
-                <View style={{
+                <TouchableOpacity style={{
                     width: "100%",
                     height: "100%",
                     flexDirection: "row",
@@ -64,23 +65,33 @@ function FeedBottomBar({ numTapped }) {
                     alignItems: "center",
                     // borderColor: 'pink',
                     // borderWidth: 1
-                }}>
-                    <Image source={shopIcon}
+                }}
+                    onPress={() => {
+                        Linking.canOpenURL(link).then(supported => {
+                            if (supported) {
+                              Linking.openURL(link);
+                              incrementViews();
+                            } else {
+                              console.log("Can't open URL: " + link);
+                            }
+                          });
+                    }}>
+                    {/* <Image source={shopIcon}
                         style={{
                             width: 20,
                             height: 20,
                             tintColor: colors.green,
-                        }} />
+                        }} /> */}
                     <Text style={{
                         fontSize: getFeedFontSize(window.width, 18),
-                        color: colors.green,
+                        color: "black", //colors.green,
                         fontWeight: 'bold',
                         // borderColor: 'orange',
                         // borderWidth: 1
                     }}>
                         {" Buy"}
                     </Text>
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     )

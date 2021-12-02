@@ -3,7 +3,7 @@ import WebStyleContext from "./WebStyleContext";
 
 class WebStyleContextProvider extends Component {
 
-    originalCenterSectionWidth = 700;
+    originalCenterSectionWidth = 800;
 
     topSectionHeight = 60;
     topSectionMargin = 0;
@@ -28,7 +28,7 @@ class WebStyleContextProvider extends Component {
     leftNavigationViewDisappearPoint = 895;
     topNavigationViewShrinkPoint = 463;
 
-    originalProfilePaddingSum = 100;
+    originalProfilePaddingSum = 80; //100;
     profilePaddingDecreasePoint = 860;
     profilePaddingStickPoint = 690;
     balanceSectionStackPoint = 480;

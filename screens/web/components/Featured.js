@@ -7,15 +7,14 @@ import { EvilIcons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { useLinkTo } from '@react-navigation/native';
 
-function Featured({ height, width }) {
+function Featured({ height, width, footerHeight, marginTop }) {
 
     const [data, setData] = useState([]);
     const linkTo = useLinkTo();
 
-    const textHeight = 64;
-    const paddingTop = 70;
-    const marginTop = height > 500 ? height * 0.09 : 50;
-    const marginBottom = height > 500 ? height * 0.08 : 50;
+    const textHeight = 50;
+    const paddingTop = 50;
+    const marginBottom = footerHeight;
     const totalHeight = height - marginTop - marginBottom;
     const spacing = width > 388 ? 18 : 10;
     const paddingBottom = 25;
@@ -165,6 +164,7 @@ function Featured({ height, width }) {
             : <View style={{
                 // height: height,
                 width: width,
+                height: totalHeight,
                 paddingHorizontal: 2,
                 marginBottom: marginBottom,
                 marginTop: marginTop,

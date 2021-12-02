@@ -27,21 +27,20 @@ const Hit = React.memo(props => {
                 alignItems: "center",
                 alignSelf: "center",
                 justifyContent: "flex-start",
-                marginVertical: 5,
-                padding: 10,
-                backgroundColor: focused === props.hit.userName ? "#111" : 'transparent',
+                marginVertical: 8,
+                padding: 6,
+                backgroundColor: focused === props.hit.userName ? "#252525" : '#0e0e0e',
                 shadowColor: 'black',
-                shadowOpacity: focused === props.hit.userName ? 1 : 0,
-                shadowOffset: { width: 3, height: 3 },
-                shadowRadius: 5,
+                shadowOpacity: focused === props.hit.userName ? 1 : 0.5,
+                shadowOffset: { width: 1, height: 1 },
+                shadowRadius: 15,
                 borderRadius: 15,
-                // borderWidth: 1,
-                // borderColor: "green"
+                borderWidth: 1,
             }}>
                 <Image
                     source={props.hit.userImageURL}
                     style={{
-                        width: 60,
+                        width: props.hitHeight,
                         height: props.hitHeight,
                         marginRight: 15,
                         borderRadius: 13,
@@ -49,7 +48,6 @@ const Hit = React.memo(props => {
                         shadowOffset: { width: 3, height: 3 },
                         shadowRadius: 5,
                     }}
-                    resizeMode={"contain"}
                 />
                 <View>
                     <View style={{

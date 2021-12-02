@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Dimensions, RefreshControl, ActivityIndicator, useWindowDimensions } from "react-native";
+import {
+  RefreshControl,
+  ActivityIndicator,
+  useWindowDimensions
+} from "react-native";
 import {
   Text,
   View,
@@ -10,19 +14,21 @@ import ThemeContext from "../../data/ThemeContext";
 import WebStyleContext from "../../data/WebStyleContext";
 import Header from './components/Header';
 import TopGradient from "../web/TopGradient";
-import WebNavigationView from "../web/WebNavigationView";
-import WebHeaderView from "../web/WebHeaderView";
 import Bio from './components/Bio';
 import BalanceSection from './components/BalanceSection';
 import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
+import ProfileTop from "./components/ProfileTop";
 import OtherUserPosts from "./components/OtherUserPosts";
 import SocialMediaLinks from "./components/SocialMediaLinks";
+import StickyHeader from "./components/StickyHeader";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../../data/firebase';
 import "firebase/firestore";
 const firestore = firebase.firestore();
+
+// NUMBER OF CLICKS & STATS ON THE USERS THAT CLICKED (E.G. LOCATION)
 
 const ProfileScreen = ({ route, navigation }) => {
   const [isReady, setIsReady] = useState(false);
@@ -36,12 +42,17 @@ const ProfileScreen = ({ route, navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [loadRequested, setLoadRequested] = useState(false);
   const [currentRoute, setCurrentRoute] = useState("Home");
+  const [topHeight, setTopHeight] = useState(0);
+  const [stickyHeaderOpacity, setStickyHeaderOpacity] = useState(0);
+  const [isStickyHeaderExpanded, setIsStickyHeaderExpanded] = useState(false);
+  const [updateToggle, setUpdateToggle] = useState(true);
 
   const theme = useContext(AppContext).theme;
   const logger = useContext(AppContext).uid;
   const { platform } = useContext(AppContext);
   const colors = useContext(ThemeContext).colors[theme];
   const tabBarHeight = platform === "web" ? 0 : useBottomTabBarHeight();
+  const stickyHeaderHeight = 65;
   const window = useWindowDimensions();
   const { getCenterSectionWidth, getProfileWidth } = useContext(WebStyleContext);
   const paddingHorizontal = platform === "web" ? 0 : 12;
@@ -115,11 +126,9 @@ const ProfileScreen = ({ route, navigation }) => {
   }
 
   useEffect(() => {
-    console.log("Object.keys(route.params): " + Object.keys(route.params));
     if (route.params.app === "uid" && route.params.id != undefined) {
       let uid = route.params.id;
       getUserData(uid, (userData) => {
-        console.log("from getUserData, userID: " + userData.userID);
         navigation.setOptions({ title: userData.userName });
         setUserData(userData);
         getUserFeed(uid, cursor, (newItems, newCursor) => {
@@ -131,15 +140,12 @@ const ProfileScreen = ({ route, navigation }) => {
       })
     }
     else if (route.params.app === "ig" && route.params.id != undefined) {
-      console.log("else if: " + route.params.id);
       // check if ig exists
       const userProfileDB = firestore.collection('User-Profile');
       userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
         if (snapshot != null) {
           snapshot.forEach((doc) => {
-            console.log("doc w insta handle found");
             getUserData(doc.id, (userData) => {
-              console.log("from getUserData, userID: " + userData.userID);
               navigation.setOptions({ title: userData.userName });
               setUserData(userData);
               getUserFeed(doc.id, cursor, (newItems, newCursor) => {
@@ -175,40 +181,13 @@ const ProfileScreen = ({ route, navigation }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   console.log("Object.keys(route.params): " + Object.keys(route.params));
-  //   var uid = "";
-  //   if (route.params === undefined) {
-  //     console.log("this is how we know it's a user's me page");
-  //     uid = logger;
-  //   }
-  //   else {
-  //     if (platform === "web") {
-  //       setCurrentRoute(route.params.currentRoute);
-  //     }
-  //     uid = route.params.uid;
-  //   }
-  //   getUserData(uid, (userData) => {
-  //     console.log("from getUserData, userID: " + userData.userID);
-  //     navigation.setOptions({ title: userData.userName });
-  //     setUserData(userData);
-  //     getUserFeed(uid, cursor, (newItems, newCursor) => {
-  //       setCursor(newCursor);
-  //       setUserFeed(newItems);
-  //       setIsUser(logger === uid);
-  //       setShow(true);
-  //     })
-  //   })
-  // }, [route]);
-
   function onEndReached() {
     if (!loadRequested) {
-      console.log("onEndReached!");
       setLoadRequested(true);
-      console.log("user id: " + userData.userID);
       getUserFeed(userData.userID, cursor, (newItems, newCursor) => {
         setCursor(newCursor);
         setUserFeed(userFeed.concat(newItems));
+        setUpdateToggle(!updateToggle);
         setLoadRequested(false);
       })
     }
@@ -236,7 +215,6 @@ const ProfileScreen = ({ route, navigation }) => {
       refresh(route.params.uid);
     }
     else {
-      console.log("user not found");
       setRefreshing(false);
     }
   }, []);
@@ -245,6 +223,12 @@ const ProfileScreen = ({ route, navigation }) => {
     const paddingToBottom = 20;
     return layoutMeasurement.height + contentOffset.y >=
       contentSize.height - paddingToBottom;
+  };
+
+  const distanceToStickyHeader = ({ contentOffset }) => {
+    // positive: distance remaining from top; negative: distance remaining from bottom
+    const currentOffset = contentOffset.y - topHeight;
+    return currentOffset;
   };
 
   const renderView = () => {
@@ -372,72 +356,77 @@ const ProfileScreen = ({ route, navigation }) => {
 
   const renderWebView = () => {
     return (
-      <ScrollView
-        style={{
-          flex: 1,
-          width: "100%",
-          alignSelf: 'center',
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        showsVerticalScrollIndicator={false}
-        onScroll={({ nativeEvent }) => {
-          if (isCloseToBottom(nativeEvent)) {
-            onEndReached();
-          }
-        }}
-      >
-        <View
+      <View style={{
+        height: window.height,
+        width: window.width,
+        // borderWidth: 1,
+        // borderColor: 'pink'
+      }} >
+        <ScrollView
           style={{
-            width: getProfileWidth(window.width),
+            flex: 1,
             alignSelf: 'center',
-            paddingHorizontal: 0,
-            // borderWidth: 1,
-            // borderColor: 'white'
-          }}>
-
-          {/* profile pic, name, bio */}
-          <Bio userData={userData} />
-
-          <View style={{ height: 22 }} />
-
-          {/* following | followers | edit/follow */}
-          <UserInfoBar
-            userData={userData}
-            isUser={isUser}
-            setUserData={setUserData}
-            navigate={navigation.navigate}
-          />
-
-          <View style={{ height: 20 }} />
-
-          <SocialMediaLinks userData={userData} />
-
-          <View style={{ height: 29 }} />
+            width: "100%",
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+          onScroll={({ nativeEvent }) => {
+            if (isCloseToBottom(nativeEvent)) {
+              onEndReached();
+            }
+            const threshhold = 80;
+            const d = distanceToStickyHeader(nativeEvent);
+            if (d < -threshhold) {
+              setStickyHeaderOpacity(0);
+            }
+            else if (d < 0) {
+              setIsStickyHeaderExpanded(false);
+              setStickyHeaderOpacity((threshhold + d) / threshhold);
+            }
+            else {
+              setStickyHeaderOpacity(1);
+            }
+          }}
+          scrollEventThrottle={5}
+        >
 
           <View
             style={{
-              borderRadius: 9,
+              // borderRadius: 9,
+              position: "absolute",
               backgroundColor: 'transparent',
               //backgroundColor: colors.foreground4,
-              overflow: "hidden",
+              // overflow: "hidden",
+              alignSelf: "center",
               alignItems: "center",
-              marginBottom: 30,
-              // borderColor: "pink",
+              // borderColor: "orange",
               // borderWidth: 1
             }}
           >
             <OtherUserPosts
+              updateToggle={updateToggle}
               userFeed={userFeed}
               width={getProfileWidth(window.width)}
+              topHeight={topHeight}
+              height={window.height - topHeight}
             />
           </View>
-        </View>
-      </ScrollView>
+
+          <ProfileTop
+            topHeight={topHeight}
+            setTopHeight={setTopHeight}
+            userData={userData}
+            isUser={isUser}
+            setUserData={setUserData}
+            navigate={navigation.navigate} />
+
+        </ScrollView>
+      </View>
     )
   }
 
@@ -456,15 +445,43 @@ const ProfileScreen = ({ route, navigation }) => {
             width: getCenterSectionWidth(window.width),
             height: "100%",
             alignSelf: 'center',
-            backgroundColor: colors.webMainBackground
+            backgroundColor: colors.webMainBackground,
+            // shadowRadius: 20,
+            // shadowColor: "black",
+            // shadowOpacity: 1
           }}>
         </View>
         <TopGradient />
 
         {show ?
-          renderWebView()
+          <OtherUserPosts
+            updateToggle={updateToggle}
+            userFeed={userFeed}
+            width={getProfileWidth(window.width)}
+            topHeight={topHeight}
+            setTopHeight={setTopHeight}
+            isUser={isUser}
+            userData={userData}
+            setUserData={setUserData}
+            navigate={() => { }}
+            height={window.height - topHeight}
+          />
           : <View />
         }
+
+        <StickyHeader
+          opacity={stickyHeaderOpacity}
+          isStickyHeaderExpanded={isStickyHeaderExpanded}
+          setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
+          stickyHeaderHeight={stickyHeaderHeight}
+          topHeight={topHeight}
+          userData={userData}
+          colors={colors}
+          setTopHeight={setTopHeight}
+          userData={userData}
+          isUser={isUser}
+          setUserData={setUserData}
+          navigate={() => { }} />
 
         {loadRequested &&
           <View style={{

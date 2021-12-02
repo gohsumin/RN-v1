@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     TextInput,
@@ -11,30 +11,38 @@ import {
     InstantSearch,
     connectHitsPerPage,
     connectHits,
-    Configure
 } from 'react-instantsearch-dom';
 import { EvilIcons } from '@expo/vector-icons';
 import Hit from './Hit';
 import HitsPerPage from './HitsPerPage';
 import Featured from './Featured';
+import Badge from './Badge';
+import { LinearGradient } from 'expo-linear-gradient';
 
-function Search({ topHeight }) {
+function Search({ topHeight, spacing }) {
 
     const searchClient = algoliasearch('TVTQ31GSK6', 'ce820b76d62f5651835a4f93d7c62b05');
     const window = useWindowDimensions();
 
     const [keyword, setKeyword] = useState("");
     const [searchWord, setSearchWord] = useState("");
+    const [footerHeight, setFooterHeight] = useState(0);
 
-    const hitHeight = 60;
+    const hitHeight = 75;
     const searchBoxHeight = 50;
     const hitsPerPageHeight = 35;
     const paddingHorizontal = 15;
 
     function getFeedHeight(windowHeight) {
-        return windowHeight < 730 ?
-            730 - topHeight - hitsPerPageHeight - searchBoxHeight :
+        return windowHeight < 650 ?
+            650 - topHeight - hitsPerPageHeight - searchBoxHeight :
             windowHeight - topHeight - hitsPerPageHeight - searchBoxHeight;
+    }
+
+    function getFeaturedHeight(windowHeight) {
+        return windowHeight < 650 ?
+            650 - topHeight - searchBoxHeight :
+            windowHeight - topHeight - searchBoxHeight;
     }
 
     function getFullWidth(windowWidth) {
@@ -42,7 +50,7 @@ function Search({ topHeight }) {
             windowWidth * 0.9 :
             windowWidth < 850 ?
                 windowWidth * 0.8 :
-                windowWidth * 0.6;
+                windowWidth * 0.7;
     }
 
     const SearchBox = React.memo(({ currentRefinement, isSearchStalled, refine }) => (
@@ -110,8 +118,8 @@ function Search({ topHeight }) {
     const Hits = React.memo(({ hits }) => {
         return (
             <View style={{
-                flex: 1,
                 width: getFullWidth(window.width),
+                marginTop: 8,
                 // borderWidth: 0.1,
                 // borderColor: 'salmon'
             }}>
@@ -128,9 +136,6 @@ function Search({ topHeight }) {
 
     return (
         <View style={{
-            // alignItems: "center",
-            // borderWidth: 1,
-            // borderColor: "white",
         }}>
             <InstantSearch
                 searchClient={searchClient}
@@ -145,8 +150,10 @@ function Search({ topHeight }) {
                     hitsPerPageHeight={hitsPerPageHeight} />}
                 {searchWord === "" ?
                     <Featured
-                        height={getFeedHeight(window.height)}
+                        height={getFeaturedHeight(window.height)}
                         width={getFullWidth(window.width)}
+                        footerHeight={footerHeight}
+                        marginTop={spacing}
                     />
                     : <ScrollView
                         persistentScrollbar={false}
@@ -157,7 +164,34 @@ function Search({ topHeight }) {
                             // borderColor: "red",
                         }}>
                         <CustomHits />
+                        <View style={{
+                            height: footerHeight,
+                        }} />
                     </ScrollView>}
+                <LinearGradient
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        height: window.height * 0.05,
+                    }}
+                    locations={[0, 1]}
+                    colors={['transparent', 'black']}
+                />
+                <View style={{
+                    position: "absolute",
+                    bottom: 0,
+                    paddingVertical: spacing,
+                    width: getFullWidth(window.width),
+                    alignItems: "flex-end",
+                    alignSelf: "center",
+                    // borderColor: "pink",
+                    // borderWidth: 1
+                }}
+                    onLayout={(event) => {
+                        setFooterHeight(event.nativeEvent.layout.height);
+                    }} >
+                    <Badge />
+                </View>
             </InstantSearch>
         </View>
     )

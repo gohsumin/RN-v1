@@ -24,11 +24,11 @@ function FeedHeaderText({ item, navigateToProfile }) {
                 <Text
                     style={{
                         fontWeight: "bold",
-                        fontSize: getFeedFontSize(window.width, 19),
+                        fontSize: getFeedFontSize(window.width, 20),
+                        lineHeight: getFeedFontSize(window.width, 24),
                         color: colors.antiBackground,
                         textShadowColor: colors.background,
                         textShadowRadius: 10,
-                        marginBottom: 2,
                     }}
                 >
                     {item.userName} bought:
