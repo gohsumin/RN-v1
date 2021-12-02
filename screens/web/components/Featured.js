@@ -108,7 +108,7 @@ function Featured({ height, width, footerHeight, marginTop }) {
                                     "rgba(255, 255, 255, 1)" :
                                     "rgba(0, 0, 0, 0.7)",
                                 fontSize: 27.5,
-                                fontWeight: "300",
+                                fontWeight: "500",
                                 lineHeight: 24,
                                 textAlign: 'left',
                                 textAlignVertical: "center",

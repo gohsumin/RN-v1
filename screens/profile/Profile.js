@@ -108,16 +108,18 @@ const ProfileScreen = ({ route, navigation }) => {
         callback([], cursor);
         return;
       }
-      console.log("refs.length === 0: " + (refs.length === 0));
       const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
       posts.get().then((feedSnapshot) => {
+        console.log("after getting posts");
         let ret = [];
         feedSnapshot.forEach((post) => {
+          console.log("post id: " + post.id);
           const documentId = post.id;
           const newObj = post.data();
           newObj.id = documentId;
           ret.push(newObj);
         });
+        console.log("ret: "+ret);
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
         const newCursor = snapshot.docs[snapshot.docs.length - 1];
         callback(ret, newCursor);
@@ -181,13 +183,18 @@ const ProfileScreen = ({ route, navigation }) => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log("userFeed updated");
+    setUpdateToggle(!updateToggle);
+  }, [userFeed])
+
   function onEndReached() {
+    console.log("end reached, toggle: "+updateToggle);
     if (!loadRequested) {
       setLoadRequested(true);
       getUserFeed(userData.userID, cursor, (newItems, newCursor) => {
         setCursor(newCursor);
         setUserFeed(userFeed.concat(newItems));
-        setUpdateToggle(!updateToggle);
         setLoadRequested(false);
       })
     }
@@ -465,6 +472,10 @@ const ProfileScreen = ({ route, navigation }) => {
             setUserData={setUserData}
             navigate={() => { }}
             height={window.height - topHeight}
+            setStickyHeaderOpacity={setStickyHeaderOpacity}
+            setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
+            onEndReached={onEndReached}
+            loadRequested={loadRequested}
           />
           : <View />
         }

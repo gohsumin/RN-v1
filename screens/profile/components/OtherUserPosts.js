@@ -19,7 +19,11 @@ function OtherUserPosts({
     userData,
     setUserData,
     navigate,
-    height
+    height,
+    setStickyHeaderOpacity,
+    setIsStickyHeaderExpanded,
+    onEndReached,
+    loadRequested
 }) {
 
     const { platform } = useContext(AppContext);
@@ -41,6 +45,18 @@ function OtherUserPosts({
                 }}
             />
         );
+    };
+
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - paddingToBottom;
+    };
+
+    const distanceToStickyHeader = ({ contentOffset }) => {
+        // positive: distance remaining from top; negative: distance remaining from bottom
+        const currentOffset = contentOffset.y - topHeight;
+        return currentOffset;
     };
 
     function incrementViews(postID) {
@@ -124,6 +140,24 @@ function OtherUserPosts({
                     </View>
                 </View> :
                 <FlatList
+                    onScroll={({ nativeEvent }) => {
+                        if (!loadRequested && isCloseToBottom(nativeEvent)) {
+                            onEndReached();
+                        }
+                        const threshhold = 80;
+                        const d = distanceToStickyHeader(nativeEvent);
+                        if (d < -threshhold) {
+                            setStickyHeaderOpacity(0);
+                        }
+                        else if (d < 0) {
+                            setIsStickyHeaderExpanded(false);
+                            setStickyHeaderOpacity((threshhold + d) / threshhold);
+                        }
+                        else {
+                            setStickyHeaderOpacity(1);
+                        }
+                    }}
+                    scrollEventThrottle={5}
                     onViewableItemsChanged={onViewableItemsChanged.current}
                     viewabilityConfig={{
                         itemVisiblePercentThreshold: 80,

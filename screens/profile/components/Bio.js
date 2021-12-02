@@ -40,6 +40,7 @@ function Bio({ userData }) {
             <View style={{
                 flexDirection: 'row', alignItems: 'center',
                 marginTop: 20,
+                // borderWidth: 1, borderColor: "salmon"
             }}>
                 <Text
                     style={{
@@ -64,6 +65,7 @@ function Bio({ userData }) {
                     marginHorizontal: 35,
                     textAlign: "center",
                     lineHeight: 18,
+                    // borderWidth: 1, borderColor: "salmon"
                 }}
             >
                 {userData.userDescription}

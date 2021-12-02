@@ -3,15 +3,13 @@ import {
     Text,
     View,
     TouchableOpacity,
-    useWindowDimensions
 } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
-import WebStyleContext from "../../../data/WebStyleContext";
 import WebNavigationContext from '../../../data/WebNavigationContext';
 import { firebase } from '../../../data/firebase';
 import "firebase/database";
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 function UserInfoBar({ userData, isUser, navigate }) {
 
@@ -20,10 +18,6 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
     const spacing = 15;
     const leftHeight = 28;
-
-    const window = useWindowDimensions();
-
-    const { getUserInfoBarWidth } = useContext(WebStyleContext);
 
     const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
 
@@ -107,17 +101,10 @@ function UserInfoBar({ userData, isUser, navigate }) {
             alignContent: 'center',
             alignSelf: 'center',
             flexDirection: 'row',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             // borderWidth: 1,
             // borderColor: 'salmon'
         }}>
-
-            <View
-                style={{
-                    width: getUserInfoBarWidth(window.width),
-                    // borderWidth: 1,
-                    // borderColor: 'salmon'
-                }} />
 
             {/* first */}
             <TouchableOpacity style={{
@@ -194,7 +181,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
                         message: "Get the iOS app for full experience!",
                         type: "info",
                     })
-                    }}>
+                }}>
                 <Text style={{
                     fontSize: 15,
                     color: colors.foreground1,
@@ -203,11 +190,6 @@ function UserInfoBar({ userData, isUser, navigate }) {
                     {buttonText}
                 </Text>
             </TouchableOpacity>
-
-            <View
-                style={{
-                    width: getUserInfoBarWidth(window.width)
-                }} />
 
         </View>
     )

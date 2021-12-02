@@ -15,6 +15,7 @@ function ProfileTop({ topHeight, setTopHeight, userData, isUser, setUserData, na
             style={{
                 width: getProfileWidth(window.width),
                 alignSelf: 'center',
+                alignItems: "center",
                 paddingHorizontal: 0,
                 // borderWidth: 1,
                 // borderColor: 'salmon'
