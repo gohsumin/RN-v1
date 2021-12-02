@@ -52,8 +52,8 @@ function Badge() {
                 source={require("../../../assets/appStoreBadge.png")}
                 style={{
                     width: getImageSide(window.height),
+                    height: getImageSide(window.height) / 2.99,
                     alignSelf: "flex-end",
-                    aspectRatio: 2.99,
                     marginLeft: getMarginLeft(window.height),
                     shadowRadius: 15,
                     shadowColor: "black",

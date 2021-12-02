@@ -49,15 +49,15 @@ function WebMainSimpleHome() {
                     source={logo_big}
                     style={{
                         height: getLogoHeight(window.height),
+                        width: getLogoHeight(window.height) * 5,
                         marginTop: 2,
-                        aspectRatio: 5,
                         shadowColor: "black",
                         shadowOffset: { width: 2, height: 2 },
                         shadowRadius: 8,
                         // borderWidth: 1,
                         // borderColor: 'orange',
                     }}
-                    resizeMode={'contain'}
+                    resizeMode='contain'
                 />
             </View>
             <Search
