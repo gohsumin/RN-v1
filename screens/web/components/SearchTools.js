@@ -143,7 +143,7 @@ function SearchTools({ topHeight, spacing }) {
             {/* <Configure hitsPerPage={8} /> */}
             <CustomSearchBox />
             {searchWord !== "" && <CustomHitsPerPage
-                defaultRefinement={10}
+                defaultRefinement={4}
                 items={[
                     { value: 10, label: '10' },
                 ]}

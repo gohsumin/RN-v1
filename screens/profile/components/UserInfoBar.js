@@ -6,7 +6,6 @@ import {
 } from "react-native";
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
-import WebNavigationContext from '../../../data/WebNavigationContext';
 import { firebase } from '../../../data/firebase';
 import "firebase/database";
 import { showMessage } from "react-native-flash-message";
@@ -18,8 +17,6 @@ function UserInfoBar({ userData, isUser, navigate }) {
 
     const spacing = 15;
     const leftHeight = 28;
-
-    const { currentRoute, setCurrentRoute } = useContext(WebNavigationContext);
 
     var followUser = firebase.functions().httpsCallable('followUser');
     var unFollowUser = firebase.functions().httpsCallable('unFollowUser');
@@ -67,21 +64,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
             })
         }
     }, []);
-
-    function onButtonPress() {
-        console.log("onButtonPress");
-        if (isUser) {
-            setCurrentRoute({ routeName: "Edit Profile", userName: user });
-            navigate('Edit Profile', { uid: uid, userName: user });
-        }
-        else if (followable) {
-            follow();
-        }
-        else {
-            unfollow();
-        }
-    }
-
+    
     const VerticalBar = () => {
         return (
             <View style={{

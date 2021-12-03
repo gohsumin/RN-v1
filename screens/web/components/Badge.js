@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, Text, useWindowDimensions } from "react-native";
+import { View, Image, Text, useWindowDimensions, Linking } from "react-native";
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function Badge() {
 
@@ -31,11 +32,21 @@ function Badge() {
     }
 
     return (
-        <View style={{
+        <TouchableOpacity style={{
             flexDirection: "row",
             alignItems: "center",
             // borderWidth: 1, borderColor: "salmon"
-        }} >
+        }}
+            onPress={() => {
+                Linking.canOpenURL("https://apps.apple.com/us/app/sosh-world/id1589909476").then(supported => {
+                    if (supported) {
+                        Linking.openURL("https://apps.apple.com/us/app/sosh-world/id1589909476");
+                        // incrementViews(item.id);
+                    } else {
+                        console.log("Can't open URL: " + "https://apps.apple.com/us/app/sosh-world/id1589909476");
+                    }
+                });
+            }} >
             <Text style={{
                 fontSize: getFontSize(window.height),
                 fontWeight: getFontWeight(window.height),
@@ -63,7 +74,7 @@ function Badge() {
                 }}
                 resizeMode={"contain"}
             />
-        </View>
+        </TouchableOpacity>
     )
 }
 

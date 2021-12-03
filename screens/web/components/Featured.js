@@ -19,7 +19,7 @@ function Featured({ height, width, footerHeight, marginTop }) {
     const spacing = width > 388 ? 18 : 10;
     const paddingBottom = 25;
     const scrollViewHeight = totalHeight - paddingTop - paddingBottom;
-    const borderRadius = 35;
+    const borderRadius = 24;
     const profileImageHeight = scrollViewHeight - 80;
     const profileMargin = 0;
     const cardWidth = profileImageHeight + profileMargin * 2;

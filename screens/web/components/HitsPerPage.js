@@ -7,7 +7,7 @@ const HitsPerPage = React.memo(({ currentRefinement, refine, hitsPerPageHeight }
     const [hits, setHits] = useState(null);
     const [hitsChanged, setHitsChanged] = useState(false);
     const hitRange = [{ id: "hits", label: "", min: 1, max: 50 }];
-    const defaultHits = 10;
+    const defaultHits = 4;
 
     useEffect(() => {
         // initialize hits once

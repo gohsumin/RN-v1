@@ -31,77 +31,31 @@ export default class App extends React.Component {
       theme: "dark",
       currentRoute: { routeName: "Home", userName: "" },
     };
-    
+
     this.platform = Platform.OS;
-    this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
-    this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
     this.linking = {
       prefixes: [Linking.createURL('/')],
       config: {
-        Home: "/Home",
-        Profile: "/:app/:id",
-        NotFound: "404",
+        screens: {
+          Home: "Home",
+          Profile: ":app/:id",
+        },
       },
+      // getStateFromPath(path, config) {
+      //   if (true) {
+      //     return {
+      //       routes: [
+      //         { name: "Home"}
+      //       ]
+      //     }
+      //   }
+      // },
     };
-  }
 
-  /* grabs freshly-approved posts with type: 0 */
-  getSwipeCards() {
-    // TO-DO: filter by user name: only the ones that match the current signed in user
-    // fetch(`https://soshwrld.com/posts`).then((r) => { return r.json() }).then((d) => {
-    //   return d.posts;
-    // }).catch((err) => {
-    //   console.log(err);
-    // })
-    let ret = {};
-    firestore.collection('Posts').where("type", "==", 0).where("userID", "==", this.state.uid).get().then((snapshot) => {
-      snapshot.forEach((doc) => {
-        console.log("swipe card id : " + doc.id);
-        const documentName = doc.id;
-        ret[documentName] = doc.data();
-      })
-      this.setState({ remaining: ret });
-    })
-  }
-
-  updateTimelineAfterFollowing(followingUID) {
-    console.log("updateTimelineAfterFollowing");
-    if (this.state.uid === "") {
-      return;
-    }
-    // reference to logged in user's timeline
-    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
-
-    // followingUID's posts
-    const posts = firestore.collection('Posts').where('type', '==', 1).where('userID', '==', followingUID);
-    posts.get().then((docs) => {
-      console.log(docs);
-      docs.forEach((doc) => {
-        console.log("post id: " + doc.id);
-        db.doc(doc.id).set({
-          dateApproved: doc.data().dateApproved,
-          dateBought: doc.data().dateBought
-        }).then(() => { }).catch((error) => { console.log(error) });
-      })
-    }).catch((error) => console.log(error));
-  }
-
-  updateTimelineAfterUnfollowing(unfollowingUID) {
-    if (this.state.uid === "") {
-      return;
-    }
-    // reference to logged in user's timeline
-    const db = firestore.collection('Feeds').doc(this.state.uid).collection('Timeline');
-    // followingUID's posts
-    const posts = firestore.collection('Posts').where('type', '==', 1).where('userID', '==', unfollowingUID);
-    posts.get().then((docs) => {
-      docs.forEach((doc) => {
-        db.doc(doc.id).delete().then(() => { }).catch((error) => { console.log(error) });
-      })
-    }).catch((error) => console.log(error));
   }
 
   componentDidMount() {
+    console.log("component mounted");
     LogBox.ignoreAllLogs(true);
   }
 
@@ -134,16 +88,19 @@ export default class App extends React.Component {
   render() {
     return (
       /* Contexts can be composed later into a single component. */
-      <WebNavigationContext.Provider value={{
+      <WebNavigationContext.Provider
+      value={{
         currentRoute: this.state.currentRoute,
         setCurrentRoute: this.setCurrentRoute
       }}>
         <WebStyleContextProvider>
-          <SwipeCardsContext.Provider value={{
+          <SwipeCardsContext.Provider
+          value={{
             remaining: this.state.remaining,
             popRemaining: this.popRemaining
           }}>
-            <AppContext.Provider value={{
+            <AppContext.Provider
+            value={{
               platform: this.platform,
               user: this.state.user,
               uid: this.state.uid,
@@ -153,7 +110,8 @@ export default class App extends React.Component {
             }}>
               <ThemeContextProvider>
                 <UsersContext.Provider>
-                  <PostsContext.Provider value={{
+                  <PostsContext.Provider
+                  value={{
                     updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
                     updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
                   }}>
