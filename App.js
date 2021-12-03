@@ -1,19 +1,23 @@
 import React, { useEffect } from "react";
-import { LogBox, Platform } from "react-native";
+import { LogBox, Platform, Text } from "react-native";
+import * as Linking from 'expo-linking';
 import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
 import PostsContext from "./data/PostsContext";
 import AppContext from "./data/AppContext";
-import ThemeContextProvider from "./data/ThemeContextProvider";
 import SwipeCardsContext from "./data/SwipeCardsContext";
 import { Asset } from "expo-asset";
 import styled from 'styled-components/native';
 import { firebase } from './data/firebase';
 import "firebase/firestore";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
+import ThemeContextProvider from "./data/ThemeContextProvider";
 import WebNavigationContext from './data/WebNavigationContext';
 import WebMainSimpleNavigator from "./navigations/WebMainSimple";
+import WebMainSimpleHome from "./screens/web/WebMainSimpleHome";
+import ProfileScreen from "./screens/profile/Profile";
+import FlashMessage from 'react-native-flash-message';
 const firestore = firebase.firestore();
 
 export default class App extends React.Component {
@@ -27,11 +31,14 @@ export default class App extends React.Component {
       theme: "dark",
       currentRoute: { routeName: "Home", userName: "" },
     };
+    
     this.platform = Platform.OS;
     this.updateTimelineAfterFollowing = this.updateTimelineAfterFollowing.bind(this);
     this.updateTimelineAfterUnfollowing = this.updateTimelineAfterUnfollowing.bind(this);
     this.linking = {
+      prefixes: [Linking.createURL('/')],
       config: {
+        Home: "/Home",
         Profile: "/:app/:id",
         NotFound: "404",
       },
@@ -150,7 +157,7 @@ export default class App extends React.Component {
                     updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
                     updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
                   }}>
-                    <NavigationContainer linking={this.linking}>
+                    <NavigationContainer linking={this.linking} fallback={<Text>Loading...</Text>}>
                       {this.platform === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
                     </NavigationContainer>
                   </PostsContext.Provider>

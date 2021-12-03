@@ -22,47 +22,26 @@ const WebMainSimpleNavigator = () => {
 
   const { theme, platform } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
-  const [initialRoute, setInitialRoute] = useState("");
-
-  useEffect(() => {
-    try {
-      const lgn = AsyncStorage.getItem('@logger:key');
-      if (lgn === null) {
-        setInitialRoute("Log In");
-      }
-      else if (platform === "web") {
-        setInitialRoute("WebMain");
-      }
-      else {
-        setInitialRoute("Main");
-      }
-    }
-    catch (error) {
-      setInitialRoute("Log In");
-    }
-  }, []);
 
   return (
-    (initialRoute === "") ?
-      <View style={{ backgroundColor: 'red' }}></View> :
-      <View style={{ flex: 1, backgroundColor: colors.background }}>
-        <FlashMessage position="top" />
-        <WebMainSimple.Navigator
-          initialRouteName={"Home"}>
-          <WebMainSimple.Screen
-            name="Home"
-            component={WebMainSimpleHome}
-            options={{ headerShown: false, gestureEnabled: true }}
-          >
-          </WebMainSimple.Screen>
-          <WebMainSimple.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{ headerShown: false, gestureEnabled: true }}
-          >
-          </WebMainSimple.Screen>
-        </WebMainSimple.Navigator>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <FlashMessage position="top" />
+      <WebMainSimple.Navigator
+        initialRouteName={"Home"}>
+        <WebMainSimple.Screen
+          name="Home"
+          component={WebMainSimpleHome}
+          options={{ headerShown: false, gestureEnabled: true }}
+        >
+        </WebMainSimple.Screen>
+        <WebMainSimple.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: false, gestureEnabled: true }}
+        >
+        </WebMainSimple.Screen>
+      </WebMainSimple.Navigator>
+    </View>
   );
 };
 

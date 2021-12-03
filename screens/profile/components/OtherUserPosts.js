@@ -161,7 +161,7 @@ function OtherUserPosts({
                     onViewableItemsChanged={onViewableItemsChanged.current}
                     viewabilityConfig={{
                         itemVisiblePercentThreshold: 80,
-                        minimumViewTime: 500,
+                        minimumViewTime: 800,
                     }}
                     getItemLayout={(data, index) => (
                         { length: postHeight, offset: postHeight * index, index }
@@ -215,7 +215,6 @@ function OtherUserPosts({
 
 function areEqual(prevProps, newProps) {
     return prevProps.updateToggle === newProps.updateToggle &&
-        prevProps.userFeed === newProps.userFeed &&
         prevProps.height === newProps.height &&
         prevProps.width === newProps.width;
 }
