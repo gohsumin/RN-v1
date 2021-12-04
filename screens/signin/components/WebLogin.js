@@ -25,28 +25,28 @@ function WebLogin({ navigation }) {
     const spacing = 15;
 
     function loginUser() {
-        console.log("loginUser");
-        console.log("email: ###" + email + "###");
-        console.log("password: ###" + password + "###  type: " + (typeof password));
+       //console.log("loginUser");
+       //console.log("email: ###" + email + "###");
+       //console.log("password: ###" + password + "###  type: " + (typeof password));
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                console.log("logged in");
+               //console.log("logged in");
                 var uid = userCredential.user.uid;
                 firestore.collection('User-Profile').doc(uid).get().then((doc) => {
                     if (doc.exists) {
                         setUser(doc.data().userName);
                         setUID(uid);
-                        console.log("trying to navigate...");
+                       //console.log("trying to navigate...");
                         navigation.navigate("WebMain", { uid: uid });
                         try {
                             AsyncStorage.setItem('@logger:key', uid);
                         }
                         catch(error) {
-                            console.log("Error saving login info: " + error);
+                           //console.log("Error saving login info: " + error);
                         }
                     }
                     else {
-                        console.log("No such document!");
+                       //console.log("No such document!");
                     }
                 }).catch((error) => {
                     var errorCode = error.code;

@@ -5,6 +5,7 @@ import { useLinkTo } from '@react-navigation/native';
 const Hit = React.memo(props => {
 
     const [focused, setFocused] = useState("");
+    const [loaded, setLoaded] = useState(false);
     const linkTo = useLinkTo();
 
     return (
@@ -17,12 +18,14 @@ const Hit = React.memo(props => {
             }}
             onPress={() => {
                 const uid = props.hit.objectID;
-                console.log("userID: " + uid);
+               //console.log("userID: " + uid);
                 const link = "/uid/" + uid;
                 linkTo(link);
             }}>
             <View style={{
+                flex: 1,
                 width: "100%",
+                opacity: loaded ? 1 : 0,
                 flexDirection: "row",
                 alignItems: "center",
                 alignSelf: "center",
@@ -38,6 +41,9 @@ const Hit = React.memo(props => {
                 borderWidth: 1,
             }}>
                 <Image
+                    onLoad={() => {
+                        setLoaded(true);
+                    }}
                     source={props.hit.userImageURL}
                     style={{
                         width: props.hitHeight,
@@ -60,19 +66,19 @@ const Hit = React.memo(props => {
                             fontWeight: "bold"
                         }}>
                             {props.hit.userName + "  "}
-                            <Text style={{
+                            {/* <Text style={{
                                 fontSize: 15,
                                 opacity: 0.7,
                                 fontWeight: "normal"
                             }}>
                                 {props.hit.userDescription}
-                            </Text>
+                            </Text> */}
                         </Text>
                     </View>
                     <Text style={{
                         color: "gray",
-                        fontSize: 13,
-                        fontStyle: 'italic',
+                        fontSize: 14,
+                        lineHeight: 16,
                     }}>
                         {"Followers: " + props.hit.followersCount}
                     </Text>

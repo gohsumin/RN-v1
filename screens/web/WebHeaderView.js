@@ -37,12 +37,12 @@ const WebHeaderView = () => {
         // routes of the RootStackNavigator
         const rootStackRoutes = navigation.dangerouslyGetState();
 
-        console.log(rootStackRoutes);
+       //console.log(rootStackRoutes);
 
         // routes of WebMain
         const webMainRoutes = rootStackRoutes.routes[1].state.routes;
 
-        console.log(webMainRoutes);
+       //console.log(webMainRoutes);
 
         const previousIndex = webMainRoutes.length - 2;
         if (previousIndex < 0) {

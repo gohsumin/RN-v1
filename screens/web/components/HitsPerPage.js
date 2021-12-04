@@ -17,20 +17,20 @@ const HitsPerPage = React.memo(({ currentRefinement, refine, hitsPerPageHeight }
     useEffect(() => {
         if (hits == null) {
             // if the hits state changed back to null, set it to the previous refinement
-            console.log("hits are null");
+           //console.log("hits are null");
             setHits([{ id: "hits", value: currentRefinement }]);
         }
         else {
             // if the hits state were updated manually, refine search again
             if (hitsChanged) {
-                console.log("hitsChanged");
+               //console.log("hitsChanged");
                 refine(hits[0]["value"]);
                 setHitsChanged(false);
             }
         }
     }, [hits]);
 
-    console.log("HitsPerPage currentRefinement: " + currentRefinement);
+   //console.log("HitsPerPage currentRefinement: " + currentRefinement);
     return (
         <View style={{
             flexDirection: "row",
@@ -65,7 +65,7 @@ const HitsPerPage = React.memo(({ currentRefinement, refine, hitsPerPageHeight }
                     digits={hitRange}
                     values={hits}
                     onChange={(values) => {
-                        console.log("picker value changed");
+                       //console.log("picker value changed");
                         setHitsChanged(true);
                         setHits(values);
                     }} />

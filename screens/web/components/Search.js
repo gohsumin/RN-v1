@@ -13,7 +13,9 @@ function Search({ topHeight, spacing }) {
     const searchClient = algoliasearch('TVTQ31GSK6', 'ce820b76d62f5651835a4f93d7c62b05');
 
     return (
-        <View>
+        <View style={{
+            // marginTop: topHeight
+        }}>
             <InstantSearch
                 searchClient={searchClient}
                 indexName={"Search UserProfile"}>

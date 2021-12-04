@@ -27,11 +27,11 @@ const ExploreScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => {
-                    console.log("follow pressed");
+                   //console.log("follow pressed");
                     followUser({
                         userID: "tqsjujBkrYfzwAqgpd2mE1ic0gn2",
                     }).then(function (res) {
-                        console.log("after following");
+                       //console.log("after following");
                     });
                     updateTimelineAfterFollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}
@@ -55,7 +55,7 @@ const ExploreScreen = ({ navigation }) => {
                     unFollowUser({
                         userID: "tqsjujBkrYfzwAqgpd2mE1ic0gn2"
                     }).then(() => {
-                        console.log("after unfollowing");
+                       //console.log("after unfollowing");
                     });
                     updateTimelineAfterUnfollowing("tqsjujBkrYfzwAqgpd2mE1ic0gn2");
                 }}

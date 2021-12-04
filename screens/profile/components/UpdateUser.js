@@ -49,7 +49,7 @@ function UpdateUser({ navigation, route }) {
     const spacing = 17;
 
     function getUserData(uid, callback) {
-        console.log("getUserData for user " + uid);
+       //console.log("getUserData for user " + uid);
 
         // the user data collection
         const userProfileDB = firestore.collection('User-Profile').doc(uid);

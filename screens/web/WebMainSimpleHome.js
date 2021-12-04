@@ -36,7 +36,7 @@ function WebMainSimpleHome() {
             width: "100%",
             alignSelf: "center",
             alignItems: "center",
-            justifyContent: "center",
+            // justifyContent: "center",
             backgroundColor: "#070707",
             // borderWidth: 1,
             // borderColor: 'orange',
@@ -44,10 +44,14 @@ function WebMainSimpleHome() {
             <View style={{
                 height: getTopHeight(window.height),
                 justifyContent: "center",
+                // borderWidth: 1,
+                // borderColor: 'orange',
             }}>
                 <Image
                     source={logo_big}
                     style={{
+                        // position: "absolute",
+
                         height: getLogoHeight(window.height),
                         width: getLogoHeight(window.height) * 5,
                         marginTop: 2,
@@ -58,11 +62,12 @@ function WebMainSimpleHome() {
                         // borderColor: 'orange',
                     }}
                     resizeMode='contain'
+                    resizeMethod="scale"
                 />
             </View>
             <Search
-            topHeight={getTopHeight(window.height)}
-            spacing={spacing} />
+                topHeight={getTopHeight(window.height)}
+                spacing={spacing} />
         </View>)
 }
 

@@ -34,13 +34,13 @@ function SignUp({ navigation }) {
     function createUser() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                console.log("user created");
+               //console.log("user created");
                 const newUID = firebase.auth().currentUser.uid;
                 uploadImage(platform === "web" ? defaultPic : Image.resolveAssetSource(defaultPic).uri,
                     newUID).then(() => {
                         storageRef.child("User-Profile-Images/" + newUID + ".jpg")
                             .getDownloadURL().then((url) => {
-                                console.log("image url: " + url);
+                               //console.log("image url: " + url);
                                 var data = {
                                     userName: userName,
                                     email: email,
@@ -51,7 +51,7 @@ function SignUp({ navigation }) {
                                     userDescription: "🌱",
                                     userImageURL: url,
                                 }
-                                console.log("!!!signed in currently with uid: " + newUID + " === " + userCredential.user.uid);
+                               //console.log("!!!signed in currently with uid: " + newUID + " === " + userCredential.user.uid);
                                 firestore.collection("User-Profile").doc(newUID).set(data).then(() => { });
                                 setUser(userName);
                                 setUID(newUID);
@@ -62,7 +62,7 @@ function SignUp({ navigation }) {
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                console.log(errorMessage);
+               //console.log(errorMessage);
                 Alert.alert(
                     "Please try again:",
                     errorMessage,

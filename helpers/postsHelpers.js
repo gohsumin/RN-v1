@@ -40,12 +40,12 @@ function getUserData(uid) {
       return userData;
     }
     else {
-      console.log("No such document!");
+     //console.log("No such document!");
     }
   }).catch((error) => {
     var errorCode = error.code;
     var errorMessage = error.message;
-    console.log(errorCode + ": " + errorMessage);
+   //console.log(errorCode + ": " + errorMessage);
   });
 }
 

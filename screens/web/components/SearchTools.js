@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, useWindowDimensions, TextInput } from 'react-native';
+import { View, Text, ScrollView, useWindowDimensions, TextInput } from 'react-native';
 import {
     connectSearchBox,
     connectHitsPerPage,
@@ -115,19 +115,29 @@ function SearchTools({ topHeight, spacing }) {
 
     const Hits = React.memo(({ hits }) => {
         useEffect(() => {
-            console.log("hits");
-            console.log(hits);
+            //console.log("hits");
+            //console.log(hits);
         })
         return (
             <View style={{
                 width: getFullWidth(window.width),
                 marginTop: 8,
+                // alignItems: "center",
                 // borderWidth: 0.1,
                 // borderColor: 'salmon'
             }}>
-                {hits.map((hit) => {
-                    return <Hit key={hit.objectID} hitHeight={hitHeight} hit={hit} />
-                })}
+                {hits.length === 0 ?
+                    <Text style={{
+                        color: "#aaa",
+                        fontSize: 15,
+                        paddingHorizontal: paddingHorizontal,
+                        height: 100,
+                        // textAlign: "center",
+                        width: "100%",
+                    }}>No results</Text> :
+                    hits.map((hit) => {
+                        return <Hit key={hit.objectID} hitHeight={hitHeight} hit={hit} />
+                    })}
             </View>
         )
     }, hitsAreEqual);
@@ -148,26 +158,27 @@ function SearchTools({ topHeight, spacing }) {
                     { value: 10, label: '10' },
                 ]}
                 hitsPerPageHeight={hitsPerPageHeight} />}
-            {searchWord === "" ?
-                <Featured
-                    height={getFeaturedHeight(window.height)}
-                    width={getFullWidth(window.width)}
-                    footerHeight={footerHeight}
-                    marginTop={spacing}
-                />
-                : <ScrollView
-                    persistentScrollbar={false}
-                    style={{
-                        height: getFeedHeight(window.height),
-                        // overflow: "visible",
-                        // borderWidth: 1,
-                        // borderColor: "red",
-                    }}>
-                    <CustomHits />
-                    <View style={{
-                        height: footerHeight,
-                    }} />
-                </ScrollView>}
+            {footerHeight === 0 ? <View /> :
+                searchWord === "" ?
+                    <Featured
+                        height={getFeaturedHeight(window.height)}
+                        width={getFullWidth(window.width)}
+                        footerHeight={footerHeight}
+                        marginTop={spacing}
+                    />
+                    : <ScrollView
+                        persistentScrollbar={false}
+                        style={{
+                            height: getFeedHeight(window.height),
+                            // overflow: "visible",
+                            // borderWidth: 1,
+                            // borderColor: "red",
+                        }}>
+                        <CustomHits />
+                        <View style={{
+                            height: footerHeight,
+                        }} />
+                    </ScrollView>}
             <LinearGradient
                 style={{
                     position: 'absolute',
@@ -184,6 +195,7 @@ function SearchTools({ topHeight, spacing }) {
                 width: getFullWidth(window.width),
                 alignItems: "flex-end",
                 alignSelf: "center",
+                opacity: footerHeight == 0 ? 0 : 1,
                 // borderColor: "pink",
                 // borderWidth: 1
             }}

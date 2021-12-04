@@ -107,7 +107,7 @@ function SwipeScreen({ navigation }) {
             type: 1
         })
         if (index === Object.keys(remaining).length) {
-            console.log("it is the last card");
+           //console.log("it is the last card");
             navigation.goBack();
         }
     }

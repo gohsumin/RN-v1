@@ -43,7 +43,7 @@ function Badge() {
                         Linking.openURL("https://apps.apple.com/us/app/sosh-world/id1589909476");
                         // incrementViews(item.id);
                     } else {
-                        console.log("Can't open URL: " + "https://apps.apple.com/us/app/sosh-world/id1589909476");
+                       //console.log("Can't open URL: " + "https://apps.apple.com/us/app/sosh-world/id1589909476");
                     }
                 });
             }} >

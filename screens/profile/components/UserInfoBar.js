@@ -28,7 +28,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
         followUser({
             userID: userData.userID,
         }).then(() => {
-            console.log("after following");
+           //console.log("after following");
             setFollowable(false);
         });
     }
@@ -38,7 +38,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
         unFollowUser({
             userID: userData.userID
         }).then(() => {
-            console.log("after unfollowing");
+           //console.log("after unfollowing");
             setFollowable(true);
         });
     }
@@ -57,7 +57,7 @@ function UserInfoBar({ userData, isUser, navigate }) {
                     setButtonText("Unfollow");
                 }
                 else {
-                    console.log("nope");
+                   //console.log("nope");
                     setFollowable(true);
                     setButtonText("Follow");
                 }

@@ -43,7 +43,7 @@ function Featured({ height, width, footerHeight, marginTop }) {
                 key={key}
                 onPress={() => {
                     const uid = profile.userID;
-                    console.log("uid: " + uid);
+                   //console.log("uid: " + uid);
                     const link = "/uid/" + uid;
                     linkTo(link);
                 }} >

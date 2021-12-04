@@ -72,7 +72,7 @@ function FeedBottomBar({ numTapped, link, incrementViews }) {
                               Linking.openURL(link);
                               incrementViews();
                             } else {
-                              console.log("Can't open URL: " + link);
+                             //console.log("Can't open URL: " + link);
                             }
                           });
                     }}>

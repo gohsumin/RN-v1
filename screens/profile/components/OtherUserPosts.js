@@ -61,24 +61,24 @@ function OtherUserPosts({
 
     function incrementViews(postID) {
         const db = firestore.collection("Posts").doc(postID);
-        console.log("id (post ID): " + postID);
+       //console.log("id (post ID): " + postID);
         db.get().then((doc) => {
             const d = doc.data();
             if ("numViews" in d) {
                 db.update({ numViews: d.numViews + 1 }).then(() => {
-                    console.log("Updated views to " + (d.numViews + 1));
+                   //console.log("Updated views to " + (d.numViews + 1));
                 }).catch((error) => { console.log(error); });
             }
             else {
                 db.update({ numViews: 1 }).then(() => {
-                    console.log("Set views to  " + 1);
+                   //console.log("Set views to  " + 1);
                 }).catch((error) => { console.log(error); });
             }
         }).catch((error) => { console.log(error) });
     }
 
     const onViewableItemsChangedx = useCallback(({ changed }) => {
-        console.log("onViewableItemsChangedx");
+       //console.log("onViewableItemsChangedx");
         changed.forEach(({ item, isViewable }) => {
             if (isViewable && !viewedList.current.includes(item.id)) {
                 viewedList.current = [...viewedList.current, item.id];
@@ -88,7 +88,7 @@ function OtherUserPosts({
     }, []);
 
     const onViewableItemsChanged = useRef(({ changed }) => {
-        console.log("onViewableItemsChanged");
+       //console.log("onViewableItemsChanged");
         changed.forEach(({ item, isViewable }) => {
             if (isViewable && !viewedList.current.includes(item.id)) {
                 viewedList.current = [...viewedList.current, item.id];

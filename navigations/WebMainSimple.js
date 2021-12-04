@@ -15,19 +15,40 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import WebMainSimpleHome from "../screens/web/WebMainSimpleHome";
 import ProfileScreen from "../screens/profile/Profile";
 import FlashMessage from 'react-native-flash-message';
+import Landing from "../screens/web/components/Landing";
+import Privacy from "../screens/web/components/Privacy";
+import Terms from "../screens/web/components/Terms";
 
 const WebMainSimple = createStackNavigator();
 
 const WebMainSimpleNavigator = () => {
 
-  const { theme, platform } = React.useContext(AppContext);
+  const { theme } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <FlashMessage position="top" />
       <WebMainSimple.Navigator
-        initialRouteName={"Home"}>
+        initialRouteName={"Landing"}>
+        <WebMainSimple.Screen
+          name="Landing"
+          component={Landing}
+          options={{ headerShown: false, gestureEnabled: true }}
+        >
+        </WebMainSimple.Screen>
+        <WebMainSimple.Screen
+          name="Privacy"
+          component={Privacy}
+          options={{ headerShown: false, gestureEnabled: true }}
+        >
+        </WebMainSimple.Screen>
+        <WebMainSimple.Screen
+          name="Terms"
+          component={Terms}
+          options={{ headerShown: false, gestureEnabled: true }}
+        >
+        </WebMainSimple.Screen>
         <WebMainSimple.Screen
           name="Home"
           component={WebMainSimpleHome}

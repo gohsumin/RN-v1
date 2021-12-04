@@ -63,15 +63,15 @@ const HomeScreen = ({ navigation, route }) => {
   const { getCenterSectionWidth, getHeaderWidth, topSectionHeight } = React.useContext(WebStyleContext);
 
   function listenForNewPosts() {
-    console.log("listenForNewPosts");
+   //console.log("listenForNewPosts");
     const db = firestore.collection('Feeds').doc(uid).collection('Timeline');
     /* const listener =  */db.orderBy('timestamp', 'desc').limit(1).onSnapshot((snapshot) => {
-      console.log("onSnapshot");
+     //console.log("onSnapshot");
       const changes = snapshot.docChanges();
       changes.forEach((change) => {
         if (change.type === 'added' && change.doc.data().timestamp.seconds > latestDateApproved.current.seconds) {
-          console.log("change.doc.data().timestamp.seconds: " + change.doc.data().timestamp.seconds);
-          console.log("change.doc.id: " + change.doc.id);
+         //console.log("change.doc.data().timestamp.seconds: " + change.doc.data().timestamp.seconds);
+         //console.log("change.doc.id: " + change.doc.id);
           setNewPostExists(true);
         }
       });
@@ -81,7 +81,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   function getTimeline() {
     if (cursor === undefined) {
-      console.log("cursor is undefined");
+     //console.log("cursor is undefined");
       setRefreshing(false);
       setLoadRequested(false);
       return;
@@ -96,13 +96,13 @@ const HomeScreen = ({ navigation, route }) => {
     // list of post ids to include in the timeline. Should never exceed 10 items
     let refs = [];
     db.limit(loadSize).get().then((snapshot) => {
-      console.log("about to get post ids");
+     //console.log("about to get post ids");
       snapshot.forEach((doc) => {
-        console.log("document id for a post: " + doc.id);
+       //console.log("document id for a post: " + doc.id);
         refs.push(doc.id);
       });
 
-      console.log(Object.keys(refs).length === 0);
+     //console.log(Object.keys(refs).length === 0);
 
       if (Object.keys(refs).length === 0) {
         setRefreshing(false);
@@ -141,14 +141,14 @@ const HomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isReady && cursor === 0) {
-      console.log("cursor just reset to 0");
+     //console.log("cursor just reset to 0");
       getTimeline();
     }
   }, [cursor]);
 
   useEffect(() => {
     if (platform === "web" && route.params !== undefined) {
-      console.log(route.params.currentRoute + "!!!");
+     //console.log(route.params.currentRoute + "!!!");
       setCurrentRoute(route.params.currentRoute);
     }
   }, [route]);
@@ -171,12 +171,12 @@ const HomeScreen = ({ navigation, route }) => {
 
   // on initial render, grab the first load
   useEffect(() => {
-    console.log("Home.js: calling getTimeline and listenForNewPosts");
+   //console.log("Home.js: calling getTimeline and listenForNewPosts");
     getTimeline();
     listenForNewPosts();
 
     return () => {
-      console.log("Home.js: about to unmount");
+     //console.log("Home.js: about to unmount");
       //snapshotListener();
     }
   }, []);
@@ -211,24 +211,24 @@ const HomeScreen = ({ navigation, route }) => {
   }
 
   function loadMoreFeed() {
-    console.log("about to call getTimeline from loadMoreFeed");
+   //console.log("about to call getTimeline from loadMoreFeed");
     getTimeline();
   }
 
   function refreshTimeline() {
-    console.log("Home.js: refreshTimeline");
+   //console.log("Home.js: refreshTimeline");
     setCursor(0);
   }
 
   function loadNewPosts() {
-    console.log("loadNewPosts");
+   //console.log("loadNewPosts");
     const db = firestore.collection('Feeds').doc(uid).collection('Timeline');
     db.where('timestamp.seconds', '>', latesttimestamp.current.seconds).get().then((snapshot) => {
       let refs = [];
       snapshot.forEach((doc) => {
         refs.push(doc.id);
       });
-      console.log("refs: " + refs);
+     //console.log("refs: " + refs);
       if (refs.length === 0) {
         setNewPostExists(false);
         return;
@@ -256,7 +256,7 @@ const HomeScreen = ({ navigation, route }) => {
   }, []);
 
   const onNewPostView = React.useCallback(() => {
-    console.log("new post view called");
+   //console.log("new post view called");
     loadNewPosts();
   }, []);
 

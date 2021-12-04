@@ -20,6 +20,16 @@ import ProfileScreen from "./screens/profile/Profile";
 import FlashMessage from 'react-native-flash-message';
 const firestore = firebase.firestore();
 
+// ###########################
+// note:
+// run...
+// vercel  --local-config ~/RN-v1/vercel.json --prod
+// from ~/RN-v1/web-build
+// after running...
+// expo build:web
+// from ~/RN-v1
+// ###########################
+
 export default class App extends React.Component {
 
   constructor(props) {
@@ -34,33 +44,27 @@ export default class App extends React.Component {
 
     this.platform = Platform.OS;
     this.linking = {
-      prefixes: [Linking.createURL('/')],
+      prefixes: [Linking.createURL('https://www.soshworld.com')],
       config: {
         screens: {
+          Landing: "landing",
+          Privacy: "privacy",
+          Terms: "terms",
           Home: "Home",
           Profile: ":app/:id",
         },
       },
-      // getStateFromPath(path, config) {
-      //   if (true) {
-      //     return {
-      //       routes: [
-      //         { name: "Home"}
-      //       ]
-      //     }
-      //   }
-      // },
     };
 
   }
 
   componentDidMount() {
-    console.log("component mounted");
+   //console.log("component mounted");
     LogBox.ignoreAllLogs(true);
   }
 
   componentWillUnmount() {
-    console.log("COMPONENT WILL UNMOUNT");
+   //console.log("COMPONENT WILL UNMOUNT");
   }
 
   popRemaining = (key) => {
