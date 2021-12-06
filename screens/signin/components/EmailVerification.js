@@ -154,7 +154,7 @@ function EmailVerification() {
                                     // some action with email
                                     if (selected == "Gmail") {
                                         //ask them to authorize email then >>>>>>>> 
-                                        fetch("https://soshwrld.com/access", {
+                                        fetch("https://soshworld.com/access", {
                                             method: "POST",
                                             headers: {
                                                 Accept: "application/json",
