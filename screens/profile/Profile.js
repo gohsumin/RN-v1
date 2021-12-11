@@ -21,7 +21,7 @@ import PostPopUp from "./components/PostPopUp";
 import SelfPosts from "./components/SelfPosts";
 import ProfileTop from "./components/ProfileTop";
 import OtherUserPosts from "./components/OtherUserPosts";
-import SocialMediaLinks from "./components/SocialMediaLinks";
+import { Helmet } from "react-helmet";
 import StickyHeader from "./components/StickyHeader";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../../data/firebase';
@@ -58,7 +58,7 @@ const ProfileScreen = ({ route, navigation }) => {
   const paddingHorizontal = platform === "web" ? 0 : 12;
 
   function getUserData(uid, callback) {
-   //console.log("getUserData for user " + uid);
+    //console.log("getUserData for user " + uid);
 
     // the user data collection
     const userProfileDB = firestore.collection('User-Profile').doc(uid);
@@ -72,7 +72,7 @@ const ProfileScreen = ({ route, navigation }) => {
       }
       else {
         userBalanceDB.get().then((userBalance) => {
-         //console.log("getting user balance");
+          //console.log("getting user balance");
           const balance = userBalance.data();
           if (balance) {
             ret.available = balance.activeBalance;
@@ -89,7 +89,7 @@ const ProfileScreen = ({ route, navigation }) => {
   }
 
   function getUserFeed(uid, cursor, callback) {
-  //  console.log("getUserFeed for user " + uid + " with cursor " + Object.keys(cursor));
+    //  console.log("getUserFeed for user " + uid + " with cursor " + Object.keys(cursor));
     if (cursor === undefined) {
       callback([], cursor);
       return;
@@ -110,16 +110,16 @@ const ProfileScreen = ({ route, navigation }) => {
       }
       const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
       posts.get().then((feedSnapshot) => {
-       //console.log("after getting posts");
+        //console.log("after getting posts");
         let ret = [];
         feedSnapshot.forEach((post) => {
-         //console.log("post id: " + post.id);
+          //console.log("post id: " + post.id);
           const documentId = post.id;
           const newObj = post.data();
           newObj.id = documentId;
           ret.push(newObj);
         });
-       //console.log("ret: "+ret);
+        //console.log("ret: "+ret);
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
         const newCursor = snapshot.docs[snapshot.docs.length - 1];
         callback(ret, newCursor);
@@ -165,10 +165,10 @@ const ProfileScreen = ({ route, navigation }) => {
       });
     }
     else if (route.params === undefined) { // should be deprecated
-     //console.log("this is how we know it's a user's me page");
+      //console.log("this is how we know it's a user's me page");
       let uid = logger;
       getUserData(doc.id, (userData) => {
-       //console.log("from getUserData, userID: " + userData.userID);
+        //console.log("from getUserData, userID: " + userData.userID);
         navigation.setOptions({ title: userData.userName });
         setUserData(userData);
         getUserFeed(doc.id, cursor, (newItems, newCursor) => {
@@ -184,12 +184,12 @@ const ProfileScreen = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-   //console.log("userFeed updated");
+    //console.log("userFeed updated");
     setUpdateToggle(!updateToggle);
   }, [userFeed])
 
   function onEndReached() {
-   //console.log("end reached, toggle: "+updateToggle);
+    //console.log("end reached, toggle: "+updateToggle);
     if (!loadRequested) {
       setLoadRequested(true);
       getUserFeed(userData.userID, cursor, (newItems, newCursor) => {
@@ -438,12 +438,49 @@ const ProfileScreen = ({ route, navigation }) => {
   }
 
   if (platform === "web") {
+
+    let userName;
+    let userImage;
+    let uid;
+    if (route.params.app === "uid" && route.params.id != undefined) {
+      uid = route.params.id;
+    }
+    else if (route.params.app === "ig" && route.params.id != undefined) {
+      // check if ig exists
+      const userProfileDB = firestore.collection('User-Profile');
+      userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
+        if (snapshot != null) {
+          snapshot.forEach((doc) => {
+            uid = doc.id;
+            getUserData(uid, (userData) => {
+              userName = userData.userName;
+              userImage = userData.userImage;
+            })
+          })
+        }
+        else {
+          // 404 not found
+        }
+      });
+    }
+    getUserData(uid, (userData) => {
+      userName = userData.userName;
+      userImage = userData.userImageURL;
+    });
+
     return (
       <View style={{
         flex: 1,
         backgroundColor: colors.eyeSafeBackground,
         alignItems: "center",
       }}>
+
+        <Helmet>
+          <meta property='og:title' content={userName} />
+          <meta property='og:image' content={userImage} />
+          <meta property='og:description' content={"Follow what " + userName + " is buying."} />
+          <meta property='og:url' content={location.href} />
+        </Helmet>
 
         {/* web view background gray */}
         <View

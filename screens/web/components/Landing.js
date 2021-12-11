@@ -1,10 +1,15 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
 import { useLinkTo } from '@react-navigation/native';
 import "./styles.css";
+import { Helmet } from "react-helmet";
 
-function Landing() {
+function Landing({ navigation }) {
 
     const linkTo = useLinkTo();
+
+    useEffect(() => {
+        navigation.setOptions({ title: "SOSH WORLD" });
+    })
 
     function enter() {
         linkTo("/Home");
@@ -12,6 +17,12 @@ function Landing() {
 
     return (
         <div data-kind="page" class="css-1kdktco">
+            <Helmet>
+                <meta property='og:title' content='SOSH WORLD' />
+                <meta property='og:image' content='https://www.soshworld.com/static/media/SoShNavLogo.4e45a847.png' />
+                <meta property='og:description' content='Follow what your favorite influencers are buying.' />
+                <meta property='og:url' content='https://www.soshworld.com/' />
+            </Helmet>
             <div class="css-11dytui" data-kind="block-wrapper">
                 <div data-kind="block-container" class="css-10sbem2">
                     <div data-kind="block-row" class="css-povzac" style={{ marginRight: 0, marginLeft: 0, }}>

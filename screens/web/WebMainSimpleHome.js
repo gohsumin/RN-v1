@@ -7,10 +7,7 @@ import {
 } from 'react-native';
 import logo_big from "../../assets/SoShNavLogo.png";
 import Search from './components/search';
-import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { BlurView } from 'expo-blur';
-import { EvilIcons } from '@expo/vector-icons';
+import { Helmet } from "react-helmet";
 
 function WebMainSimpleHome() {
 
@@ -41,6 +38,12 @@ function WebMainSimpleHome() {
             // borderWidth: 1,
             // borderColor: 'orange',
         }}>
+            <Helmet>
+                <meta property='og:title' content='SOSH WORLD' />
+                <meta property='og:image' content='https://www.soshworld.com/static/media/SoShNavLogo.4e45a847.png' />
+                <meta property='og:description' content='Follow what your favorite influencers are buying.' />
+                <meta property='og:url' content='https://www.soshworld.com/' />
+            </Helmet>
             <View style={{
                 height: getTopHeight(window.height),
                 justifyContent: "center",
