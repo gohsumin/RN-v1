@@ -442,10 +442,13 @@ const ProfileScreen = ({ route, navigation }) => {
     let userName;
     let userImage;
     let uid;
+    let link;
     if (route.params.app === "uid" && route.params.id != undefined) {
       uid = route.params.id;
+      link = "https://www.soshworld.com/uid/" + uid;
     }
     else if (route.params.app === "ig" && route.params.id != undefined) {
+      link = "https://www.soshworld.com/ig/" + route.params.id;
       // check if ig exists
       const userProfileDB = firestore.collection('User-Profile');
       userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
@@ -458,10 +461,13 @@ const ProfileScreen = ({ route, navigation }) => {
             })
           })
         }
-        else {
-          // 404 not found
-        }
       });
+    }
+    else {
+      userName = "";
+      userImage = "";
+      uid = "";
+      link = "";
     }
     getUserData(uid, (userData) => {
       userName = userData.userName;
@@ -476,9 +482,11 @@ const ProfileScreen = ({ route, navigation }) => {
       }}>
 
         <Helmet>
-          <meta property='og:title' content={userName} />
-          <meta property='og:image' content={userImage} />
-          <meta property='og:description' content={"Follow what " + userName + " is buying."} />
+          <meta property='og:title' content={userName ? userName : "SOSH WORLD"} />
+          <meta property='og:image' content={userImage ? userImage : 'https://www.soshworld.com/static/media/SoShNavLogo.4e45a847.png'} />
+          <meta property='og:description' content={"Follow what " +
+            (userName ? userName + " is" : "your favorite influences are") +
+            " buying."} />
           <meta property='og:url' content={location.href} />
         </Helmet>
 

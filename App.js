@@ -15,9 +15,6 @@ import WebStyleContextProvider from './data/WebStyleContextProvider';
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import WebNavigationContext from './data/WebNavigationContext';
 import WebMainSimpleNavigator from "./navigations/WebMainSimple";
-import WebMainSimpleHome from "./screens/web/WebMainSimpleHome";
-import ProfileScreen from "./screens/profile/Profile";
-import FlashMessage from 'react-native-flash-message';
 const firestore = firebase.firestore();
 
 // ###########################
@@ -52,6 +49,7 @@ export default class App extends React.Component {
           Terms: "terms",
           Home: "Home",
           Profile: ":app/:id",
+          Tools: "tools",
         },
       },
     };

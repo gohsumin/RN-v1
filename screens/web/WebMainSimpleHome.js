@@ -33,10 +33,7 @@ function WebMainSimpleHome() {
             width: "100%",
             alignSelf: "center",
             alignItems: "center",
-            // justifyContent: "center",
             backgroundColor: "#070707",
-            // borderWidth: 1,
-            // borderColor: 'orange',
         }}>
             <Helmet>
                 <meta property='og:title' content='SOSH WORLD' />
