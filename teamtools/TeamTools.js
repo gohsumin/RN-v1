@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from './Input';
-import { EvilIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import brandFunctions from "./brandFunctions";
@@ -31,27 +30,31 @@ function TeamTools() {
             snapshot.forEach((doc) => {
                 let obj = doc.data();
                 const temp = readHTML(obj.msgHTML, obj.msgID);
-                if (brands.includes(temp.brand)) {
-                    console.log("brands.includes(" + temp.brand + ")");
-                    const ret = brandFunctions[temp.brand](obj.msgHTML);
-                    obj.brandImage = ret.brandImage;
-                    obj.items = ret.items;
+                if (temp.brand !== "Amazon") {
+                    obj.imageArr = temp.imageArr;
+                    obj.urlArr = temp.urlArr;
+                    obj.brand = temp.brand;
+                    if (brands.includes(temp.brand)) {
+                        const ret = brandFunctions[temp.brand](obj.msgHTML);
+                        if (ret) {
+                            obj.brandFunctionExists = true;
+                            obj.brandImage = ret.brandImage;
+                            obj.items = ret.items;
+
+                        }
+                    }
+                    res.push(obj);
+                    ca[obj.msgID] = "closed";
+                    inputObj[obj.msgID] = {
+                        brand: temp.brand,
+                        brandImage: obj.brandFunctionExists ? obj.brandImage : "",
+                        items: obj.brandFunctionExists ? obj.items : [{
+                            itemImage: "",
+                            itemName: "",
+                            itemLink: "",
+                        }],
+                    };
                 }
-                obj.imageArr = temp.imageArr;
-                obj.urlArr = temp.urlArr;
-                obj.brand = temp.brand;
-                res.push(obj);
-                ca[obj.msgID] = "closed";
-                inputObj[obj.msgID] = {
-                    brandName: "",
-                    brandLink: "",
-                    chosenLogoImg: "",
-                    products: [{
-                        chosenItemImg: "",
-                        itemName: "",
-                        itemLink: "",
-                    }],
-                };
             })
             setEmailArr(res);
             setInputObj(inputObj);
@@ -74,13 +77,15 @@ function TeamTools() {
         }
 
         // regexp for image tags
-        const imageTagRE = new RegExp('<img([^>]*)>', 'g');
+        const imageTagRE = new RegExp('<img([^]+?(?=>))>', 'g');
         const imageTagMatches = html.matchAll(imageTagRE);
         let imageArr = [];
         for (const match of imageTagMatches) {
-            const src = match[1].match(new RegExp('src\s*=[\"\']((?:(?![\"\']).)*)[\"\']'));
-            if (!imageArr.includes(src[1])) {
-                imageArr.push(src[1]);
+            if (match[1] !== null) {
+                const src = match[1].match(new RegExp('src=\"([^]+?(?=\"))\"'));
+                if (src && !imageArr.includes(src[1])) {
+                    imageArr.push(src[1]);
+                }
             }
         }
         ret.imageArr = imageArr;
@@ -104,11 +109,11 @@ function TeamTools() {
 
         function onPress() {
             let temp = inputObj;
-            if (temp[msgID].chosenLogoImg === img) {
-                temp[msgID].chosenLogoImg = "";
+            if (temp[msgID].brandImage === img) {
+                temp[msgID].brandImage = "";
             }
             else {
-                temp[msgID].chosenLogoImg = img;
+                temp[msgID].brandImage = img;
             }
             setInputObj(temp);
             setTrigger(!trigger);
@@ -161,9 +166,9 @@ function TeamTools() {
         function removeItem(itemIndex) {
             console.log("removeItem");
             let temp = inputObj;
-            let products = inputObj[item.msgID].products;
-            products.splice(itemIndex, 1);
-            temp[item.msgID].products = products;
+            let items = inputObj[item.msgID].items;
+            items.splice(itemIndex, 1);
+            temp[item.msgID].items = items;
             setInputObj(temp);
             setTrigger(!trigger);
         }
@@ -171,14 +176,30 @@ function TeamTools() {
         function addItem(itemIndex) {
             console.log("addItem, itemIndex: " + itemIndex);
             let temp = inputObj;
-            let products = inputObj[item.msgID].products;
-            products.splice(itemIndex + 1, 0, {
-                chosenItemImg: "",
+            let items = inputObj[item.msgID].items;
+            items.splice(itemIndex + 1, 0, {
+                itemImage: "",
                 itemName: "",
                 itemLink: "",
             });
-            temp[item.msgID].products = products;
+            temp[item.msgID].items = items;
             setInputObj(temp);
+            setTrigger(!trigger);
+        }
+
+        function refreshAuto(msgID, index) {
+            const { brand, brandImage, items } = emailArr[index];
+            const ret = brandFunctions[brand](emailArr[index].msgHTML);
+            let tempEmailArr = emailArr;
+            let tempInputObj = inputObj;
+            if (ret) {
+                tempEmailArr[index].brandImage = ret.brandImage;
+                tempEmailArr[index].items = ret.items;
+                tempInputObj[msgID].brandImage = ret.brandImage;
+                tempInputObj[msgID].items = ret.items;
+            }
+            setEmailArr(tempEmailArr);
+            setInputObj(tempInputObj);
             setTrigger(!trigger);
         }
 
@@ -187,13 +208,13 @@ function TeamTools() {
             let values = inputObj[msgID];
             let i = 0;
             let valid = true;
-            while (i < values.products.length && valid) {
-                const prod = values.products[i];
-                if (prod.itemName && prod.itemLink && prod.chosenItemImg) {
+            while (i < values.items.length && valid) {
+                const prod = values.items[i];
+                if (prod.itemName && prod.itemLink && prod.itemImage) {
                     temp.push({
                         itemName: prod.itemName,
                         itemLink: prod.itemLink,
-                        itemImage: prod.chosenItemImg,
+                        itemImage: prod.itemImage,
                     });
                     i++;
                 }
@@ -201,9 +222,10 @@ function TeamTools() {
                     valid = false;
                 }
             }
-            if (valid && values.brandLink) {
+            if (valid) {
                 let ia = emailArr;
-                ia[index]["brandImage"] = values.chosenLogoImg;
+                ia[index]["brand"] = values.brand;
+                ia[index]["brandImage"] = values.brandImage;
                 ia[index]["items"] = temp;
                 console.log(ia[index]);
                 setEmailArr(ia);
@@ -215,6 +237,30 @@ function TeamTools() {
             else {
                 alert("Please complete all fields before submitting.");
             }
+        }
+
+        function submit(index) {
+            const db = firestore.collection("User-Base");
+            emailArr[index].items.forEach((item) => {
+                const uid = emailArr[index].userID;
+                const data = {
+                    dateBought: emailArr[index].msgDate,
+                    itemImageURL: item.itemImage,
+                    itemName: item.itemName,
+                    itemURL: item.itemLink,
+                    status: 0,
+                    storeImageURL: emailArr[index].brandImage,
+                    storeName: emailArr[index].brand,
+                };
+                console.log("UID: " + uid);
+                console.log(data);
+                db.doc(uid).collection("PendingPosts").add(data);
+            });
+            firestore.collection("Human-Proccessing").doc(emailArr[index].msgID).delete().then(() => {
+                console.log("deleted email " + emailArr[index].msgID);
+            }).catch((err) => { console.log(err); });
+            emailArr.splice(index, 1);
+            setTrigger(!trigger);
         }
 
         function collapsibleMenuPressed(type) {
@@ -319,7 +365,7 @@ function TeamTools() {
                     marginTop: 2,
                 }} >
 
-                    {item.brandImage && <View style={[styles.collapsibleMenuFrame,
+                    {item.brandFunctionExists && <View style={[styles.collapsibleMenuFrame,
                     collapsibleObj[item.msgID] === "closed" && {
                         borderBottomWidth: 0,
                     },
@@ -337,7 +383,7 @@ function TeamTools() {
                                 color: 'rgba(20, 81, 150, 1)',
                             }]}
                             onPress={() => {
-                                if (item.brandImage) {
+                                if (item.brandFunctionExists) {
                                     collapsibleMenuPressed('auto');
                                 }
                             }}>
@@ -398,11 +444,13 @@ function TeamTools() {
                     <View style={{
                         height: 30,
                         borderBottomWidth: collapsibleObj[item.msgID] !== "closed" && 0.1,
-                        borderColor: 'rgba(20, 81, 150, 0.9)',
+                        borderColor: 'rgba(20, 81, 150, 0.4)',
                         justifyContent: "center"
                     }} >
                         <View style={styles.submitFrame} >
-                            <Text style={styles.submitButton}>
+                            <Text style={styles.submitButton} onPress={() => {
+                                submit(index);
+                            }}>
                                 SUBMIT
                             </Text>
                         </View>
@@ -413,7 +461,7 @@ function TeamTools() {
                     collapsibleObj[item.msgID] === "auto" &&
                     <View style={{
                         marginHorizontal: 10,
-                        borderColor: 'rgba(20, 81, 150, 0.9)',
+                        borderColor: 'rgba(20, 81, 150, 0.4)',
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
                         borderBottomWidth: 0.1,
@@ -436,7 +484,7 @@ function TeamTools() {
                                 </Text>
                             </View>
                             <Text style={styles.saveButton}
-                                onPress={() => { save(item.msgID, index); }}>REFRESH</Text>
+                                onPress={() => { refreshAuto(item.msgID, index); }}>REFRESH</Text>
                         </View>
                     </View>
                 }
@@ -445,7 +493,7 @@ function TeamTools() {
                     collapsibleObj[item.msgID] === "manual" &&
                     <View style={{
                         marginHorizontal: 10,
-                        borderColor: 'rgba(20, 81, 150, 0.9)',
+                        borderColor: 'rgba(20, 81, 150, 0.4)',
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
                         borderBottomWidth: 0.1,
@@ -480,16 +528,8 @@ function TeamTools() {
                                 <Text style={styles.manualSelectionText}>
                                     BRAND NAME:
                                 </Text>
-                                <Input type="brandName"
-                                    initialText={inputObj[item.msgID].brandName}
-                                    setData={setData} />
-                            </View>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Text style={styles.manualSelectionText}>
-                                    BRAND WEBSITE:
-                                </Text>
-                                <Input type="brandLink"
-                                    initialText={inputObj[item.msgID].brandLink}
+                                <Input type="brand"
+                                    initialText={inputObj[item.msgID].brand}
                                     setData={setData} />
                             </View>
                             <Text style={styles.manualSelectionText}>
@@ -499,19 +539,19 @@ function TeamTools() {
                                 {item.imageArr.map((img) =>
                                     <ListedItem
                                         img={img}
-                                        focused={inputObj[item.msgID].chosenLogoImg === img}
+                                        focused={inputObj[item.msgID].brandImage === img}
                                         msgID={item.msgID} />
 
                                 )}
                             </View>
                         </View>
 
-                        {inputObj[item.msgID].products.map((product, prodIndex) => {
+                        {inputObj[item.msgID].items.map((product, prodIndex) => {
                             return (
                                 <View style={styles.manualProductEntrySection} >
                                     <Text style={styles.manualSelectionSubHeaderText}>
                                         {"Product"}
-                                        {inputObj[item.msgID].products.length > 1 && <Octicons name="diff-removed"
+                                        {inputObj[item.msgID].items.length > 1 && <Octicons name="diff-removed"
                                             size={16}
                                             color='rgba(20, 81, 150, 0.9)'
                                             style={{ marginLeft: 6 }}
@@ -536,7 +576,7 @@ function TeamTools() {
                                         <Text style={styles.manualSelectionText}>
                                             PRODUCT NAME:
                                         </Text>
-                                        <Input type={"products/" + prodIndex + "/itemName"}
+                                        <Input type={"items/" + prodIndex + "/itemName"}
                                             initialText={product.itemName}
                                             setData={setData} />
                                     </View>
@@ -544,7 +584,7 @@ function TeamTools() {
                                         <Text style={styles.manualSelectionText}>
                                             PRODUCT LINK:
                                         </Text>
-                                        <Input type={"products/" + prodIndex + "/itemLink"}
+                                        <Input type={"items/" + prodIndex + "/itemLink"}
                                             initialText={product.itemLink}
                                             setData={setData} />
                                     </View>
@@ -554,20 +594,20 @@ function TeamTools() {
                                     <View style={styles.itemRow} >
                                         {item.imageArr.map((img) =>
                                             <TouchableOpacity
-                                                key={img + (product.chosenItemImg === img)}
+                                                key={img + (product.itemImage === img)}
                                                 onPress={() => {
                                                     let temp = inputObj;
-                                                    if (temp[item.msgID].products[prodIndex].chosenItemImg === img) {
-                                                        temp[item.msgID].products[prodIndex].chosenItemImg = "";
+                                                    if (temp[item.msgID].items[prodIndex].itemImage === img) {
+                                                        temp[item.msgID].items[prodIndex].itemImage = "";
                                                     }
                                                     else {
-                                                        temp[item.msgID].products[prodIndex].chosenItemImg = img;
+                                                        temp[item.msgID].items[prodIndex].itemImage = img;
                                                     }
                                                     setInputObj(temp);
                                                     setTrigger(!trigger);
                                                 }}
                                                 containerStyle={[styles.listedImageWrapper,
-                                                product.chosenItemImg === img ? {
+                                                product.itemImage === img ? {
                                                     shadowColor: "#55bbdd",
                                                     shadowOpacity: 1,
                                                     shadowRadius: 7
@@ -618,7 +658,7 @@ function TeamTools() {
 
     const FlatListHeader = () => {
         return (
-            <View style={{ height: 60 }} />
+            <View style={{ height: 102 }} />
         )
     }
 
@@ -636,7 +676,18 @@ function TeamTools() {
                 style={styles.flatListStyle}
                 ListHeaderComponent={FlatListHeader}
             />
-            <Text style={styles.sectionHeader}>PENDING EMAILS</Text>
+            <View style={styles.sectionHeader}>
+                <Text style={styles.sectionHeaderTitle}>PENDING EMAILS</Text>
+                <View style={styles.warningFrame}>
+                    <MaterialIcons name="announcement" size={18} color="#444" />
+                    <Text style={styles.note}>Only one person should be on this document at a time.</Text>
+                </View>
+                <View style={styles.warningFrame}>
+                    <MaterialIcons name="announcement" size={18} color="#444" />
+                    <Text style={styles.note}>Remember to save before submitting.</Text>
+                </View>
+            </View>
+
         </LinearGradient> :
         <View style={styles.notReadyContainer} >
             <Text style={styles.notReadyText} >Please wait while program loads...</Text>
@@ -661,16 +712,33 @@ const styles = StyleSheet.create({
     },
     sectionHeader: {
         position: "absolute",
+        alignSelf: "center",
         padding: 10,
+        paddingLeft: 14,
+        paddingTop: 13,
         width: "100%",
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
         top: 0,
+        borderBottomWidth: 2.5,
+        borderColor: "rgba(100, 100, 150, 0.6)",
+        borderRadius: 5,
+    },
+    sectionHeaderTitle: {
         fontSize: 18,
-        fontWeight: "400",
-        opacity: 0.7,
-        borderWidth: 0.1,
-        borderColor: "rgba(0, 0, 0, 0.3)",
+        fontWeight: "300",
         color: "black",
+        marginBottom: 10,
+    },
+    warningFrame: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 10,
+        marginBottom: 5,
+    },
+    note: {
+        marginLeft: 5,
+        color: "#444",
+        fontSize: 15,
     },
     flatListStyle: {
         height: "100%",
@@ -751,7 +819,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         height: 30,
         borderBottomWidth: 0.1,
-        borderColor: 'rgba(20, 81, 150, 0.9)',
+        borderColor: 'rgba(20, 81, 150, 0.4)',
     },
     collapsibleMenuText: {
         fontSize: 13,
@@ -777,7 +845,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         height: 500,
         marginHorizontal: 10,
-        borderColor: 'rgba(20, 81, 150, 0.9)',
+        borderColor: 'rgba(20, 81, 150, 0.4)',
         borderLeftWidth: 0.1,
         borderRightWidth: 0.1,
         borderBottomWidth: 0.1
@@ -790,7 +858,7 @@ const styles = StyleSheet.create({
         color: 'rgba(20, 81, 150, 0.5)',
     },
     saveButton: {
-        color: 'rgba(20, 81, 150, 0.5)',
+        color: 'rgba(20, 81, 150, 0.8)',
         fontSize: 13,
         textAlign: "center",
         textAlignVertical: "center",
@@ -871,31 +939,3 @@ const styles = StyleSheet.create({
 })
 
 export default TeamTools;
-
-
-
-/* {item.urlArr.map((url) => {
-    return (
-        <TouchableOpacity onPress={() => {
-            let temp = inputObj;
-            if (temp[item.msgID].brandLink === url) {
-                temp[item.msgID].brandLink = "";
-            }
-            else {
-                temp[item.msgID].brandLink = url;
-            }
-            setInputObj(temp);
-            setTrigger(!trigger);
-        }}
-            containerStyle={[styles.listedImageWrapper,
-            inputObj[item.msgID].brandLink === url ? {
-                shadowColor: "#55bbdd",
-                shadowOpacity: 1,
-                shadowRadius: 7
-            } : {
-                shadowColor: "black",
-            }]}>
-            <Text style={styles.listedURLStyle}>{url}</Text>
-        </TouchableOpacity>
-    )
-})} */
