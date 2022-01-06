@@ -44,7 +44,7 @@ function TeamTools() {
                         }
                     }
                     res.push(obj);
-                    ca[obj.msgID] = "closed";
+                    ca[obj.msgID] = { tab: "closed", html: false };
                     inputObj[obj.msgID] = {
                         brand: temp.brand,
                         brandImage: obj.brandFunctionExists ? obj.brandImage : "",
@@ -230,7 +230,7 @@ function TeamTools() {
                 console.log(ia[index]);
                 setEmailArr(ia);
                 let co = collapsibleObj;
-                co[msgID] = "closed";
+                co[msgID] = { tab: "closed", html: false };
                 setCollapsibleObj[co];
                 setTrigger(!trigger);
             }
@@ -265,111 +265,154 @@ function TeamTools() {
 
         function collapsibleMenuPressed(type) {
             let temp = collapsibleObj;
-            if (temp[item.msgID] !== type) {
-                temp[item.msgID] = type;
+            if (type === "html") {
+                temp[item.msgID].html = !temp[item.msgID].html;
+            }
+            else if (temp[item.msgID].tab !== type) {
+                temp[item.msgID].tab = type;
             }
             else {
-                temp[item.msgID] = "closed";
+                temp[item.msgID].tab = "closed";
             }
             setCollapsibleObj(temp);
             setTrigger(!trigger);
         }
 
         return (
+
             <View style={styles.renderItemStyle}>
-                <View style={styles.renderItemTop}>
-                    <Text style={styles.categoryText}>
-                        {"Subject: "}
-                        <Text style={styles.valueText}>{item.msgSubject}</Text>
-                    </Text>
-                    <Text style={styles.categoryText}>
-                        {"Brand: "}
-                        <Text style={styles.valueText}>{item.brand}</Text>
-                    </Text>
-                    <Text style={styles.categoryText}>
-                        {"Recipient Email: "}
-                        <Text style={styles.valueText}>{item.msgFrom}</Text>
-                    </Text>
-                    <Text style={styles.categoryText}>
-                        {"Message ID: "}
-                        <Text style={styles.valueText}>{item.msgID}</Text>
-                    </Text>
-                    <Text style={styles.categoryText}>
-                        {"User ID: "}
-                        <Text style={styles.valueText}>{item.userID}</Text>
-                    </Text>
-
-                    {item.brandImage &&
-                        <View style={styles.includedBrandInfo}>
-
-                            <Image source={{ uri: item.brandImage }}
-                                style={styles.brandLogo}
-                                resizeMode={"contain"} />
-
-                            <View style={styles.verticalSeparator} />
-
-                            <View style={styles.includedBrandRight}>
-                                <Text style={styles.autoCategoryText}>
-                                    {"Logo URL: "}
-                                    <Text style={styles.autoValueText} >
-                                        {item.brandImage}
-                                    </Text>
-                                </Text>
-
-                                <View style={styles.horizontalSeparator} />
-
-                                {item.items.map((product, index) => {
-                                    return <View style={[
-                                        styles.itemRow,
-                                        { marginTop: index === 0 ? 0 : 10 }
-                                    ]} >
-                                        <Image source={{ uri: product.itemImage }}
-                                            style={styles.itemImage}
-                                            resizeMode={"contain"} />
-                                        <View style={styles.includedBrandRight}>
-                                            <Text style={styles.autoCategoryText}>
-                                                {"Item Name: "}
-                                                <Text style={styles.autoValueText} >
-                                                    {product.itemName}
-                                                </Text>
-                                            </Text>
-                                            <Text style={styles.autoCategoryText}
-                                                onPress={() => {
-                                                    window.open(product.itemImage, '_blank');
-                                                }}>
-                                                {"Item Image URL: "}
-                                                <Text style={styles.autoValueText} >
-                                                    {product.itemImage}
-                                                </Text>
-                                            </Text>
-                                            <Text style={styles.autoCategoryText}
-                                                onPress={() => {
-                                                    window.open(product.itemLink, '_blank');
-                                                }}>
-                                                {"Item URL: "}
-                                                <Text style={styles.autoValueText} >
-                                                    {product.itemLink}
-                                                </Text>
-                                            </Text>
-                                        </View>
-                                    </View>
-                                })}
-                            </View>
-                        </View>}
-                </View>
 
                 <View style={{
+                    width: "100%",
                     flexDirection: "row",
-                    alignItems: "center",
-                    marginHorizontal: 10,
-                    marginTop: 2,
-                }} >
+                    justifyContent: "space-between",
+                }}>
+                    {(collapsibleObj[item.msgID].html &&
+                        collapsibleObj[item.msgID].tab !== "manual") &&
+                        <View style={{
+                            flex: 0.7,
+                            marginRight: 10,
+                            borderRadius: 5,
+                            borderWidth: 0.1,
+                            borderColor: "rgba(100, 100, 150, 0.3)",
+                            height: 0,
+                            minHeight: "100%",
+                            overflow: "scroll"
+                        }}>
+                            <div style={{
+                                width: "100%",
+                                fontSize: 10,
+                                color: '#222',
+                                backgroundColor: "white",
+                                padding: 15,
+                            }} dangerouslySetInnerHTML={{ __html: item.msgHTML }} />
+                        </View>}
+                    <View style={styles.renderItemTop}>
+                        <Text style={styles.categoryText}>
+                            {"Subject: "}
+                            <Text style={styles.valueText}>{item.msgSubject}</Text>
+                        </Text>
+                        <Text style={styles.categoryText}>
+                            {"Brand: "}
+                            <Text style={styles.valueText}>{item.brand}</Text>
+                        </Text>
+                        <Text style={styles.categoryText}>
+                            {"Recipient Email: "}
+                            <Text style={styles.valueText}>{item.msgFrom}</Text>
+                        </Text>
+                        <Text style={styles.categoryText}>
+                            {"Message ID: "}
+                            <Text style={styles.valueText}>{item.msgID}</Text>
+                        </Text>
+                        <Text style={styles.categoryText}>
+                            {"User ID: "}
+                            <Text style={styles.valueText}>{item.userID}</Text>
+                        </Text>
 
-                    {item.brandFunctionExists && <View style={[styles.collapsibleMenuFrame,
-                    collapsibleObj[item.msgID] === "closed" && {
+                        {item.brandImage &&
+                            <View style={styles.includedBrandInfo}>
+
+                                <Image source={{ uri: item.brandImage }}
+                                    style={styles.brandLogo}
+                                    resizeMode={"contain"} />
+
+                                <View style={styles.verticalSeparator} />
+
+                                <View style={styles.includedBrandRight}>
+                                    <Text style={styles.autoCategoryText}>
+                                        {"Logo URL: "}
+                                        <Text style={styles.autoValueText} >
+                                            {item.brandImage}
+                                        </Text>
+                                    </Text>
+
+                                    <View style={styles.horizontalSeparator} />
+
+                                    {item.items.map((product, index) => {
+                                        return <View style={[
+                                            styles.itemRow,
+                                            { marginTop: index === 0 ? 0 : 10 }
+                                        ]} >
+                                            <Image source={{ uri: product.itemImage }}
+                                                style={styles.itemImage}
+                                                resizeMode={"contain"} />
+                                            <View style={styles.includedBrandRight}>
+                                                <Text style={styles.autoCategoryText}>
+                                                    {"Item Name: "}
+                                                    <Text style={styles.autoValueText} >
+                                                        {product.itemName}
+                                                    </Text>
+                                                </Text>
+                                                <Text style={styles.autoCategoryText}
+                                                    onPress={() => {
+                                                        window.open(product.itemImage, '_blank');
+                                                    }}>
+                                                    {"Item Image URL: "}
+                                                    <Text style={styles.autoValueText} >
+                                                        {product.itemImage}
+                                                    </Text>
+                                                </Text>
+                                                <Text style={styles.autoCategoryText}
+                                                    onPress={() => {
+                                                        window.open(product.itemLink, '_blank');
+                                                    }}>
+                                                    {"Item URL: "}
+                                                    <Text style={styles.autoValueText} >
+                                                        {product.itemLink}
+                                                    </Text>
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    })}
+                                </View>
+                            </View>}
+                    </View>
+                </View>
+
+                <View style={styles.buttonRow} >
+
+                    <View style={[styles.collapsibleMenuFrame,
+                    collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },
-                    collapsibleObj[item.msgID] === "auto" && {
+                    (collapsibleObj[item.msgID].tab !== "manual" &&
+                        collapsibleObj[item.msgID].html) && {
+                        paddingLeft: 15,
+                        paddingVertical: 15,
+                        alignContent: "flex-start",
+                        flex: 1.1,
+                    }]} >
+                        <Text style={[styles.collapsibleMenuText]}
+                            onPress={() => { collapsibleMenuPressed('html'); }}>
+                            {collapsibleObj[item.msgID].html ? "Hide" : "Show"} HTML
+                        </Text>
+                    </View>
+
+                    {item.brandFunctionExists && <View style={[styles.collapsibleMenuFrame,
+                    collapsibleObj[item.msgID].tab === "closed" && {
+                        borderBottomWidth: 0,
+                    },
+                    collapsibleObj[item.msgID].tab === "auto" && {
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
                         borderTopWidth: 0.1,
@@ -378,7 +421,7 @@ function TeamTools() {
                     }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
-                            collapsibleObj[item.msgID] === "auto" &&
+                            collapsibleObj[item.msgID].tab === "auto" &&
                             {
                                 color: 'rgba(20, 81, 150, 1)',
                             }]}
@@ -392,10 +435,10 @@ function TeamTools() {
                     </View>}
 
                     <View style={[styles.collapsibleMenuFrame,
-                    collapsibleObj[item.msgID] === "closed" && {
+                    collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },
-                    collapsibleObj[item.msgID] === "manual" && {
+                    collapsibleObj[item.msgID].tab === "manual" && {
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
                         borderTopWidth: 0.1,
@@ -404,7 +447,7 @@ function TeamTools() {
                     }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
-                            collapsibleObj[item.msgID] === "manual" &&
+                            collapsibleObj[item.msgID].tab === "manual" &&
                             {
                                 color: 'rgba(20, 81, 150, 1)',
                             }]}
@@ -413,37 +456,14 @@ function TeamTools() {
                         </Text>
                     </View>
 
-                    <View style={[styles.collapsibleMenuFrame,
-                    collapsibleObj[item.msgID] === "closed" && {
-                        borderBottomWidth: 0,
-                    },
-                    collapsibleObj[item.msgID] === "html" && {
-                        borderLeftWidth: 0.1,
-                        borderRightWidth: 0.1,
-                        borderTopWidth: 0.1,
-                        borderBottomWidth: 0,
-                        backgroundColor: "white",
-                    }]} >
-                        <Text style={[
-                            styles.collapsibleMenuText,
-                            collapsibleObj[item.msgID] === "html" &&
-                            {
-                                color: 'rgba(20, 81, 150, 1)',
-                            }]}
-                            onPress={() => { collapsibleMenuPressed('html'); }}>
-                            View HTML
-                        </Text>
-                    </View>
-
                     <View style={[{ flex: 1 },
                     styles.collapsibleMenuFrame,
-                    collapsibleObj[item.msgID] === "closed" && {
+                    collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },]} />
-
                     <View style={{
                         height: 30,
-                        borderBottomWidth: collapsibleObj[item.msgID] !== "closed" && 0.1,
+                        borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
                         borderColor: 'rgba(20, 81, 150, 0.4)',
                         justifyContent: "center"
                     }} >
@@ -458,7 +478,7 @@ function TeamTools() {
                 </View>
 
                 {
-                    collapsibleObj[item.msgID] === "auto" &&
+                    collapsibleObj[item.msgID].tab === "auto" &&
                     <View style={{
                         marginHorizontal: 10,
                         borderColor: 'rgba(20, 81, 150, 0.4)',
@@ -490,166 +510,163 @@ function TeamTools() {
                 }
 
                 {
-                    collapsibleObj[item.msgID] === "manual" &&
-                    <View style={{
-                        marginHorizontal: 10,
-                        borderColor: 'rgba(20, 81, 150, 0.4)',
-                        borderLeftWidth: 0.1,
-                        borderRightWidth: 0.1,
-                        borderBottomWidth: 0.1,
-                        paddingTop: 15,
-                        backgroundColor: "white",
-                    }} >
-
+                    collapsibleObj[item.msgID].tab === "manual" &&
+                    <View style={styles.manualEntryRow} >
+                        {collapsibleObj[item.msgID].html &&
+                            <View style={{
+                                flex: 0.7,
+                                height: 0,
+                                minHeight: "calc(100% - 30px)",
+                                overflow: "scroll",
+                                padding: 15,
+                                marginLeft: 15,
+                                marginTop: 15,
+                                marginBottom: 15,
+                                borderRadius: 5,
+                                borderWidth: 0.1,
+                                borderColor: 'rgba(20, 81, 150, 0.3)',
+                            }}>
+                                <div style={{
+                                    width: "100%",
+                                    fontSize: 10,
+                                    color: '#222',
+                                    backgroundColor: "white",
+                                }} dangerouslySetInnerHTML={{ __html: item.msgHTML }} />
+                            </View>}
                         <View style={{
-                            width: "100%",
-                            flexDirection: "row",
-                            alignItems: "flex-end",
-                            alignSelf: "center",
-                            justifyContent: "space-between",
-                            paddingHorizontal: 20,
-                            marginBottom: 13,
+                            flex: 1,
+                            padding: 15
                         }}>
-                            <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                <MaterialIcons name="info" size={16} color='rgba(20, 81, 150, 0.9)' />
-                                <Text style={styles.manualEntryHeaderText} >
-                                    Enter information manually.
-                                </Text>
-                            </View>
-                            <Text style={styles.saveButton}
-                                onPress={() => { save(item.msgID, index); }}>SAVE</Text>
-                        </View>
-
-                        <View style={styles.manualBrandEntrySection} >
-                            <Text style={styles.manualSelectionSubHeaderText}>
-                                Brand
-                            </Text>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                <Text style={styles.manualSelectionText}>
-                                    BRAND NAME:
-                                </Text>
-                                <Input type="brand"
-                                    initialText={inputObj[item.msgID].brand}
-                                    setData={setData} />
-                            </View>
-                            <Text style={styles.manualSelectionText}>
-                                BRAND LOGO:
-                            </Text>
-                            <View style={styles.itemRow} >
-                                {item.imageArr.map((img) =>
-                                    <ListedItem
-                                        img={img}
-                                        focused={inputObj[item.msgID].brandImage === img}
-                                        msgID={item.msgID} />
-
-                                )}
-                            </View>
-                        </View>
-
-                        {inputObj[item.msgID].items.map((product, prodIndex) => {
-                            return (
-                                <View style={styles.manualProductEntrySection} >
-                                    <Text style={styles.manualSelectionSubHeaderText}>
-                                        {"Product"}
-                                        {inputObj[item.msgID].items.length > 1 && <Octicons name="diff-removed"
-                                            size={16}
-                                            color='rgba(20, 81, 150, 0.9)'
-                                            style={{ marginLeft: 6 }}
-                                            onPress={() => {
-                                                setTimeout(() => {
-                                                    removeItem(prodIndex);
-                                                }, 200);
-
-                                            }} />}
-                                        <Octicons name="diff-added"
-                                            size={16}
-                                            color='rgba(20, 81, 150, 0.9)'
-                                            style={{ marginLeft: 6 }}
-                                            onPress={() => {
-                                                setTimeout(() => {
-                                                    addItem(prodIndex);
-                                                }, 200);
-
-                                            }} />
+                            <View style={{
+                                width: "100%",
+                                flexDirection: "row",
+                                alignItems: "flex-end",
+                                alignSelf: "center",
+                                justifyContent: "space-between",
+                                marginBottom: 13,
+                            }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }} >
+                                    <MaterialIcons name="info" size={16} color='rgba(20, 81, 150, 0.9)' />
+                                    <Text style={styles.manualEntryHeaderText} >
+                                        Enter information manually.
                                     </Text>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <Text style={styles.manualSelectionText}>
-                                            PRODUCT NAME:
-                                        </Text>
-                                        <Input type={"items/" + prodIndex + "/itemName"}
-                                            initialText={product.itemName}
-                                            setData={setData} />
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <Text style={styles.manualSelectionText}>
-                                            PRODUCT LINK:
-                                        </Text>
-                                        <Input type={"items/" + prodIndex + "/itemLink"}
-                                            initialText={product.itemLink}
-                                            setData={setData} />
-                                    </View>
-                                    <Text style={styles.manualSelectionText}>
-                                        PRODUCT IMAGE:
-                                    </Text>
-                                    <View style={styles.itemRow} >
-                                        {item.imageArr.map((img) =>
-                                            <TouchableOpacity
-                                                key={img + (product.itemImage === img)}
-                                                onPress={() => {
-                                                    let temp = inputObj;
-                                                    if (temp[item.msgID].items[prodIndex].itemImage === img) {
-                                                        temp[item.msgID].items[prodIndex].itemImage = "";
-                                                    }
-                                                    else {
-                                                        temp[item.msgID].items[prodIndex].itemImage = img;
-                                                    }
-                                                    setInputObj(temp);
-                                                    setTrigger(!trigger);
-                                                }}
-                                                containerStyle={[styles.listedImageWrapper,
-                                                product.itemImage === img ? {
-                                                    shadowColor: "#55bbdd",
-                                                    shadowOpacity: 1,
-                                                    shadowRadius: 7
-                                                } : {
-                                                    shadowColor: "black",
-                                                }]}>
-                                                <TranspImage
-                                                    source={{ uri: img }}
-                                                    style={{
-                                                        height: 90,
-                                                        width: 90,
-                                                        overflow: "hidden",
-                                                    }}
-                                                    resizeMode={"contain"}
-                                                    resizeMethod={"scale"} />
-                                            </TouchableOpacity>)}
-                                    </View>
                                 </View>
-                            )
-                        })}
+                                <Text style={styles.saveButton}
+                                    onPress={() => { save(item.msgID, index); }}>SAVE</Text>
+                            </View>
+
+                            <View style={styles.manualBrandEntrySection} >
+                                <Text style={styles.manualSelectionSubHeaderText}>
+                                    Brand
+                                </Text>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Text style={styles.manualSelectionText}>
+                                        BRAND NAME:
+                                    </Text>
+                                    <Input type="brand"
+                                        initialText={inputObj[item.msgID].brand}
+                                        setData={setData} />
+                                </View>
+                                <Text style={styles.manualSelectionText}>
+                                    BRAND LOGO:
+                                </Text>
+                                <View style={styles.itemRow} >
+                                    {item.imageArr.map((img) =>
+                                        <ListedItem
+                                            img={img}
+                                            focused={inputObj[item.msgID].brandImage === img}
+                                            msgID={item.msgID} />
+
+                                    )}
+                                </View>
+                            </View>
+
+                            {inputObj[item.msgID].items.map((product, prodIndex) => {
+                                return (
+                                    <View style={styles.manualProductEntrySection} >
+                                        <Text style={styles.manualSelectionSubHeaderText}>
+                                            {"Product"}
+                                            {inputObj[item.msgID].items.length > 1 && <Octicons name="diff-removed"
+                                                size={16}
+                                                color='rgba(20, 81, 150, 0.9)'
+                                                style={{ marginLeft: 6 }}
+                                                onPress={() => {
+                                                    setTimeout(() => {
+                                                        removeItem(prodIndex);
+                                                    }, 200);
+
+                                                }} />}
+                                            <Octicons name="diff-added"
+                                                size={16}
+                                                color='rgba(20, 81, 150, 0.9)'
+                                                style={{ marginLeft: 6 }}
+                                                onPress={() => {
+                                                    setTimeout(() => {
+                                                        addItem(prodIndex);
+                                                    }, 200);
+
+                                                }} />
+                                        </Text>
+                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                            <Text style={styles.manualSelectionText}>
+                                                PRODUCT NAME:
+                                            </Text>
+                                            <Input type={"items/" + prodIndex + "/itemName"}
+                                                initialText={product.itemName}
+                                                setData={setData} />
+                                        </View>
+                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                            <Text style={styles.manualSelectionText}>
+                                                PRODUCT LINK:
+                                            </Text>
+                                            <Input type={"items/" + prodIndex + "/itemLink"}
+                                                initialText={product.itemLink}
+                                                setData={setData} />
+                                        </View>
+                                        <Text style={styles.manualSelectionText}>
+                                            PRODUCT IMAGE:
+                                        </Text>
+                                        <View style={styles.itemRow} >
+                                            {item.imageArr.map((img) =>
+                                                <TouchableOpacity
+                                                    key={img + (product.itemImage === img)}
+                                                    onPress={() => {
+                                                        let temp = inputObj;
+                                                        if (temp[item.msgID].items[prodIndex].itemImage === img) {
+                                                            temp[item.msgID].items[prodIndex].itemImage = "";
+                                                        }
+                                                        else {
+                                                            temp[item.msgID].items[prodIndex].itemImage = img;
+                                                        }
+                                                        setInputObj(temp);
+                                                        setTrigger(!trigger);
+                                                    }}
+                                                    containerStyle={[styles.listedImageWrapper,
+                                                    product.itemImage === img ? {
+                                                        shadowColor: "#55bbdd",
+                                                        shadowOpacity: 1,
+                                                        shadowRadius: 7
+                                                    } : {
+                                                        shadowColor: "black",
+                                                    }]}>
+                                                    <TranspImage
+                                                        source={{ uri: img }}
+                                                        style={{
+                                                            height: 90,
+                                                            width: 90,
+                                                            overflow: "hidden",
+                                                        }}
+                                                        resizeMode={"contain"}
+                                                        resizeMethod={"scale"} />
+                                                </TouchableOpacity>)}
+                                        </View>
+                                    </View>
+                                )
+                            })}
+                        </View>
                     </View>
                 }
 
-                {
-                    collapsibleObj[item.msgID] === "html" &&
-                    <View style={styles.htmlTab} >
-                        <div style={{
-                            fontSize: 12,
-                            color: '#222',
-                            backgroundColor: "white",
-                            padding: 15,
-                            height: '100%',
-                            width: '49.5%',
-                            overflow: 'scroll',
-                        }} dangerouslySetInnerHTML={{ __html: item.msgHTML }} />
-                        <Text style={styles.collapsibleHTMLText} >
-                            {item.msgHTML}
-                        </Text>
-                    </View>
-                }
-
-                <View style={[{ height: 20 },]} />
             </View >
         )
     }, function (prevProps, newProps) {
@@ -658,7 +675,7 @@ function TeamTools() {
 
     const FlatListHeader = () => {
         return (
-            <View style={{ height: 102 }} />
+            <View style={{ height: 110 }} />
         )
     }
 
@@ -719,9 +736,9 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         top: 0,
-        borderBottomWidth: 2.5,
-        borderColor: "rgba(100, 100, 150, 0.6)",
-        borderRadius: 5,
+        borderBottomWidth: 1,
+        borderColor: "rgba(100, 100, 150, 0.5)",
+        borderRadius: 8,
     },
     sectionHeaderTitle: {
         fontSize: 18,
@@ -747,8 +764,10 @@ const styles = StyleSheet.create({
     },
     renderItemStyle: {
         flex: 1,
+        marginBottom: 20
     },
     renderItemTop: {
+        flex: 1,
         padding: 10,
         backgroundColor: 'rgba(20, 81, 150, 0.9)',
         borderRadius: 5,
@@ -814,6 +833,12 @@ const styles = StyleSheet.create({
         margin: 5,
         marginRight: 5,
     },
+    buttonRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginHorizontal: 10,
+        marginTop: 2,
+    },
     collapsibleMenuFrame: {
         justifyContent: "center",
         paddingHorizontal: 15,
@@ -841,14 +866,23 @@ const styles = StyleSheet.create({
     },
     htmlTab: {
         flexDirection: "row",
-        backgroundColor: "white",
         justifyContent: "space-between",
         height: 500,
+        marginTop: 10,
         marginHorizontal: 10,
         borderColor: 'rgba(20, 81, 150, 0.4)',
         borderLeftWidth: 0.1,
         borderRightWidth: 0.1,
         borderBottomWidth: 0.1
+    },
+    manualEntryRow: {
+        marginHorizontal: 10,
+        borderColor: 'rgba(20, 81, 150, 0.4)',
+        borderLeftWidth: 0.1,
+        borderRightWidth: 0.1,
+        borderBottomWidth: 0.1,
+        backgroundColor: "white",
+        flexDirection: "row",
     },
     manualEntryHeaderText: {
         justifyContent: "center",
@@ -858,7 +892,7 @@ const styles = StyleSheet.create({
         color: 'rgba(20, 81, 150, 0.5)',
     },
     saveButton: {
-        color: 'rgba(20, 81, 150, 0.8)',
+        color: 'rgba(20, 81, 150, 1)',
         fontSize: 13,
         textAlign: "center",
         textAlignVertical: "center",
@@ -867,15 +901,14 @@ const styles = StyleSheet.create({
         marginRight: 1,
         borderRadius: 5,
         borderWidth: 0.1,
-        borderColor: 'rgba(20, 81, 150, 0.5)',
+        borderColor: 'rgba(20, 81, 150, 0.8)',
         backgroundColor: 'rgba(20, 81, 150, 0.1)',
     },
     manualBrandEntrySection: {
         backgroundColor: "#eeeeef",
         borderWidth: 0.1,
         borderColor: "#dddddf",
-        marginBottom: 15,
-        marginHorizontal: 20,
+        marginBottom: 5,
         paddingBottom: 7,
         borderRadius: 5
     },
@@ -883,8 +916,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ececef",
         borderWidth: 0.1,
         borderColor: "#dcdcde",
-        marginBottom: 10,
-        marginHorizontal: 20,
+        marginTop: 10,
         paddingBottom: 7,
         borderRadius: 5
     },
