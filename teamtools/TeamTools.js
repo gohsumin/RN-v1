@@ -294,7 +294,7 @@ function TeamTools() {
                             marginRight: 10,
                             borderRadius: 5,
                             borderWidth: 0.1,
-                            borderColor: "rgba(100, 100, 150, 0.3)",
+                            borderColor: "rgba(219, 117, 70, 0.5)",
                             height: 0,
                             minHeight: "100%",
                             overflow: "scroll"
@@ -315,10 +315,6 @@ function TeamTools() {
                         <Text style={styles.categoryText}>
                             {"Brand: "}
                             <Text style={styles.valueText}>{item.brand}</Text>
-                        </Text>
-                        <Text style={styles.categoryText}>
-                            {"Recipient Email: "}
-                            <Text style={styles.valueText}>{item.msgFrom}</Text>
                         </Text>
                         <Text style={styles.categoryText}>
                             {"Message ID: "}
@@ -391,24 +387,40 @@ function TeamTools() {
 
                 <View style={styles.buttonRow} >
 
-                    <View style={[styles.collapsibleMenuFrame,
+                    <View style={[{
+                        paddingRight: 15,
+                        justifyContent: "center",
+                        height: "100%",
+                        borderBottomWidth: 0.1,
+                        borderColor: 'rgba(23, 67, 117, 0.4)'
+                    },
                     collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },
                     (collapsibleObj[item.msgID].tab !== "manual" &&
                         collapsibleObj[item.msgID].html) && {
-                        paddingLeft: 15,
-                        paddingVertical: 15,
-                        alignContent: "flex-start",
                         flex: 1.1,
                     }]} >
-                        <Text style={[styles.collapsibleMenuText]}
+                        <Text style={{
+                            fontSize: 12,
+                            color: "rgba(219, 117, 70, 0.8)",
+                            alignSelf: "flex-start",
+                            borderRadius: 15,
+                            paddingTop: 3,
+                            paddingBottom: 3,
+                            paddingHorizontal: 7,
+                            borderWidth: 0.1,
+                            borderColor: "rgba(219, 117, 70, 0.8)",
+                            backgroundColor: 'rgba(255, 251, 250, 0.8)',
+                        }}
                             onPress={() => { collapsibleMenuPressed('html'); }}>
-                            {collapsibleObj[item.msgID].html ? "Hide" : "Show"} HTML
+                            {collapsibleObj[item.msgID].html ? "Hide HTML" : "Show HTML"}
                         </Text>
                     </View>
 
-                    {item.brandFunctionExists && <View style={[styles.collapsibleMenuFrame,
+                    {item.brandFunctionExists && <View style={[
+                        {height: "100%"},
+                        styles.collapsibleMenuFrame,
                     collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },
@@ -423,7 +435,7 @@ function TeamTools() {
                             styles.collapsibleMenuText,
                             collapsibleObj[item.msgID].tab === "auto" &&
                             {
-                                color: 'rgba(20, 81, 150, 1)',
+                                color: 'rgba(23, 67, 117, 1)',
                             }]}
                             onPress={() => {
                                 if (item.brandFunctionExists) {
@@ -434,7 +446,8 @@ function TeamTools() {
                         </Text>
                     </View>}
 
-                    <View style={[styles.collapsibleMenuFrame,
+                    <View style={[{height: "100%"},
+                    styles.collapsibleMenuFrame,
                     collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },
@@ -449,22 +462,22 @@ function TeamTools() {
                             styles.collapsibleMenuText,
                             collapsibleObj[item.msgID].tab === "manual" &&
                             {
-                                color: 'rgba(20, 81, 150, 1)',
+                                color: 'rgba(23, 67, 117, 1)',
                             }]}
                             onPress={() => { collapsibleMenuPressed('manual'); }}>
                             Manual Entry
                         </Text>
                     </View>
 
-                    <View style={[{ flex: 1 },
+                    <View style={[{ flex: 1, height: "100%" },
                     styles.collapsibleMenuFrame,
                     collapsibleObj[item.msgID].tab === "closed" && {
                         borderBottomWidth: 0,
                     },]} />
                     <View style={{
-                        height: 30,
+                        height: "100%",
                         borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
-                        borderColor: 'rgba(20, 81, 150, 0.4)',
+                        borderColor: 'rgba(23, 67, 117, 0.4)',
                         justifyContent: "center"
                     }} >
                         <View style={styles.submitFrame} >
@@ -481,7 +494,7 @@ function TeamTools() {
                     collapsibleObj[item.msgID].tab === "auto" &&
                     <View style={{
                         marginHorizontal: 10,
-                        borderColor: 'rgba(20, 81, 150, 0.4)',
+                        borderColor: 'rgba(23, 67, 117, 0.4)',
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
                         borderBottomWidth: 0.1,
@@ -498,7 +511,7 @@ function TeamTools() {
                             marginBottom: 13,
                         }}>
                             <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                <MaterialIcons name="info" size={16} color='rgba(20, 81, 150, 0.9)' />
+                                <MaterialIcons name="info" size={16} color='rgba(23, 67, 117, 0.9)' />
                                 <Text style={styles.manualEntryHeaderText} >
                                     The initial data has been automatically processed with regular expressions.
                                 </Text>
@@ -524,7 +537,7 @@ function TeamTools() {
                                 marginBottom: 15,
                                 borderRadius: 5,
                                 borderWidth: 0.1,
-                                borderColor: 'rgba(20, 81, 150, 0.3)',
+                                borderColor: 'rgba(219, 117, 70, 0.5)',
                             }}>
                                 <div style={{
                                     width: "100%",
@@ -546,7 +559,7 @@ function TeamTools() {
                                 marginBottom: 13,
                             }}>
                                 <View style={{ flexDirection: "row", alignItems: "center" }} >
-                                    <MaterialIcons name="info" size={16} color='rgba(20, 81, 150, 0.9)' />
+                                    <MaterialIcons name="info" size={16} color='rgba(23, 67, 117, 0.9)' />
                                     <Text style={styles.manualEntryHeaderText} >
                                         Enter information manually.
                                     </Text>
@@ -588,7 +601,7 @@ function TeamTools() {
                                             {"Product"}
                                             {inputObj[item.msgID].items.length > 1 && <Octicons name="diff-removed"
                                                 size={16}
-                                                color='rgba(20, 81, 150, 0.9)'
+                                                color='rgba(23, 67, 117, 0.9)'
                                                 style={{ marginLeft: 6 }}
                                                 onPress={() => {
                                                     setTimeout(() => {
@@ -598,7 +611,7 @@ function TeamTools() {
                                                 }} />}
                                             <Octicons name="diff-added"
                                                 size={16}
-                                                color='rgba(20, 81, 150, 0.9)'
+                                                color='rgba(23, 67, 117, 0.9)'
                                                 style={{ marginLeft: 6 }}
                                                 onPress={() => {
                                                     setTimeout(() => {
@@ -675,7 +688,7 @@ function TeamTools() {
 
     const FlatListHeader = () => {
         return (
-            <View style={{ height: 110 }} />
+            <View style={{ height: 115 }} />
         )
     }
 
@@ -764,13 +777,13 @@ const styles = StyleSheet.create({
     },
     renderItemStyle: {
         flex: 1,
-        marginBottom: 20
+        marginBottom: 25
     },
     renderItemTop: {
         flex: 1,
         padding: 10,
-        backgroundColor: 'rgba(20, 81, 150, 0.9)',
-        borderRadius: 5,
+        backgroundColor: 'rgba(23, 67, 117, 0.9)',
+        borderRadius: 15,
     },
     categoryText: {
         fontSize: 14.5,
@@ -837,27 +850,27 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         marginHorizontal: 10,
-        marginTop: 2,
+        marginTop: 5,
+        height: 35
     },
     collapsibleMenuFrame: {
         justifyContent: "center",
         paddingHorizontal: 15,
-        height: 30,
         borderBottomWidth: 0.1,
-        borderColor: 'rgba(20, 81, 150, 0.4)',
+        borderColor: 'rgba(23, 67, 117, 0.4)',
     },
     collapsibleMenuText: {
         fontSize: 13,
-        color: 'rgba(20, 81, 150, 0.8)',
+        color: 'rgba(23, 67, 117, 0.8)',
     },
     submitFrame: {
         justifyContent: "center",
         paddingHorizontal: 12,
         paddingVertical: 4,
-        borderRadius: 4,
+        borderRadius: 6,
         borderColor: "white",
         borderWidth: 2,
-        backgroundColor: 'rgba(20, 81, 150, 0.9)'
+        backgroundColor: 'rgba(23, 67, 117, 0.9)'
     },
     submitButton: {
         fontSize: 13,
@@ -870,14 +883,14 @@ const styles = StyleSheet.create({
         height: 500,
         marginTop: 10,
         marginHorizontal: 10,
-        borderColor: 'rgba(20, 81, 150, 0.4)',
+        borderColor: 'rgba(23, 67, 117, 0.4)',
         borderLeftWidth: 0.1,
         borderRightWidth: 0.1,
         borderBottomWidth: 0.1
     },
     manualEntryRow: {
         marginHorizontal: 10,
-        borderColor: 'rgba(20, 81, 150, 0.4)',
+        borderColor: 'rgba(23, 67, 117, 0.4)',
         borderLeftWidth: 0.1,
         borderRightWidth: 0.1,
         borderBottomWidth: 0.1,
@@ -889,10 +902,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "700",
         paddingLeft: 2,
-        color: 'rgba(20, 81, 150, 0.5)',
+        color: 'rgba(23, 67, 117, 0.5)',
     },
     saveButton: {
-        color: 'rgba(20, 81, 150, 1)',
+        color: 'rgba(23, 67, 117, 1)',
         fontSize: 13,
         textAlign: "center",
         textAlignVertical: "center",
@@ -901,8 +914,8 @@ const styles = StyleSheet.create({
         marginRight: 1,
         borderRadius: 5,
         borderWidth: 0.1,
-        borderColor: 'rgba(20, 81, 150, 0.8)',
-        backgroundColor: 'rgba(20, 81, 150, 0.1)',
+        borderColor: 'rgba(23, 67, 117, 0.8)',
+        backgroundColor: 'rgba(23, 67, 117, 0.1)',
     },
     manualBrandEntrySection: {
         backgroundColor: "#eeeeef",
@@ -926,7 +939,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         fontWeight: "600",
         color: "#123",
-        backgroundColor: 'rgba(20, 81, 150, 0.3)',
+        backgroundColor: 'rgba(23, 67, 117, 0.3)',
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
     },
