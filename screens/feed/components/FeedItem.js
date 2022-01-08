@@ -118,7 +118,6 @@ function FeedItem({
       {/* horizontal padding */}
       <HorPadding />
 
-      {console.log("FeedItem with key " + item.id)}
       {/* profile pic */}
       <View
         style={{

@@ -57,12 +57,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-   //console.log("component mounted");
     LogBox.ignoreAllLogs(true);
-  }
-
-  componentWillUnmount() {
-   //console.log("COMPONENT WILL UNMOUNT");
   }
 
   popRemaining = (key) => {

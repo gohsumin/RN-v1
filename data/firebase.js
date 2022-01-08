@@ -15,10 +15,10 @@ if (firebase.app !== undefined && firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig);
 }
 else if (firebase === undefined) {
-   //console.log("firebase is undefined");
+   console.log("firebase is undefined");
 }
 else {
-   //console.log("firebase.app is undefined");
+   console.log("firebase.app is undefined");
     firebase.initializeApp(firebaseConfig);
 }
 
