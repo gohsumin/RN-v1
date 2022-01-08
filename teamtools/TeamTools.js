@@ -874,7 +874,8 @@ const styles = StyleSheet.create({
     itemRow: {
         flexDirection: "row",
         alignItems: "flex-start",
-        overflow: "scroll"
+        overflow: "scroll",
+        flex: 1
     },
     itemImage: {
         width: 80,
