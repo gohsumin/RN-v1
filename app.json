@@ -4,6 +4,7 @@
     "slug": "SoSH",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "sosh",
     "icon": "./assets/icon.png",
     "updates": {
       "fallbackToCacheTimeout": 0

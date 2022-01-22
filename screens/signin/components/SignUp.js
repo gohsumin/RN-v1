@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import LoginFormWrapper from './LoginFormWrapper';
 import AppContext from '../../../data/AppContext';
 import { firebase, storageRef } from '../../../data/firebase';
-import "firebase/firestore";
-import "firebase/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
 import defaultPic from "../../../assets/defaultProfilePicture.jpeg";
 
 function SignUp({ navigation }) {
@@ -34,24 +34,24 @@ function SignUp({ navigation }) {
     function createUser() {
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
-               //console.log("user created");
+                //console.log("user created");
                 const newUID = firebase.auth().currentUser.uid;
                 uploadImage(platform === "web" ? defaultPic : Image.resolveAssetSource(defaultPic).uri,
                     newUID).then(() => {
                         storageRef.child("User-Profile-Images/" + newUID + ".jpg")
                             .getDownloadURL().then((url) => {
-                               //console.log("image url: " + url);
+                                //console.log("image url: " + url);
                                 var data = {
                                     userName: userName,
                                     email: email,
                                     password: password,
                                     followersCount: 0,
                                     followingCount: 0,
-                                    timestamp: new Date() / 1000,
+                                    dateJoined: new Date() / 1000,
                                     userDescription: "🌱",
                                     userImageURL: url,
                                 }
-                               //console.log("!!!signed in currently with uid: " + newUID + " === " + userCredential.user.uid);
+                                //console.log("!!!signed in currently with uid: " + newUID + " === " + userCredential.user.uid);
                                 firestore.collection("User-Profile").doc(newUID).set(data).then(() => { });
                                 setUser(userName);
                                 setUID(newUID);
@@ -62,7 +62,7 @@ function SignUp({ navigation }) {
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-               //console.log(errorMessage);
+                //console.log(errorMessage);
                 Alert.alert(
                     "Please try again:",
                     errorMessage,
@@ -77,7 +77,6 @@ function SignUp({ navigation }) {
         return (
             <View
                 style={{
-                    marginTop: 65,
                     alignSelf: 'center',
                     alignContent: 'center',
                     width: "100%",
@@ -136,7 +135,10 @@ function SignUp({ navigation }) {
     }
 
     return (
-        <LoginFormWrapper>
+        <View style={{
+            marginTop: 50,
+            marginHorizontal: 15,
+        }}>
             {renderUpInputs()}
             <TouchableOpacity
                 onPress={() => {
@@ -158,8 +160,8 @@ function SignUp({ navigation }) {
                     Sign Up
                 </Text>
             </TouchableOpacity>
-        </LoginFormWrapper>
+        </View>
     )
 }
 
-export default SignUp
+export default SignUp;

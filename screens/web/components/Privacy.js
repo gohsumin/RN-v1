@@ -4,7 +4,7 @@ import { WebView } from 'react-native-web-webview';
 
 function Privacy() {
 
-    const htmlSource = require("../../landing/privacy.html");
+    const htmlSource = require("./privacy.html");
 
     return (
         <WebView

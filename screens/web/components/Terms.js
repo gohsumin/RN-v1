@@ -4,7 +4,7 @@ import { WebView } from 'react-native-web-webview';
 
 function Terms() {
 
-    const htmlSource = require("../../landing/terms.html");
+    const htmlSource = require("./terms.html");
 
     return (
         <WebView

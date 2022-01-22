@@ -4,115 +4,69 @@ import {
     View,
     TouchableOpacity,
     Image,
-    ScrollView,
     useWindowDimensions,
     StatusBar,
+    Platform
 } from 'react-native';
 import AppContext from '../../data/AppContext';
-import WebStyleContext from '../../data/WebStyleContext';
 import WebSignIn from './WebSignIn';
 
 function SignIn({ navigation }) {
 
     const window = useWindowDimensions();
 
-    const { platform } = useContext(AppContext);
-
-    const { getCenterSectionWidth } = useContext(WebStyleContext);
-
-    const buttonFontSize = 23;
-    const buttonBorderRadius = 15;
-
-    if (platform === "web") {
+    if (Platform.OS === "web") {
         return (
-            <WebSignIn navigation={navigation}/>
+            <WebSignIn navigation={navigation} />
         )
     }
 
     return (
-        <ScrollView style={{ flex: 1 }}>
-            <View
+        <View
+            style={{
+                width: "100%",
+                height: window.height,// - StatusBar.currentHeight,
+                backgroundColor: 'black',
+                justifyContent: "space-between",
+                // borderColor: 'pink',
+                // borderWidth: 1
+            }}
+        >
+            <Image
+                source={require('../../assets/logo.png')}
                 style={{
-                    width: window.width,
-                    height: window.height - (platform === "web" ? 0 : StatusBar.currentHeight),
-                    backgroundColor: 'black',
+                    width: Platform.OS === "ios" ? 200 : 170,
+                    height:Platform.OS === "ios" ? 200 : 170,
+                    resizeMode: 'contain',
                     alignSelf: 'center',
-                    // borderColor: 'pink',
-                    // borderWidth: 1
+                    marginTop: Platform.OS === "ios" ? "60%" : "50%",
                 }}
-            >
-                <Image
-                    source={require('../../assets/SoShNavLogo.png')}
-                    style={{
-                        width: "60%",
-                        height: "52%",
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        marginTop: 60,
-                    }}
-                />
-                <View
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: 130
-                    }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate("Login");
-                        }}
-                        style={{
-                            paddingHorizontal: 25,
-                            paddingVertical: 15,
-                            borderRadius: buttonBorderRadius,
-                            backgroundColor: "#56626f",
-                            marginRight: 30,
-                            justifyContent: 'center',
-                            alignSelf: 'flex-end'
-                        }}>
-                        <Text style={{
-                            textAlign: 'center',
-                            color: '#fffbfb',
-                            fontSize: buttonFontSize, fontWeight: 'bold'
-                        }}>
-                            Login
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+            />
 
-                <View
-                    style={{
-                        position: 'absolute',
-                        bottom: 60,
-                        right: 0
-                    }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.navigate("Sign Up");
-                        }}
-                        style={{
-                            paddingHorizontal: 32,
-                            paddingVertical: 15,
-                            borderRadius: buttonBorderRadius,
-                            backgroundColor: "#83F52C",
-                            marginRight: 30,
-                            justifyContent: 'center',
-                            alignSelf: 'flex-end'
-                        }}>
-                        <Text style={{
-                            textAlign: 'center',
-                            color: 'black',
-                            fontSize: buttonFontSize,
-                            fontWeight: 'bold'
-                        }}>
-                            Sign Up
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Enter Phone Number");
+                }}
+                style={{
+                    borderRadius: 15,
+                    backgroundColor: "rgb(118, 250, 76)",
+                    marginBottom: 35,
+                    marginHorizontal: 25,
+                    padding: 17,
+                    justifyContent: 'center',
+                }}>
+                <Text style={{
+                    textAlign: 'center',
+                    color: 'black',
+                    fontSize: 19,
+                    fontWeight: 'bold',
+                    letterSpacing: 0.1,
+                }}>
+                    Sign in with Phone
+                </Text>
+            </TouchableOpacity>
 
-            </View>
-
-        </ScrollView>
+        </View>
     )
 }
 

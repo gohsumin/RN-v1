@@ -1,23 +1,18 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { LogBox, Platform, Text } from "react-native";
 import * as Linking from 'expo-linking';
 import RootStackNavigator from "./navigations/RootStackNavigator";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
 import PostsContext from "./data/PostsContext";
 import AppContext from "./data/AppContext";
 import SwipeCardsContext from "./data/SwipeCardsContext";
-import { Asset } from "expo-asset";
-import styled from 'styled-components/native';
-import { firebase } from './data/firebase';
-import "firebase/firestore";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import WebNavigationContext from './data/WebNavigationContext';
 import WebMainSimpleNavigator from "./navigations/WebMainSimple";
-const firestore = firebase.firestore();
 
-// ###########################
+// #########################################################
 // note:
 // run...
 // vercel  --local-config ~/RN-v1/vercel.json --prod
@@ -25,7 +20,7 @@ const firestore = firebase.firestore();
 // after running...
 // expo build:web
 // from ~/RN-v1
-// ###########################
+// #########################################################
 
 export default class App extends React.Component {
 

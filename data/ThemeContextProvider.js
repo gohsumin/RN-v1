@@ -5,7 +5,7 @@ class ThemeContextProvider extends Component {
   state = {
     colors: {
         dark: {
-            background: 'black',
+            background: '#111',
             eyeSafeBackground: '#121212',
             webMainBackground: '#0a0a0a',
             antiBackground: 'white',

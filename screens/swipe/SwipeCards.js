@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AppContext from '../../data/AppContext';
 import { useHeaderHeight } from '@react-navigation/stack';
 import { firebase } from '../../data/firebase';
-import "firebase/firestore";
+import "firebase/compat/firestore";
 
 function SwipeScreen({ navigation }) {
 

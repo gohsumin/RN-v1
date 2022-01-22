@@ -1,0 +1,657 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Privacy</title><style>
+    /* cspell:disable-file */
+    /* webkit printing magic: print all background colors */
+    html {
+        -webkit-print-color-adjust: exact;
+    }
+    * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    @media only screen {
+        body {
+            margin: 2em auto;
+            max-width: 900px;
+            color: rgb(55, 53, 47);
+        }
+    }
+    
+    body {
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+    
+    a,
+    a.visited {
+        color: inherit;
+        text-decoration: underline;
+    }
+    
+    .pdf-relative-link-path {
+        font-size: 80%;
+        color: #444;
+    }
+    
+    h1,
+    h2,
+    h3 {
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 0.75em;
+    }
+    
+    h1 {
+        font-size: 1.875rem;
+        margin-top: 1.875rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+        margin-top: 1.25rem;
+    }
+    
+    .source {
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 1.5em;
+        word-break: break-all;
+    }
+    
+    .callout {
+        border-radius: 3px;
+        padding: 1rem;
+    }
+    
+    figure {
+        margin: 1.25em 0;
+        page-break-inside: avoid;
+    }
+    
+    figcaption {
+        opacity: 0.5;
+        font-size: 85%;
+        margin-top: 0.5em;
+    }
+    
+    mark {
+        background-color: transparent;
+    }
+    
+    .indented {
+        padding-left: 1.5em;
+    }
+    
+    hr {
+        background: transparent;
+        display: block;
+        width: 100%;
+        height: 1px;
+        visibility: visible;
+        border: none;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+    }
+    
+    img {
+        max-width: 100%;
+    }
+    
+    @media only print {
+        img {
+            max-height: 100vh;
+            object-fit: contain;
+        }
+    }
+    
+    @page {
+        margin: 1in;
+    }
+    
+    .collection-content {
+        font-size: 0.875rem;
+    }
+    
+    .column-list {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .column {
+        padding: 0 1em;
+    }
+    
+    .column:first-child {
+        padding-left: 0;
+    }
+    
+    .column:last-child {
+        padding-right: 0;
+    }
+    
+    .table_of_contents-item {
+        display: block;
+        font-size: 0.875rem;
+        line-height: 1.3;
+        padding: 0.125rem;
+    }
+    
+    .table_of_contents-indent-1 {
+        margin-left: 1.5rem;
+    }
+    
+    .table_of_contents-indent-2 {
+        margin-left: 3rem;
+    }
+    
+    .table_of_contents-indent-3 {
+        margin-left: 4.5rem;
+    }
+    
+    .table_of_contents-link {
+        text-decoration: none;
+        opacity: 0.7;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+    }
+    
+    table,
+    th,
+    td {
+        border: 1px solid rgba(55, 53, 47, 0.09);
+        border-collapse: collapse;
+    }
+    
+    table {
+        border-left: none;
+        border-right: none;
+    }
+    
+    th,
+    td {
+        font-weight: normal;
+        padding: 0.25em 0.5em;
+        line-height: 1.5;
+        min-height: 1.5em;
+        text-align: left;
+    }
+    
+    th {
+        color: rgba(55, 53, 47, 0.6);
+    }
+    
+    ol,
+    ul {
+        margin: 0;
+        margin-block-start: 0.6em;
+        margin-block-end: 0.6em;
+    }
+    
+    li > ol:first-child,
+    li > ul:first-child {
+        margin-block-start: 0.6em;
+    }
+    
+    ul > li {
+        list-style: disc;
+    }
+    
+    ul.to-do-list {
+        text-indent: -1.7em;
+    }
+    
+    ul.to-do-list > li {
+        list-style: none;
+    }
+    
+    .to-do-children-checked {
+        text-decoration: line-through;
+        opacity: 0.375;
+    }
+    
+    ul.toggle > li {
+        list-style: none;
+    }
+    
+    ul {
+        padding-inline-start: 1.7em;
+    }
+    
+    ul > li {
+        padding-left: 0.1em;
+    }
+    
+    ol {
+        padding-inline-start: 1.6em;
+    }
+    
+    ol > li {
+        padding-left: 0.2em;
+    }
+    
+    .mono ol {
+        padding-inline-start: 2em;
+    }
+    
+    .mono ol > li {
+        text-indent: -0.4em;
+    }
+    
+    .toggle {
+        padding-inline-start: 0em;
+        list-style-type: none;
+    }
+    
+    /* Indent toggle children */
+    .toggle > li > details {
+        padding-left: 1.7em;
+    }
+    
+    .toggle > li > details > summary {
+        margin-left: -1.1em;
+    }
+    
+    .selected-value {
+        display: inline-block;
+        padding: 0 0.5em;
+        background: rgba(206, 205, 202, 0.5);
+        border-radius: 3px;
+        margin-right: 0.5em;
+        margin-top: 0.3em;
+        margin-bottom: 0.3em;
+        white-space: nowrap;
+    }
+    
+    .collection-title {
+        display: inline-block;
+        margin-right: 1em;
+    }
+    
+    .simple-table {
+        margin-top: 1em;
+        font-size: 0.875rem;
+    }
+    
+    .simple-table-header {
+        background: rgb(247, 246, 243);
+        color: black;
+        font-weight: 500;
+    }
+    
+    time {
+        opacity: 0.5;
+    }
+    
+    .icon {
+        display: inline-block;
+        max-width: 1.2em;
+        max-height: 1.2em;
+        text-decoration: none;
+        vertical-align: text-bottom;
+        margin-right: 0.5em;
+    }
+    
+    img.icon {
+        border-radius: 3px;
+    }
+    
+    .user-icon {
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 100%;
+        margin-right: 0.5rem;
+    }
+    
+    .user-icon-inner {
+        font-size: 0.8em;
+    }
+    
+    .text-icon {
+        border: 1px solid #000;
+        text-align: center;
+    }
+    
+    .page-cover-image {
+        display: block;
+        object-fit: cover;
+        width: 100%;
+        height: 30vh;
+    }
+    
+    .page-header-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .page-header-icon-with-cover {
+        margin-top: -0.72em;
+        margin-left: 0.07em;
+    }
+    
+    .page-header-icon img {
+        border-radius: 3px;
+    }
+    
+    .link-to-page {
+        margin: 1em 0;
+        padding: 0;
+        border: none;
+        font-weight: 500;
+    }
+    
+    p > .user {
+        opacity: 0.5;
+    }
+    
+    td > .user,
+    td > time {
+        white-space: nowrap;
+    }
+    
+    input[type="checkbox"] {
+        transform: scale(1.5);
+        margin-right: 0.6em;
+        vertical-align: middle;
+    }
+    
+    p {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    
+    .image {
+        border: none;
+        margin: 1.5em 0;
+        padding: 0;
+        border-radius: 0;
+        text-align: center;
+    }
+    
+    .code,
+    code {
+        background: rgba(135, 131, 120, 0.15);
+        border-radius: 3px;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 85%;
+        tab-size: 2;
+    }
+    
+    code {
+        color: #eb5757;
+    }
+    
+    .code {
+        padding: 1.5em 1em;
+    }
+    
+    .code-wrap {
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .code > code {
+        background: none;
+        padding: 0;
+        font-size: 100%;
+        color: inherit;
+    }
+    
+    blockquote {
+        font-size: 1.25em;
+        margin: 1em 0;
+        padding-left: 1em;
+        border-left: 3px solid rgb(55, 53, 47);
+    }
+    
+    .bookmark {
+        text-decoration: none;
+        max-height: 8em;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        align-items: stretch;
+    }
+    
+    .bookmark-title {
+        font-size: 0.85em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 1.75em;
+        white-space: nowrap;
+    }
+    
+    .bookmark-text {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .bookmark-info {
+        flex: 4 1 180px;
+        padding: 12px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .bookmark-image {
+        width: 33%;
+        flex: 1 1 180px;
+        display: block;
+        position: relative;
+        object-fit: cover;
+        border-radius: 1px;
+    }
+    
+    .bookmark-description {
+        color: rgba(55, 53, 47, 0.6);
+        font-size: 0.75em;
+        overflow: hidden;
+        max-height: 4.5em;
+        word-break: break-word;
+    }
+    
+    .bookmark-href {
+        font-size: 0.75em;
+        margin-top: 0.25em;
+    }
+    
+    .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+    .code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+    .serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+    .mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+    .pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+    .pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+    .pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+    .pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+    .pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+    .pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+    .pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+    .pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+    .pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+    .pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+    .pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+    .pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+    .pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+    .pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+    .pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+    .pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+    .highlight-default {
+        color: rgba(55, 53, 47, 1);
+    }
+    .highlight-gray {
+        color: rgba(120, 119, 116, 1);
+        fill: rgba(145, 145, 142, 1);
+    }
+    .highlight-brown {
+        color: rgba(159, 107, 83, 1);
+        fill: rgba(187, 132, 108, 1);
+    }
+    .highlight-orange {
+        color: rgba(217, 115, 13, 1);
+        fill: rgba(215, 129, 58, 1);
+    }
+    .highlight-yellow {
+        color: rgba(203, 145, 47, 1);
+        fill: rgba(203, 148, 51, 1);
+    }
+    .highlight-teal {
+        color: rgba(68, 131, 97, 1);
+        fill: rgba(108, 155, 125, 1);
+    }
+    .highlight-blue {
+        color: rgba(51, 126, 169, 1);
+        fill: rgba(91, 151, 189, 1);
+    }
+    .highlight-purple {
+        color: rgba(144, 101, 176, 1);
+        fill: rgba(167, 130, 195, 1);
+    }
+    .highlight-pink {
+        color: rgba(193, 76, 138, 1);
+        fill: rgba(205, 116, 159, 1);
+    }
+    .highlight-red {
+        color: rgba(212, 76, 71, 1);
+        fill: rgba(225, 111, 100, 1);
+    }
+    .highlight-gray_background {
+        background: rgba(241, 241, 239, 1);
+    }
+    .highlight-brown_background {
+        background: rgba(244, 238, 238, 1);
+    }
+    .highlight-orange_background {
+        background: rgba(251, 236, 221, 1);
+    }
+    .highlight-yellow_background {
+        background: rgba(251, 243, 219, 1);
+    }
+    .highlight-teal_background {
+        background: rgba(237, 243, 236, 1);
+    }
+    .highlight-blue_background {
+        background: rgba(231, 243, 248, 1);
+    }
+    .highlight-purple_background {
+        background: rgba(244, 240, 247, 0.8);
+    }
+    .highlight-pink_background {
+        background: rgba(249, 238, 243, 0.8);
+    }
+    .highlight-red_background {
+        background: rgba(253, 235, 236, 1);
+    }
+    .block-color-default {
+        color: inherit;
+        fill: inherit;
+    }
+    .block-color-gray {
+        color: rgba(120, 119, 116, 1);
+        fill: rgba(145, 145, 142, 1);
+    }
+    .block-color-brown {
+        color: rgba(159, 107, 83, 1);
+        fill: rgba(187, 132, 108, 1);
+    }
+    .block-color-orange {
+        color: rgba(217, 115, 13, 1);
+        fill: rgba(215, 129, 58, 1);
+    }
+    .block-color-yellow {
+        color: rgba(203, 145, 47, 1);
+        fill: rgba(203, 148, 51, 1);
+    }
+    .block-color-teal {
+        color: rgba(68, 131, 97, 1);
+        fill: rgba(108, 155, 125, 1);
+    }
+    .block-color-blue {
+        color: rgba(51, 126, 169, 1);
+        fill: rgba(91, 151, 189, 1);
+    }
+    .block-color-purple {
+        color: rgba(144, 101, 176, 1);
+        fill: rgba(167, 130, 195, 1);
+    }
+    .block-color-pink {
+        color: rgba(193, 76, 138, 1);
+        fill: rgba(205, 116, 159, 1);
+    }
+    .block-color-red {
+        color: rgba(212, 76, 71, 1);
+        fill: rgba(225, 111, 100, 1);
+    }
+    .block-color-gray_background {
+        background: rgba(241, 241, 239, 1);
+    }
+    .block-color-brown_background {
+        background: rgba(244, 238, 238, 1);
+    }
+    .block-color-orange_background {
+        background: rgba(251, 236, 221, 1);
+    }
+    .block-color-yellow_background {
+        background: rgba(251, 243, 219, 1);
+    }
+    .block-color-teal_background {
+        background: rgba(237, 243, 236, 1);
+    }
+    .block-color-blue_background {
+        background: rgba(231, 243, 248, 1);
+    }
+    .block-color-purple_background {
+        background: rgba(244, 240, 247, 0.8);
+    }
+    .block-color-pink_background {
+        background: rgba(249, 238, 243, 0.8);
+    }
+    .block-color-red_background {
+        background: rgba(253, 235, 236, 1);
+    }
+    .select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+    .select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+    .select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+    .select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+    .select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+    .select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+    .select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+    .select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+    .select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+    
+    .checkbox {
+        display: inline-flex;
+        vertical-align: text-bottom;
+        width: 16;
+        height: 16;
+        background-size: 16px;
+        margin-left: 2px;
+        margin-right: 5px;
+    }
+    
+    .checkbox-on {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+    }
+    
+    .checkbox-off {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+    }
+        
+    </style></head><body><article id="b21b6dc4-9dae-48ad-b888-24e288efbc9c" class="page sans"><header><h1 class="page-title">Privacy</h1></header><div class="page-body"><h1 id="4b4392fb-6237-4e0a-b458-46182bdfd3bb" class="">END USER LICENSE AGREEMENT</h1><p id="9bb9c694-8ed2-4328-b236-063e71d945fd" class=""><strong>Last updated </strong><strong>June 17, 2021</strong></p><p id="7c896049-e7e7-4adb-ad78-daf507f72ccc" class="">SoSh Terms and Conditions is licensed to You (End-User) by SoSh WRLD, Inc., located at 6702 N Seeley Ave Apt 1, Chicago, Illinois 60645, United States (hereinafter: Licensor), for use only under the terms of this License Agreement.</p><p id="7c23ad45-cd2e-4d4b-8ff6-34559eda5a93" class="">By downloading the Application from the Apple AppStore, and any update thereto (as permitted by this License Agreement), You indicate that You agree to be bound by all of the terms and conditions of this License Agreement, and that You accept this License Agreement.</p><p id="919d9a3c-9622-40b7-aba0-6b22f30304bf" class="">The parties of this License Agreement acknowledge that Apple is not a Party to this License Agreement and is not bound by any provisions or obligations with regard to the Application, such as warranty, liability, maintenance and support thereof. SoSh WRLD, Inc., not Apple, is solely responsible for the licensed Application and the content thereof.</p><p id="2e13f287-be4b-4e79-822b-dae2d1d93003" class="">This License Agreement may not provide for usage rules for the Application that are in conflict with the latest <a href="https://www.apple.com/legal/internet-services/itunes/us/terms.html">App Store Terms of Service</a>. SoSh WRLD, Inc. acknowledges that it had the opportunity to review said terms and this License Agreement is not conflicting with them.</p><p id="5a0a4e40-db66-4910-a593-7a867f075faa" class="">All rights not expressly granted to You are reserved.</p><p id="b49c4cfb-e5bd-4b06-994f-b05eced0ec97" class=""><strong>1.</strong><strong> THE APPLICATION</strong></p><p id="66b392ad-4fd0-4958-a74d-78355b3cd99a" class="">SoSh Terms and Conditions (hereinafter: Application) is a piece of software created to Show users items that people they follow are purchasing. - and customized for Apple mobile devices. It is used to Show users items that people they follow are purchasing. We use affiliate links to pay out users who influence purchases..</p><p id="30b5b02f-8114-44f9-b2d3-0fe6f93afd1e" class="">We are in compliance with calOPPA, GDPR, and PIPEDA.</p><p id="3cc8bd3c-842e-40ab-8d22-f0b72fa679a8" class=""><strong>2. SCOPE OF LICENSE</strong></p><p id="97129861-dc6e-494f-8e5d-b4cdba1f6d73" class="">2.1 You are given a non-transferable, non-exclusive, non-sublicensable license to install and use the Licensed Application on any Apple-branded Products that You (End-User) own or control and as permitted by the Usage Rules set forth in this section and the App Store Terms of Service, with the exception that such licensed Application may be accessed and used by other accounts associated with You (End-User, The Purchaser) via Family Sharing or volume purchasing.</p><p id="a7ab9a28-c736-44cb-8fb9-7a1bdc055f47" class="">2.2 This license will also govern any updates of the Application provided by Licensor that replace, repair, and/or supplement the first Application, unless a separate license is provided for such update in which case the terms of that new license will govern.</p><p id="30c84765-a21b-4d20-8e32-7c947930804e" class="">2.3 You may not share or make the Application available to third parties (unless to the degree allowed by the Apple Terms and Conditions, and with SoSh WRLD, Inc.&#x27;s prior written consent), sell, rent, lend, lease or otherwise redistribute the Application.</p><p id="b3a2f589-5202-49ca-b612-0c8ff1bc71b5" class="">2.4 You may not reverse engineer, translate, disassemble, integrate, decompile, integrate, remove, modify, combine, create derivative works or updates of, adapt, or attempt to derive the source code of the Application, or any part thereof (except with SoSh WRLD, Inc.&#x27;s prior written consent).</p><p id="e668d4bd-814c-4bdc-b5c0-bb58efb9d348" class="">2.5 You may not copy (excluding when expressly authorized by this license and the Usage Rules) or alter the Application or portions thereof. You may create and store copies only on devices that You own or control for backup keeping under the terms of this license, the App Store Terms of Service, and any other terms and conditions that apply to the device or software used. You may not remove any intellectual property notices. You acknowledge that no unauthorized third parties may gain access to these copies at any time.</p><p id="8beab377-f767-449d-be33-7733db069553" class="">2.6 Violations of the obligations mentioned above, as well as the attempt of such infringement, may be subject to prosecution and damages.</p><p id="e444a876-8da3-4f5c-9a21-38c4a7556f51" class="">2.7 Licensor reserves the right to modify the terms and conditions of licensing.</p><p id="47d7f1df-1d9c-4750-844d-7837c637e3b9" class="">2.8 Nothing in this license should be interpreted to restrict third-party terms. When using the Application, You must ensure that You comply with applicable third-party terms and conditions.</p><p id="a1610504-1b8f-40d5-ad9e-005e34c1cd73" class=""><strong>3. TECHNICAL REQUIREMENTS</strong></p><p id="edd73773-39ee-4245-b641-0db20d7af77b" class="">3.1 The Application requires a firmware version 1.0.0 or higher. Licensor recommends using the latest version of the firmware.</p><p id="55cf5c5d-f48a-43db-8224-e1e2334e89de" class="">3.2 Licensor attempts to keep the Application updated so that it complies with modified/new versions of the firmware and new hardware. You are not granted rights to claim such an update.</p><p id="c06cf31d-73e2-4ab3-9fb7-6e4eb71b15ab" class="">3.3 You acknowledge that it is Your responsibility to confirm and determine that the app end-user device on which You intend to use the Application satisfies the technical specifications mentioned above.</p><p id="6bcbb891-b638-4abf-9572-132625a08b5a" class="">3.4 Licensor reserves the right to modify the technical specifications as it sees appropriate at any time.</p><p id="cfb564b2-0463-413a-bf5d-2dc16319f846" class=""><strong>4. MAINTENANCE AND SUPPORT</strong></p><p id="6441ccb0-566c-4f06-985d-24e49b55f632" class="">4.1 The Licensor is solely responsible for providing any maintenance and support services for this licensed Application. You can reach the Licensor at the email address listed in the App Store Overview for this licensed Application.</p><p id="091d8f98-5ef6-45e9-ac5c-7ac182b5ee32" class="">4.2 SoSh WRLD, Inc. and the End-User acknowledge that Apple has no obligation whatsoever to furnish any maintenance and support services with respect to the licensed Application.</p><p id="79015eb0-b024-4d24-a75c-fd1cfef4e441" class=""><strong>5. USE OF DATA</strong></p><p id="cc992e45-2c7d-4dc4-a7ca-e9d65184f671" class="">You acknowledge that Licensor will be able to access and adjust Your downloaded licensed Application content and Your personal information, and that Licensor&#x27;s use of such material and information is subject to Your legal agreements with Licensor and Licensor&#x27;s privacy policy: __________.</p><p id="c0ae3f24-4e9d-4ab1-be8d-d21fe2d75cf4" class=""><strong>6. USER GENERATED CONTRIBUTIONS</strong></p><p id="21c68290-7eac-4037-a596-d15eeb62f448" class="">The Application may invite you to chat, contribute to, or participate in blogs, message boards, online forums, and other functionality, and may provide you with the opportunity to create, submit, post, display, transmit, perform, publish, distribute, or broadcast content and materials to us or in the Application, including but not limited to text, writings, video, audio, photographs, graphics, comments, suggestions, or personal information or other material (collectively, &quot;Contributions&quot;). Contributions may be viewable by other users of the Application and through third-party websites or applications. As such, any Contributions you transmit may be treated as non-confidential and non-proprietary. When you create or make available any Contributions, you thereby represent and warrant that:</p><p id="fdae805c-8c1a-4ca2-93c2-c246f2ed54f2" class="">1. The creation, distribution, transmission, public display, or performance, and the accessing, downloading, or copying of your Contributions do not and will not infringe the proprietary rights, including but not limited to the copyright, patent, trademark, trade secret, or moral rights of any third party.</p><p id="645f21ec-5fcd-4a88-9b02-d6db12016bf9" class="">2. You are the creator and owner of or have the necessary licenses, rights, consents, releases, and permissions to use and to authorize us, the Application, and other users of the Application to use your Contributions in any manner contemplated by the Application and these Terms of Use.</p><p id="c186d142-5bb9-45c5-90fe-cb4ad025fe9b" class="">3. You have the written consent, release, and/or permission of each and every identifiable individual person in your Contributions to use the name or likeness or each and every such identifiable individual person to enable inclusion and use of your Contributions in any manner contemplated by the Application and these Terms of Use.</p><p id="92aeb961-653f-4d26-8b44-10ce5c1c2983" class="">4. Your Contributions are not false, inaccurate, or misleading.</p><p id="e1e99ef6-87f1-4b8e-a527-055d7c711d2c" class="">5. Your Contributions are not unsolicited or unauthorized advertising, promotional materials, pyramid schemes, chain letters, spam, mass mailings, or other forms of solicitation.</p><p id="df9f1988-6bd7-42d4-9e47-7f3e75c7cde8" class="">6. Your Contributions are not obscene, lewd, lascivious, filthy, violent, harassing, libelous, slanderous, or otherwise objectionable (as determined by us).</p><p id="6b04858e-17f2-40c5-b634-7f9d159e1e0e" class="">7. Your Contributions do not ridicule, mock, disparage, intimidate, or abuse anyone.</p><p id="b47f0007-3677-47fd-8dbf-d372ecc826a1" class="">8. Your Contributions are not used to harass or threaten (in the legal sense of those terms) any other person and to promote violence against a specific person or class of people.</p><p id="35c32efc-fd90-4f4c-aa02-cfa29426bdf3" class="">9. Your Contributions do not violate any applicable law, regulation, or rule.</p><p id="74515569-7b28-4249-9a5e-d98c4fcb106b" class="">10. Your Contributions do not violate the privacy or publicity rights of any third party.</p><p id="2570f226-3a5e-4ba1-8f58-faa1967cc54d" class="">11. Your Contributions do not contain any material that solicits personal information from anyone under the age of 18 or exploits people under the age of 18 in a sexual or violent manner.</p><p id="5ae2f9ae-4316-4439-a532-443b0b5868bc" class="">12. Your Contributions do not violate any applicable law concerning child pornography, or otherwise intended to protect the health or well-being of minors.</p><p id="761bf4d2-0388-4489-b3c9-fbf525f0a649" class="">13. Your Contributions do not include any offensive comments that are connected to race, national origin, gender, sexual preference, or physical handicap.</p><p id="a56c518a-9ff1-48fc-a01c-c8b10f2ca062" class="">14. Your Contributions do not otherwise violate, or link to material that violates, any provision of these Terms of Use, or any applicable law or regulation.</p><p id="0884a544-cfda-42e7-a683-a964f468aa1f" class="">Any use of the Application in violation of the foregoing violates these Terms of Use and may result in, among other things, termination or suspension of your rights to use the Application.</p><p id="d86431ca-52a1-4b81-904d-ab3c028ed59a" class=""><strong>7. CONTRIBUTION LICENSE</strong></p><p id="a67e7c41-c1c7-4acf-baed-8f7c04cbea59" class="">By posting your Contributions to any part of the Application or making Contributions accessible to the Application by linking your account from the Application to any of your social networking accounts, you automatically grant, and you represent and warrant that you have the right to grant, to us an unrestricted, unlimited, irrevocable, perpetual, non-exclusive, transferable, royalty-free, fully-paid, worldwide right, and license to host, use copy, reproduce, disclose, sell, resell, publish, broad cast, retitle, archive, store, cache, publicly display, reformat, translate, transmit, excerpt (in whole or in part), and distribute such Contributions (including, without limitation, your image and voice) for any purpose, commercial advertising, or otherwise, and to prepare derivative works of, or incorporate in other works, such as Contributions, and grant and authorize sublicenses of the foregoing. The use and distribution may occur in any media formats and through any media channels.</p><p id="abf672cd-709c-4128-9b6a-7d9043ed1c48" class="">This license will apply to any form, media, or technology now known or hereafter developed, and includes our use of your name, company name, and franchise name, as applicable, and any of the trademarks, service marks, trade names, logos, and personal and commercial images you provide. You waive all moral rights in your Contributions, and you warrant that moral rights have not otherwise been asserted in your Contributions.</p><p id="18c4ad4a-74da-4f12-9613-92e131e61c88" class="">We do not assert any ownership over your Contributions. You retain full ownership of all of your Contributions and any intellectual property rights or other proprietary rights associated with your Contributions. We are not liable for any statements or representations in your Contributions provided by you in any area in the Application. You are solely responsible for your Contributions to the Application and you expressly agree to exonerate us from any and all responsibility and to refrain from any legal action against us regarding your Contributions.</p><p id="a36fa9ee-243c-4b02-83f6-bb67034dde69" class="">We have the right, in our sole and absolute discretion, (1) to edit, redact, or otherwise change any Contributions; (2) to re-categorize any Contributions to place them in more appropriate locations in the Application; and (3) to pre-screen or delete any Contributions at any time and for any reason, without notice. We have no obligation to monitor your Contributions.</p><p id="e5c24104-426d-4fd4-b3be-74be79b9475d" class=""><strong>8. LIABILITY</strong></p><p id="bb23fca3-a399-49e2-99a9-a98ff47ee86f" class="">8.1 Licensor&#x27;s responsibility in the case of violation of obligations and tort shall be limited to intent and gross negligence. Only in case of a breach of essential contractual duties (cardinal obligations), Licensor shall also be liable in case of slight negligence. In any case, liability shall be limited to the foreseeable, contractually typical damages. The limitation mentioned above does not apply to injuries to life, limb, or health.</p><p id="1527b9a8-74c6-4c42-95e3-af90208fe641" class="">8.2 Licensor takes no accountability or responsibility for any damages caused due to a breach of duties according to Section 2 of this Agreement. To avoid data loss, You are required to make use of backup functions of the Application to the extent allowed by applicable third-party terms and conditions of use. You are aware that in case of alterations or manipulations of the Application, You will not have access to licensed Application.</p><p id="1bf2ed22-1acd-4332-99e9-d1a4ff89ca72" class=""><strong>9. WARRANTY</strong></p><p id="0b29d5f3-df47-478e-a9f2-7d4750ab9d42" class="">9.1 Licensor warrants that the Application is free of spyware, trojan horses, viruses, or any other malware at the time of Your download. Licensor warrants that the Application works as described in the user documentation.</p><p id="92dfec6b-e363-4bc4-a82f-40041bf0b5e0" class="">9.2 No warranty is provided for the Application that is not executable on the device, that has been unauthorizedly modified, handled inappropriately or culpably, combined or installed with inappropriate hardware or software, used with inappropriate accessories, regardless if by Yourself or by third parties, or if there are any other reasons outside of SoSh WRLD, Inc.&#x27;s sphere of influence that affect the executability of the Application.</p><p id="57d3b3c8-b66c-47a0-8ea3-50686b4f00ab" class="">9.3 You are required to inspect the Application immediately after installing it and notify SoSh WRLD, Inc. about issues discovered without delay by e-mail provided in <a href="https://soshwrld.com/terms#productclaims">Product Claims</a>. The defect report will be taken into consideration and further investigated if it has been mailed within a period of ninety (90) days after discovery.</p><p id="c9392bc5-5c83-4360-8ba5-2ec5cb4626cd" class="">9.4 If we confirm that the Application is defective, SoSh WRLD, Inc. reserves a choice to remedy the situation either by means of solving the defect or substitute delivery.</p><p id="2f2a6d89-9e40-4540-91bd-20874fbef786" class="">9.5 In the event of any failure of the Application to conform to any applicable warranty, You may notify the App-Store-Operator, and Your Application purchase price will be refunded to You. To the maximum extent permitted by applicable law, the App-Store-Operator will have no other warranty obligation whatsoever with respect to the App, and any other losses, claims, damages, liabilities, expenses and costs attributable to any negligence to adhere to any warranty.</p><p id="0fd0537f-445c-484c-a534-ab6969dc0881" class="">9.6 If the user is an entrepreneur, any claim based on faults expires after a statutory period of limitation amounting to twelve (12) months after the Application was made available to the user. The statutory periods of limitation given by law apply for users who are consumers.</p><p id="ddfe3a34-41c1-4191-b127-7e772251f2f3" class=""><strong>10. PRODUCT CLAIMS</strong></p><p id="fcbec351-1736-4ca2-94bf-8fbb686c5943" class="">SoSh WRLD, Inc. and the End-User acknowledge that SoSh WRLD, Inc., and not Apple, is responsible for addressing any claims of the End-User or any third party relating to the licensed Application or the End-User’s possession and/or use of that licensed Application, including, but not limited to:</p><p id="62d056d2-f5b6-489a-9c79-9d95c1beb6b7" class="">(i) product liability claims;</p><p id="db987940-f45f-429f-a734-0aa7cbf65e11" class="">(ii) any claim that the licensed Application fails to conform to any applicable legal or regulatory requirement; and</p><p id="53d85582-923e-4d15-bcb8-23d8d3ebfedc" class="">(iii) claims arising under consumer protection, privacy, or similar legislation, including in connection with Your Licensed Application’s use of the HealthKit and HomeKit.</p><p id="20c06d94-3c34-42e6-b4d0-3fca741b70fd" class=""><strong>11. LEGAL COMPLIANCE</strong></p><p id="41bab4b4-8f2a-4a8f-9a76-45eb428867b1" class="">You represent and warrant that You are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a &quot;terrorist supporting&quot; country; and that You are not listed on any U.S. Government list of prohibited or restricted parties.</p><p id="bb3eb29d-3c4f-4ff6-a157-13836cabcbaa" class=""><strong>12. CONTACT INFORMATION</strong></p><p id="d84eae1e-8306-415c-a0f6-b6f02a35ed60" class="">For general inquiries, complaints, questions or claims concerning the licensed Application, please contact:</p><p id="d3dafd06-73a2-4415-9475-bb03faf9e3dd" class="">SoSh WRLD, Inc.</p><p id="5421c4c5-3e89-4be5-b988-846f365a340a" class="">6702 N Seeley Ave Apt 1</p><p id="5e93a72f-26b5-44fc-884c-79484a95bdff" class="">Chicago, IL 60645</p><p id="a5910e3d-1706-4d52-9a9c-3198d331c87b" class="">United States</p><p id="51497b72-e8f0-4bed-86e0-ac6ea2b97b8c" class="">soshwrld@gmail.com</p><p id="fd897f2f-b461-4e49-ae28-9c2f96420ec9" class=""><strong>13. TERMINATION</strong></p><p id="2d0b1861-a6c9-4223-8465-7b0219bbcc56" class="">The license is valid until terminated by SoSh WRLD, Inc. or by You. Your rights under this license will terminate automatically and without notice from SoSh WRLD, Inc. if You fail to adhere to any term(s) of this license. Upon License termination, You shall stop all use of the Application, and destroy all copies, full or partial, of the Application.</p><p id="6df05550-106b-47bd-abfc-0feb1207600d" class=""><strong>14. THIRD-PARTY TERMS OF AGREEMENTS AND BENEFICIARY</strong></p><p id="14531c74-4a1e-48c1-96ef-bf0465d1dbb1" class="">SoSh WRLD, Inc. represents and warrants that SoSh WRLD, Inc. will comply with applicable third-party terms of agreement when using licensed Application.</p><p id="b92e110e-4450-4add-a432-ba9330136a7c" class="">In Accordance with Section 9 of the &quot;Instructions for Minimum Terms of Developer&#x27;s End-User License Agreement,&quot; Apple and Apple&#x27;s subsidiaries shall be third-party beneficiaries of this End User License Agreement and - upon Your acceptance of the terms and conditions of this license agreement, Apple will have the right (and will be deemed to have accepted the right) to enforce this End User License Agreement against You as a third-party beneficiary thereof.</p><p id="031a5203-6067-4f56-81dd-fc3cf3796421" class=""><strong>15. INTELLECTUAL PROPERTY RIGHTS</strong></p><p id="c9c8b0e8-03b6-4d9a-9adb-a35b20ceb063" class="">SoSh WRLD, Inc. and the End-User acknowledge that, in the event of any third-party claim that the licensed Application or the End-User&#x27;s possession and use of that licensed Application infringes on the third party&#x27;s intellectual property rights, SoSh WRLD, Inc., and not Apple, will be solely responsible for the investigation, defense, settlement and discharge or any such intellectual property infringement claims.</p><p id="9f61333c-b4d1-42a0-acad-17eb567879f9" class=""><strong>16. APPLICABLE LAW</strong></p><p id="da544779-a0f2-40d7-b3d8-4af62b66c735" class="">This license agreement is governed by the laws of the State of Delaware excluding its conflicts of law rules.</p><p id="ab98e3cb-441a-427b-85f7-1bed73d13b05" class=""><strong>17. MISCELLANEOUS</strong></p><p id="18b34d1e-f0cd-4eaf-baa7-50b4f9ad3930" class="">17.1 If any of the terms of this agreement should be or become invalid, the validity of the remaining provisions shall not be affected. Invalid terms will be replaced by valid ones formulated in a way that will achieve the primary purpose.</p><p id="494fe153-3452-4e3e-9d68-3c7f51920671" class="">17.2 Collateral agreements, changes and amendments are only valid if laid down in writing. The preceding clause can only be waived in writing.</p><p id="ab98e3cb-441a-427b-85f7-1bed73d13b05" class=""><strong>18. Use of Google Data</strong></p><p id="18b34d1e-f0cd-4eaf-baa7-50b4f9ad3930" class="">18.1 SoSh WRLD, Inc. requires the Gmail API scope - gmail.readonly to enable the ability to post on the app. Order confirmation emails are transformed into application posts containing itemName, itemImage, and itemImageURL which are all gathered from the email html. The post is also embedded with an affiliate link corresponding to the store the email order confirmation is received from. The posts are stored in Google Firebase Database. Users may approve or deny said posts to post to their personal feed. Only order confirmation emails are processed and stored in Google Firebase Database, and all else emails are not read nor processed.</p><p id="494fe153-3452-4e3e-9d68-3c7f51920671" class="">18.2 In order to access these emails, an independent third party auditor has taken a look at how Shop uses and protects your email information, and has confirmed that we meet Google’s standards. SoSh WRLD, Inc.'s use and transfer to any other app of information received from Google APIs will adhere to <a href="https://developers.google.com/terms/api-services-user-data-policy#additional_requirements_for_specific_api_scopes" target="_blank">Google API Services User Data Policy</a>, including the Limited Use requirements.</p><p id="0def2d8c-d79a-4c4b-b1a7-498f3a5a0c28" class="">
+    </p></div></article></body></html>

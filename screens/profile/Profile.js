@@ -25,7 +25,7 @@ import { Helmet } from "react-helmet";
 import StickyHeader from "./components/StickyHeader";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { firebase } from '../../data/firebase';
-import "firebase/firestore";
+import "firebase/compat/firestore";
 const firestore = firebase.firestore();
 
 // NUMBER OF CLICKS & STATS ON THE USERS THAT CLICKED (E.G. LOCATION)

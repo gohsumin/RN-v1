@@ -5,8 +5,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginFormWrapper from './LoginFormWrapper';
 import AppContext from '../../../data/AppContext';
 import { firebase } from '../../../data/firebase';
-import "firebase/firestore";
-import "firebase/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
 
 function Login({ navigation }) {
 
@@ -117,8 +117,8 @@ function Login({ navigation }) {
 
     return (
         <View style={{
-            // borderWidth: 1,
-            // borderColor: 'pink'
+            marginTop: 50,
+            marginHorizontal: 15,
         }}>
             {renderInInputs()}
             <TouchableOpacity

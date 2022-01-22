@@ -6,7 +6,7 @@ import {
     useWindowDimensions,
 } from 'react-native';
 import logo_big from "../../assets/SoShNavLogo.png";
-import Search from './components/search';
+import Search from './components/Search';
 import { Helmet } from "react-helmet";
 
 function WebMainSimpleHome() {

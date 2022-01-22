@@ -4,6 +4,9 @@ import ThemeContext from '../../../data/ThemeContext';
 import AppContext from '../../../data/AppContext';
 
 const apps = ["instagram", "twitter"];
+const appImages = [
+    require('../../../assets/instagram.png'),
+    require('../../../assets/twitter.png')]
 
 function SocialMediaLinks({ userData }) {
 
@@ -14,10 +17,8 @@ function SocialMediaLinks({ userData }) {
         <View style={{
             flexDirection: "row",
             justifyContent: "center",
-            // borderWidth: 1,
-            // borderColor: 'blue'
         }}>
-            {apps.map((app) => {
+            {apps.map((app, index) => {
                 const handle = app + "Handle";
                 return <View key={app}
                     style={{
@@ -30,7 +31,7 @@ function SocialMediaLinks({ userData }) {
                         marginRight: 8.5,
                     }}>
                     <Image
-                        source={require("../../../assets/" + app + ".png")}
+                        source={appImages[index]}
                         style={{
                             width: 24,
                             height: 24,

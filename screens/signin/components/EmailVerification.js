@@ -3,8 +3,8 @@ import { SafeAreaView, View, Text, Image, Dimensions, TouchableOpacity } from 'r
 import { Picker } from '@react-native-picker/picker';
 import { TextInput } from 'react-native-gesture-handler';
 import { firebase, firebaseConfig } from '../../data/firebase';
-import "firebase/firestore";
-import "firebase/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 

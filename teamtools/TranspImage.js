@@ -27,7 +27,7 @@ function TranspImage(props) {
                                             width: squareSize,
                                             height: squareSize,
                                             backgroundColor: (rowIndex + colIndex) % 2 === 0 ?
-                                                "#eee" : "#f5f5f5",
+                                                "#f3f3f3" : "#fdfdfd",
                                         }} />
 
                                     )

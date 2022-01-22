@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppContext from '../../../data/AppContext';
 import styled from 'styled-components/native';
 import { firebase } from '../../../data/firebase';
-import "firebase/firestore";
-import "firebase/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/auth";
 
 function WebLogin({ navigation }) {
 

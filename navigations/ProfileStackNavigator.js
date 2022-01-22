@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, Platform } from 'react-native';
 import { createStackNavigator, HeaderTitle } from "@react-navigation/stack";
 import ProfileScreen from "../screens/profile/Profile";
 import AppContext from "../data/AppContext";
@@ -18,7 +18,7 @@ const ProfileStackNavigator = () => {
   const screenOptionStyle = {
     headerStyle: {
       backgroundColor: 'transparent',
-      height: 83,
+      height: Platform.OS === "android" ? 83 : 110,
       shadowColor: 'transparent',
     },
     cardStyle: {

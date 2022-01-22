@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from './Input';
@@ -84,7 +84,13 @@ function TeamTools() {
             if (match[1] !== null) {
                 const src = match[1].match(new RegExp('src=\"([^]+?(?=\"))\"'));
                 if (src && !imageArr.includes(src[1])) {
-                    imageArr.push(src[1]);
+                    const img = document.createElement('img');
+                    img.src = src[1];
+                    img.onload = () => {
+                        if (img.width > 60 && img.height > 60) {
+                            imageArr.push(src[1]);
+                        }
+                    };
                 }
             }
         }
@@ -105,15 +111,26 @@ function TeamTools() {
         return ret;
     }
 
-    const ListedItem = React.memo(({ img, focused, msgID }) => {
+    const ListedItem = React.memo(({ type, img, focused, msgID }) => {
 
         function onPress() {
             let temp = inputObj;
-            if (temp[msgID].brandImage === img) {
-                temp[msgID].brandImage = "";
+            if (typeof type === "string") {
+                if (temp[msgID].brandImage === img) {
+                    temp[msgID].brandImage = "";
+                }
+                else {
+                    temp[msgID].brandImage = img;
+                }
             }
             else {
-                temp[msgID].brandImage = img;
+                const prodIndex = type;
+                if (temp[msgID].items[prodIndex].itemImage === img) {
+                    temp[msgID].items[prodIndex].itemImage = "";
+                }
+                else {
+                    temp[msgID].items[prodIndex].itemImage = img;
+                }
             }
             setInputObj(temp);
             setTrigger(!trigger);
@@ -203,6 +220,21 @@ function TeamTools() {
             setTrigger(!trigger);
         }
 
+        function clear(msgID, index) {
+            let temp = inputObj;
+            temp[msgID] = {
+                brand: "",
+                brandImage: "",
+                items: [{
+                    itemImage: "",
+                    itemName: "",
+                    itemLink: "",
+                }],
+            };
+            setInputObj(temp);
+            setTrigger(!trigger);
+        }
+
         function save(msgID, index) {
             let temp = [];
             let values = inputObj[msgID];
@@ -282,19 +314,34 @@ function TeamTools() {
             setTrigger(!trigger);
         }
 
+        function imagePicked(img, msgID, prodIndex) {
+            let temp = inputObj;
+            if (temp[msgID].items[prodIndex].itemImage === img) {
+                temp[msgID].items[prodIndex].itemImage = "";
+            }
+            else {
+                temp[msgID].items[prodIndex].itemImage = img;
+            }
+            setInputObj(temp);
+            setTrigger(!trigger);
+        }
+
         return (
 
             <View style={styles.renderItemStyle}>
 
-                <View style={{
-                    width: "100%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                }}>
-                    {(collapsibleObj[item.msgID].html &&
-                        collapsibleObj[item.msgID].tab !== "manual") &&
+
+                <View // everything above the menu row
+                    style={{
+                        width: "100%",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                    }}>
+                    { // the email html rendered on top left
+                        (collapsibleObj[item.msgID].html &&
+                            collapsibleObj[item.msgID].tab !== "manual") &&
                         <View style={{
-                            flex: 0.7,
+                            width: 500,
                             marginRight: 10,
                             borderRadius: 5,
                             borderWidth: 0.1,
@@ -391,20 +438,21 @@ function TeamTools() {
 
                 <View style={[styles.buttonRow]} >
 
-                    <View style={[{
-                        paddingRight: 15,
-                        justifyContent: "center",
-                        height: "100%",
-                        borderBottomWidth: 0.1,
-                        borderColor: 'rgba(0, 30, 122, 0.6)'
-                    },
-                    collapsibleObj[item.msgID].tab === "closed" && {
-                        borderBottomWidth: 0,
-                    },
-                    (collapsibleObj[item.msgID].tab !== "manual" &&
-                        collapsibleObj[item.msgID].html) && {
-                        flex: 1.35,
-                    }]} >
+                    <View // show/hide html button
+                        style={[{
+                            paddingRight: 15,
+                            justifyContent: "center",
+                            height: "100%",
+                            borderBottomWidth: 0.1,
+                            borderColor: 'rgba(0, 30, 122, 0.6)'
+                        },
+                        collapsibleObj[item.msgID].tab === "closed" && {
+                            borderBottomWidth: 0,
+                        },
+                        (collapsibleObj[item.msgID].tab !== "manual" &&
+                            collapsibleObj[item.msgID].html) && {
+                            width: 515
+                        }]} >
                         <Text style={{
                             fontSize: 12,
                             color: "rgba(219, 117, 70, 0.8)",
@@ -431,9 +479,8 @@ function TeamTools() {
                         collapsibleObj[item.msgID].tab === "auto" && {
                             borderLeftWidth: 0.1,
                             borderRightWidth: 0.1,
-                            // borderTopWidth: 0.1,
                             borderBottomWidth: 0,
-                            backgroundColor: "white",
+                            backgroundColor: "rgba(255, 255, 255, 0.7)",
                         }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
@@ -463,9 +510,8 @@ function TeamTools() {
                     collapsibleObj[item.msgID].tab === "manual" && {
                         borderLeftWidth: 0.1,
                         borderRightWidth: 0.1,
-                        // borderTopWidth: 0.1,
                         borderBottomWidth: 0,
-                        backgroundColor: "white",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
                     }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
@@ -522,7 +568,7 @@ function TeamTools() {
                     </View>
                 </View>
 
-                {
+                { // auto entry tab open
                     collapsibleObj[item.msgID].tab === "auto" &&
                     <View style={{
                         marginHorizontal: 10,
@@ -531,7 +577,7 @@ function TeamTools() {
                         borderRightWidth: 0.1,
                         borderBottomWidth: 0.1,
                         paddingTop: 15,
-                        backgroundColor: "white",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
                     }} >
                         <View style={{
                             width: "100%",
@@ -554,7 +600,7 @@ function TeamTools() {
                     </View>
                 }
 
-                {
+                { // manual entry tab open
                     collapsibleObj[item.msgID].tab === "manual" &&
                     <View style={styles.manualEntryRow} >
                         {collapsibleObj[item.msgID].html &&
@@ -596,8 +642,18 @@ function TeamTools() {
                                         Enter information manually.
                                     </Text>
                                 </View>
-                                <Text style={styles.saveButton}
-                                    onPress={() => { save(item.msgID, index); }}>SAVE</Text>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Text style={[styles.saveButton,
+                                    {
+                                        color: "red",
+                                        backgroundColor: "rgba(255, 0, 0, 0.1)",
+                                        borderColor: "rgba(255, 0, 0, 0.8)",
+                                        marginRight: 5,
+                                    }]}
+                                        onPress={() => { clear(item.msgID, index); }}>CLEAR</Text>
+                                    <Text style={styles.saveButton}
+                                        onPress={() => { save(item.msgID, index); }}>SAVE</Text>
+                                </View>
                             </View>
 
                             <View style={styles.manualBrandEntrySection} >
@@ -619,6 +675,7 @@ function TeamTools() {
                                     <View style={styles.itemRow} >
                                         {item.imageArr.map((img) =>
                                             <ListedItem
+                                                type="brand"
                                                 img={img}
                                                 focused={inputObj[item.msgID].brandImage === img}
                                                 msgID={item.msgID} />
@@ -671,43 +728,18 @@ function TeamTools() {
                                                 setData={setData} />
                                         </View>
                                         <View style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 8 }}>
-                                        <Text style={styles.manualSelectionText}>
-                                            PRODUCT IMAGE:
-                                        </Text>
-                                        <View style={styles.itemRow} >
-                                            {item.imageArr.map((img) =>
-                                                <TouchableOpacity
-                                                    key={img + (product.itemImage === img)}
-                                                    onPress={() => {
-                                                        let temp = inputObj;
-                                                        if (temp[item.msgID].items[prodIndex].itemImage === img) {
-                                                            temp[item.msgID].items[prodIndex].itemImage = "";
-                                                        }
-                                                        else {
-                                                            temp[item.msgID].items[prodIndex].itemImage = img;
-                                                        }
-                                                        setInputObj(temp);
-                                                        setTrigger(!trigger);
-                                                    }}
-                                                    containerStyle={[styles.listedImageWrapper,
-                                                    product.itemImage === img ? {
-                                                        shadowColor: "#55bbdd",
-                                                        shadowOpacity: 1,
-                                                        shadowRadius: 7
-                                                    } : {
-                                                        shadowColor: "black",
-                                                    }]}>
-                                                    <TranspImage
-                                                        source={{ uri: img }}
-                                                        style={{
-                                                            height: 90,
-                                                            width: 90,
-                                                            overflow: "hidden",
-                                                        }}
-                                                        resizeMode={"contain"}
-                                                        resizeMethod={"scale"} />
-                                                </TouchableOpacity>)}
-                                        </View>
+                                            <Text style={styles.manualSelectionText}>
+                                                PRODUCT IMAGE:
+                                            </Text>
+                                            <View style={styles.itemRow} >
+                                                {item.imageArr.map((img) =>
+                                                    <ListedItem
+                                                        type={prodIndex}
+                                                        img={img}
+                                                        focused={inputObj[item.msgID].items[prodIndex].itemImage === img}
+                                                        msgID={item.msgID} />
+                                                )}
+                                            </View>
                                         </View>
                                     </View>
                                 )
@@ -783,10 +815,10 @@ const styles = StyleSheet.create({
         paddingLeft: 14,
         paddingTop: 13,
         width: "100%",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: "rgba(255, 253, 253, 0.9)",
         top: 0,
         borderBottomWidth: 1,
-        borderColor: "rgba(100, 100, 150, 0.5)",
+        borderColor: "rgba(155, 150, 150, 0.5)",
         borderRadius: 8,
     },
     sectionHeaderTitle: {
@@ -949,7 +981,7 @@ const styles = StyleSheet.create({
         borderLeftWidth: 0.1,
         borderRightWidth: 0.1,
         borderBottomWidth: 0.1,
-        backgroundColor: "white",
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
         flexDirection: "row",
     },
     manualEntryHeaderText: {
@@ -965,7 +997,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         textAlignVertical: "center",
         paddingHorizontal: 10,
-        paddingVertical: 7,
+        paddingVertical: 3,
         marginRight: 1,
         borderRadius: 5,
         borderWidth: 0.1,
@@ -973,14 +1005,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 29, 122, 0.1)',
     },
     manualBrandEntrySection: {
-        backgroundColor: "#eeeeef",
+        backgroundColor: "white",
         borderWidth: 0.1,
         borderColor: "#dddddf",
         marginBottom: 5,
         borderRadius: 5
     },
     manualProductEntrySection: {
-        backgroundColor: "#ececef",
+        backgroundColor: "white",
         borderWidth: 0.1,
         borderColor: "#dcdcde",
         marginTop: 10,

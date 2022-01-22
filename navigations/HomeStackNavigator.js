@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/feed/Home";
 import ProfileScreen from "../screens/profile/Profile";
@@ -16,7 +16,7 @@ const HomeStackNavigator = () => {
   const screenOptionStyle = {
     headerStyle: {
       backgroundColor: 'transparent',
-      height: 83,
+      height: Platform.OS === "android" ? 83 : 110,
       shadowColor: 'transparent',
     },
     cardStyle: {

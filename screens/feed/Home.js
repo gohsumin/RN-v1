@@ -17,7 +17,7 @@ import AppLoading from "expo-app-loading";
 import WebHeaderView from "../web/WebHeaderView";
 import WebNavigationView from "../web/WebNavigationView";
 import { firebase } from '../../data/firebase';
-import "firebase/firestore";
+import "firebase/compat/firestore";
 import { LinearGradient } from "expo-linear-gradient";
 import TopGradient from "../web/TopGradient";
 const firestore = firebase.firestore();

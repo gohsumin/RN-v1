@@ -15,7 +15,7 @@ import { Helmet } from "react-helmet";
 import WebMainSimpleHome from "../screens/web/WebMainSimpleHome";
 import ProfileScreen from "../screens/profile/Profile";
 import FlashMessage from 'react-native-flash-message';
-import Landing from "../screens/web/components/Landing";
+import Landing from "../screens/web/components/landing/Landing";
 import Privacy from "../screens/web/components/Privacy";
 import Terms from "../screens/web/components/Terms";
 import TeamTools from "../teamtools/TeamTools";

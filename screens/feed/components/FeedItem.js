@@ -5,9 +5,7 @@ import ThemeContext from "../../../data/ThemeContext";
 import WebStyleContext from "../../../data/WebStyleContext";
 import FeedBottomBar from "./FeedBottomBar";
 import CommissionsBar from "./CommissionsBar";
-import MiniProfileImage from "../../components/MiniProfileImage";
 import FeedHeaderText from "./FeedHeaderText";
-import { getProfile } from "react-gmail";
 import { firebase } from '../../../data/firebase';
 const firestore = firebase.firestore();
 
@@ -24,30 +22,24 @@ function FeedItem({
   const colors = React.useContext(ThemeContext).colors[theme];
   const {
     getCenterSectionWidth,
-    getProfileWidth,
     getFeedFontSize,
-    getFeedImageRatio,
-    getFeedLeftRatio, } = React.useContext(WebStyleContext);
+    getFeedImageRatio } = React.useContext(WebStyleContext);
 
   const marginVertical = platform === "web" ? 20 : setting === 'popup' ? 17 : 15;
   const marginHorizontal = platform === "web" ? 0 : setting === 'popup' ? 14 : 12;
-  const [headerTextHeight, setHeaderTextHeight] = useState(0);
 
   const window = useWindowDimensions();
 
   function incrementViews(postID) {
     const db = firestore.collection("Posts").doc(postID);
-   //console.log("id (post ID): " + postID);
     db.get().then((doc) => {
       const d = doc.data();
       if ("numViews" in d) {
         db.update({ numViews: d.numViews + 1 }).then(() => {
-         //console.log("Updated views to " + (d.numViews + 1));
         }).catch((error) => { console.log(error); });
       }
       else {
         db.update({ numViews: 1 }).then(() => {
-         //console.log("Set views to  " + 1);
         }).catch((error) => { console.log(error); });
       }
     }).catch((error) => { console.log(error) });
@@ -143,7 +135,7 @@ function FeedItem({
           onPress={navigateToProfile}>
           <Image
             fadeDuration={0}
-            source={item.userImageURL}
+            source={{ uri: item.userImageURL }}
             style={{
               width: "100%",
               height: "100%",
@@ -152,7 +144,7 @@ function FeedItem({
               // borderColor: "blue",
               // alignSelf: "flex-start",
             }}
-            resizeMethod="scale"
+            resizeMethod={"scale"}
             resizeMode="cover"
           />
         </TouchableOpacity>
@@ -169,10 +161,7 @@ function FeedItem({
         <View style={{
           paddingTop: window.width > 750 ? 2 : 0,
           // borderWidth: 1, borderColor: "red"
-        }}
-          onLayout={(event) => {
-            setHeaderTextHeight(event.nativeEvent.layout.height);
-          }} >
+        }} >
           <FeedHeaderText item={item} navigateToProfile={navigateToProfile} />
         </View>
 
@@ -195,7 +184,6 @@ function FeedItem({
                   Linking.openURL(item.itemURL);
                   // incrementViews(item.id);
                 } else {
-                 //console.log("Can't open URL: " + item.itemURL);
                 }
               });
             }}
@@ -244,7 +232,6 @@ function FeedItem({
                   Linking.openURL(item.itemURL);
                   // incrementViews(item.id);
                 } else {
-                 //console.log("Can't open URL: " + item.itemURL);
                 }
               });
             }}>
