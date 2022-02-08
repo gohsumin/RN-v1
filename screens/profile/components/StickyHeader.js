@@ -106,7 +106,7 @@ const StickyHeader = React.memo(props => {
                                 <MaterialIcons name="verified" size={18} color={'#4894e5'} />
                             </View>
                             <Text style={{
-                                color: props.colors.foreground1,
+                                color: props.colors.background1,
                                 fontSize: 13,
                             }} >
                                 {props.userData.userDescription}

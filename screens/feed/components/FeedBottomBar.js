@@ -37,7 +37,7 @@ function FeedBottomBar({ numTapped, link, incrementViews }) {
                 <Text style={{
                     fontSize: getFeedFontSize(window.width, 18.5),
                     marginTop: 0,
-                    color: colors.foreground1,
+                    color: colors.background1,
                 }}>
                     went to buy
                 </Text>
@@ -52,7 +52,7 @@ function FeedBottomBar({ numTapped, link, incrementViews }) {
                     paddingHorizontal: 17,
                     paddingVertical: 12,
                     borderRadius: 12,
-                    backgroundColor: "white", //colors.foreground2,
+                    backgroundColor: "white", //colors.background2,
                     // borderColor: 'orange',
                     // borderWidth: 1
                 }}

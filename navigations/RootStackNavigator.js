@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { View, StatusBar, Text, Platform } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { View, StatusBar, Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabBar from "../navigations/TabBar";
 import SignInMain from "../screens/signin/SignIn";
-import Login from "../screens/signin/components/Login";
-import SignUp from "../screens/signin/components/SignUp";
 import PhoneSignIn from "../screens/signin/components/PhoneSignIn";
-import SwipeCards from "../screens/swipe/SwipeCards";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import FlashMessage from "react-native-flash-message";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { firebaseApp } from "../data/firebase";
+import { getFirestore } from "firebase/firestore";
 import PhoneCode from "../screens/signin/components/PhoneCode";
 
 const RootStack = createStackNavigator();
@@ -18,13 +17,16 @@ const RootStack = createStackNavigator();
 /* ASSUMED that this isn't on the web */
 const RootStackNavigator = () => {
 
-  const { theme, user, setUID } = React.useContext(AppContext);
+  const { theme, setUser, setUID } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
-  const [initialRoute, setInitialRoute] = useState("");
+  const subscription = useRef();
+  const [initialRoute, setInitialRoute] = useState(null);
+  const auth = getAuth();
+  const db = getFirestore(firebaseApp);
 
   const screenOptionStyle = {
     headerStyle: {
-      backgroundColor: colors.foreground4,
+      backgroundColor: colors.eyeSafeBackground,
       height: Platform.OS === "android" ? 83 : 110,
       shadowColor: 'transparent',
     },
@@ -38,23 +40,32 @@ const RootStackNavigator = () => {
   };
 
   useEffect(() => {
-    try {
-      const lgn = AsyncStorage.getItem('@logger:key');
-      if (typeof lgn === "string") {
-        setUID(lgn);
-        setInitialRoute("Main");
+
+    var subscription = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, displayName, photoURL } = user;
+        if (uid && displayName) {
+          setUID(uid);
+          setUser(displayName);
+          setInitialRoute("Main");
+        }
       }
-      setInitialRoute("SignIn");
-    }
-    catch (error) {
-      setInitialRoute("SignIn");
-    }
+      else {
+        setInitialRoute("SignIn");
+      }
+    });
+    subscription.current = subscription;
+
+    return subscription.current;
   }, []);
 
   return (
-    (initialRoute === "") ?
+    (initialRoute == null) ?
       <View style={{ backgroundColor: '#333' }}></View> :
-      <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <View style={{
+        flex: 1, backgroundColor: colors.background,
+        // borderWidth: 1, borderColor: "cyan"
+      }}>
         <StatusBar translucent
           backgroundColor="transparent"
           barStyle={theme === "dark" ?
@@ -68,16 +79,6 @@ const RootStackNavigator = () => {
           <RootStack.Screen
             name="SignIn"
             component={SignInMain}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="Sign Up"
-            component={SignUp}
             options={{ headerShown: false }}
           />
           <RootStack.Screen
@@ -97,10 +98,6 @@ const RootStackNavigator = () => {
             name="Main"
             component={TabBar}
             options={{ headerShown: false }}
-          />
-          <RootStack.Screen
-            name="Approve Purchases"
-            component={SwipeCards}
           />
         </RootStack.Navigator>
       </View>

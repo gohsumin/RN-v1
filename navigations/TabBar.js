@@ -1,21 +1,20 @@
 import React from "react";
-import { View, Platform, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text, Platform } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import ExploreScreen from "../screens/explore/Explore.js";
 import { HomeStackNavigator } from "./HomeStackNavigator";
-import { ProfileStackNavigator } from "./ProfileStackNavigator";
 import Icon from "react-native-vector-icons/Ionicons";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
 import { LinearGradient } from 'expo-linear-gradient';
+import MeStackNavigator from "./MeStackNavigator.js";
 
 const Tab = createBottomTabNavigator();
 
 function TabBar() {
   const theme = React.useContext(AppContext).theme;
   const colors = React.useContext(ThemeContext).colors[theme];
-  const { user } = React.useContext(AppContext);
-  const tabBarHeight = 57;
+  const { user, uid } = React.useContext(AppContext);
+  const tabBarHeight = Platform.OS === "android" ? 57 : 80;
 
   function TabBarComponent({ state, descriptors, navigation }) {
 
@@ -26,7 +25,10 @@ function TabBar() {
     }
 
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+      <View style={{
+        flexDirection: 'row', justifyContent: 'space-around',
+        // borderWidth: 1, borderColor: "white"
+      }}>
         <LinearGradient
           style={{
             height: tabBarHeight,
@@ -48,16 +50,14 @@ function TabBar() {
               ? options.tabBarLabel
               : options.title !== undefined
                 ? options.title
-                : route.name === "Profile"
-                  ? user : route.name;
+                : route.name === "MeStack"
+                  ? "Me" /* user */ : route.name;
 
           const isFocused = state.index === index;
 
           const iconName = route.name === "Home" ?
             (isFocused ? "home" : "home-outline") :
-            route.name === "Explore" ?
-              (isFocused ? "search" : "search-outline") :
-              (isFocused ? "person" : "person-outline");
+            (isFocused ? "person" : "person-outline");
 
           const onPress = () => {
             const event = navigation.emit({
@@ -89,8 +89,11 @@ function TabBar() {
               onLongPress={onLongPress}
               style={{
                 height: tabBarHeight,
+                width: 80,
+                paddingTop: 10,
+                // borderColor: "blue",borderWidth:1,
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-start',
                 backgroundColor: 'transparent',
               }}
             >
@@ -101,7 +104,7 @@ function TabBar() {
               <Text style={{
                 color: isFocused ? colors.blue : colors.tabBarInactiveTint,
                 fontSize: 10.5,
-                marginTop: 2,
+                marginTop: 1,
               }}>
                 {label}
               </Text>
@@ -114,15 +117,16 @@ function TabBar() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Tab.Navigator
-        tabBar={props => <TabBarComponent {...props} />}
-      >
-        <Tab.Screen name="Home" component={HomeStackNavigator} />
-        <Tab.Screen name="Explore" component={ExploreScreen} />
-        <Tab.Screen name="Profile" component={ProfileStackNavigator} />
-      </Tab.Navigator>
-    </View>
+    <Tab.Navigator
+      tabBar={props => <TabBarComponent {...props} />}
+    >
+      <Tab.Screen
+        name="Home"
+        component={HomeStackNavigator} />
+      <Tab.Screen
+        name="MeStack"
+        component={MeStackNavigator} />
+    </Tab.Navigator>
   );
 }
 

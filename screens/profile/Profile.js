@@ -1,32 +1,34 @@
 import React, { useState, useEffect, useContext } from "react";
 import {
-  RefreshControl,
   ActivityIndicator,
-  useWindowDimensions
+  useWindowDimensions,
 } from "react-native";
 import {
-  Text,
   View,
-  ScrollView,
 } from "react-native";
 import AppContext from "../../data/AppContext";
 import ThemeContext from "../../data/ThemeContext";
 import WebStyleContext from "../../data/WebStyleContext";
-import Header from './components/Header';
 import TopGradient from "../web/TopGradient";
-import Bio from './components/Bio';
-import BalanceSection from './components/BalanceSection';
-import UserInfoBar from './components/UserInfoBar';
 import PostPopUp from "./components/PostPopUp";
-import SelfPosts from "./components/SelfPosts";
-import ProfileTop from "./components/ProfileTop";
 import OtherUserPosts from "./components/OtherUserPosts";
 import { Helmet } from "react-helmet";
 import StickyHeader from "./components/StickyHeader";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { firebase } from '../../data/firebase';
-import "firebase/compat/firestore";
-const firestore = firebase.firestore();
+import { firebaseApp } from "../../data/firebase";
+import {
+  getFirestore,
+  getDoc,
+  doc,
+  collection,
+  query,
+  getDocs,
+  orderBy,
+  limit,
+  where,
+  startAfter,
+  FieldPath
+} from "firebase/firestore";
 
 // NUMBER OF CLICKS & STATS ON THE USERS THAT CLICKED (E.G. LOCATION)
 
@@ -61,29 +63,29 @@ const ProfileScreen = ({ route, navigation }) => {
     //console.log("getUserData for user " + uid);
 
     // the user data collection
-    const userProfileDB = firestore.collection('User-Profile').doc(uid);
-
-    userProfileDB.get().then((doc) => {
-      const userBalanceDB = firestore.collection('User-Balance').doc(uid);
+    const db = getFirestore(firebaseApp);
+    const userProfileRef = doc(db, "User-Profile", uid);
+    getDoc(userProfileRef).then((doc) => {
       let ret = doc.data();
       ret.userID = uid;
       if (uid !== logger) {
         callback(ret);
       }
       else {
-        userBalanceDB.get().then((userBalance) => {
-          //console.log("getting user balance");
-          const balance = userBalance.data();
-          if (balance) {
-            ret.available = balance.activeBalance;
-            ret.pending = balance.pendingBalance;
-          }
-          else {
-            ret.available = 0;
-            ret.pending = 0;
-          }
-          callback(ret);
-        })
+        // const userBalanceRef = doc(db, "User-Balance", uid);
+        ret.available = 0;
+        ret.pending = 0;
+        // getDoc(userBalanceRef).then((userBalance) => {
+        //   const balance = userBalance.data();
+        //   if (balance) {
+        //     ret.available = balance.activeBalance;
+        //     ret.pending = balance.pendingBalance;
+        //   }
+        //   callback(ret);
+        // }).catch(() => {
+        //   callback(ret);
+        // })
+        callback(ret);
       }
     }).catch((error) => { console.log(error) });
   }
@@ -94,12 +96,17 @@ const ProfileScreen = ({ route, navigation }) => {
       callback([], cursor);
       return;
     }
-    let db = firestore.collection('Feeds').doc(uid).collection('User').orderBy("timestamp", "desc");
-    if (cursor !== 0) {
-      db = db.startAfter(cursor);
-    }
+    const db = getFirestore(firebaseApp);
+    const userFeedRef = collection(doc(db, "Feeds", uid), "User");
     const loadSize = 10;
-    db.limit(loadSize).get().then((snapshot) => {
+    let feedQuery;
+    if (cursor !== 0) {
+      feedQuery = query(userFeedRef, orderBy("timestamp", "desc"), startAfter(cursor), limit(loadSize));
+    }
+    else {
+      feedQuery = query(userFeedRef, orderBy("timestamp", "desc"), limit(loadSize));
+    }
+    getDocs(feedQuery).then((snapshot) => {
       let refs = [];
       snapshot.forEach((doc) => {
         refs.push(doc.id);
@@ -108,8 +115,9 @@ const ProfileScreen = ({ route, navigation }) => {
         callback([], cursor);
         return;
       }
-      const posts = firestore.collection('Posts').where(firebase.firestore.FieldPath.documentId(), 'in', refs);
-      posts.get().then((feedSnapshot) => {
+      const postsRef = collection(db, "Posts");
+      const postsQuery = query(postsRef, where(FieldPath.documentId(), 'in', refs));
+      getDocs(postsQuery).then((feedSnapshot) => {
         //console.log("after getting posts");
         let ret = [];
         feedSnapshot.forEach((post) => {
@@ -123,6 +131,8 @@ const ProfileScreen = ({ route, navigation }) => {
         ret.sort((a, b) => (a.dateApproved.seconds < b.dateApproved.seconds) ? 1 : - 1);
         const newCursor = snapshot.docs[snapshot.docs.length - 1];
         callback(ret, newCursor);
+      }).catch(err => {
+        callback([], cursor);
       })
     })
   }
@@ -164,20 +174,6 @@ const ProfileScreen = ({ route, navigation }) => {
         }
       });
     }
-    else if (route.params === undefined) { // should be deprecated
-      //console.log("this is how we know it's a user's me page");
-      let uid = logger;
-      getUserData(doc.id, (userData) => {
-        //console.log("from getUserData, userID: " + userData.userID);
-        navigation.setOptions({ title: userData.userName });
-        setUserData(userData);
-        getUserFeed(doc.id, cursor, (newItems, newCursor) => {
-          setCursor(newCursor);
-          setUserFeed(userFeed.concat(newItems));
-          setShow(true);
-        })
-      })
-    }
     else {
       // 404 not found
     }
@@ -214,16 +210,7 @@ const ProfileScreen = ({ route, navigation }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     // parameter was not passed in; this is the profile tab
-    if (route.params === undefined) {
-      refresh(logger);
-    }
-    // parameter was passed in
-    else if (route.params.uid !== undefined) {
-      refresh(route.params.uid);
-    }
-    else {
-      setRefreshing(false);
-    }
+    refresh(userData.userID);
   }, []);
 
   const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -238,348 +225,117 @@ const ProfileScreen = ({ route, navigation }) => {
     return currentOffset;
   };
 
-  const renderView = () => {
-    return (
-      <ScrollView
-        style={{
-          flex: 1,
-          width: "100%",
-          alignSelf: 'center',
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        showsVerticalScrollIndicator={false}
-        onScroll={({ nativeEvent }) => {
-          if (isCloseToBottom(nativeEvent)) {
-            onEndReached();
-          }
-        }}
-      >
-        <View
-          style={{
-            width: "100%",
-            alignSelf: 'center',
-            paddingHorizontal: paddingHorizontal,
-            // borderWidth: 1,
-            // borderColor: 'pink'
-          }}>
-
-          {/* profile pic, name, bio */}
-          <Bio userData={userData} />
-
-          <View style={{ height: 23 }} />
-
-          {/* following | followers | edit/follow */}
-          <UserInfoBar
-            userData={userData}
-            isUser={isUser}
-            setUserData={setUserData}
-            navigate={navigation.navigate}
-          />
-
-          {/* user balance info */}
-          {isUser && <BalanceSection userData={userData} />}
-
-          <View style={{ height: 30 }} />
-
-          <View style={{
-            marginVertical: 0,
-          }}>
-            {isUser && (
-              <Text
-                style={{
-                  color: colors.foreground1,
-                  alignSelf: "flex-start",
-                  paddingLeft: 5,
-                  paddingBottom: 5,
-                }}
-              >
-                MY POSTS
-              </Text>
-            )}
-            {(isUser && (userFeed.length > 0)) ?
-              /* user's posts */
-              <View
-                style={{
-                  borderRadius: 9,
-                  backgroundColor: 'transparent',
-                  overflow: "hidden",
-                  alignItems: "center",
-                  marginBottom: 5,
-                }}
-              >
-                <SelfPosts
-                  userFeed={userFeed}
-                  width={window.width - 2 * paddingHorizontal}
-                />
-              </View> :
-              (isUser && (userFeed.length === 0)) ?
-                <View
-                  style={{
-                    borderRadius: 9,
-                    backgroundColor: colors.foreground4,
-                    overflow: "hidden",
-                    alignItems: "center",
-                    marginBottom: 5,
-                    height: 110,
-                    marginBottom: tabBarHeight + 5,
-                    justifyContent: 'center',
-                    shadowColor: 'black',
-                    shadowOpacity: 0,
-                    shadowRadius: 5,
-                    shadowOffset: { width: 1, height: 1 }
-                  }}>
-                  <Text
-                    style={{
-                      color: 'gray',
-                      fontSize: 16,
-                    }}>
-                    Yet to post :)
-                  </Text>
-                </View> :
-                <View
-                  style={{
-                    borderRadius: 9,
-                    backgroundColor: 'transparent',
-                    overflow: "hidden",
-                    alignItems: "center",
-                    marginBottom: 5,
-                  }}
-                >
-                  <OtherUserPosts
-                    userFeed={userFeed}
-                    width={window.width - 2 * paddingHorizontal}
-                  />
-                </View>}
-          </View>
-        </View>
-      </ScrollView>
-    )
+  let userName;
+  let userImage;
+  let uid;
+  let link;
+  if (route.params.app === "uid" && route.params.id != undefined) {
+    uid = route.params.id;
+    link = "https://www.soshworld.com/uid/" + uid;
   }
-
-  const renderWebView = () => {
-    return (
-      <View style={{
-        height: window.height,
-        width: window.width,
-        // borderWidth: 1,
-        // borderColor: 'pink'
-      }} >
-        <ScrollView
-          style={{
-            flex: 1,
-            alignSelf: 'center',
-            width: "100%",
-          }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-          showsVerticalScrollIndicator={false}
-          onScroll={({ nativeEvent }) => {
-            if (isCloseToBottom(nativeEvent)) {
-              onEndReached();
-            }
-            const threshhold = 80;
-            const d = distanceToStickyHeader(nativeEvent);
-            if (d < -threshhold) {
-              setStickyHeaderOpacity(0);
-            }
-            else if (d < 0) {
-              setIsStickyHeaderExpanded(false);
-              setStickyHeaderOpacity((threshhold + d) / threshhold);
-            }
-            else {
-              setStickyHeaderOpacity(1);
-            }
-          }}
-          scrollEventThrottle={5}
-        >
-
-          <View
-            style={{
-              // borderRadius: 9,
-              position: "absolute",
-              backgroundColor: 'transparent',
-              //backgroundColor: colors.foreground4,
-              // overflow: "hidden",
-              alignSelf: "center",
-              alignItems: "center",
-              // borderColor: "orange",
-              // borderWidth: 1
-            }}
-          >
-            <OtherUserPosts
-              updateToggle={updateToggle}
-              userFeed={userFeed}
-              width={getProfileWidth(window.width)}
-              topHeight={topHeight}
-              height={window.height - topHeight}
-            />
-          </View>
-
-          <ProfileTop
-            topHeight={topHeight}
-            setTopHeight={setTopHeight}
-            userData={userData}
-            isUser={isUser}
-            setUserData={setUserData}
-            navigate={navigation.navigate} />
-
-        </ScrollView>
-      </View>
-    )
-  }
-
-  if (platform === "web") {
-
-    let userName;
-    let userImage;
-    let uid;
-    let link;
-    if (route.params.app === "uid" && route.params.id != undefined) {
-      uid = route.params.id;
-      link = "https://www.soshworld.com/uid/" + uid;
-    }
-    else if (route.params.app === "ig" && route.params.id != undefined) {
-      link = "https://www.soshworld.com/ig/" + route.params.id;
-      // check if ig exists
-      const userProfileDB = firestore.collection('User-Profile');
-      userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
-        if (snapshot != null) {
-          snapshot.forEach((doc) => {
-            uid = doc.id;
-            getUserData(uid, (userData) => {
-              userName = userData.userName;
-              userImage = userData.userImage;
-            })
+  else if (route.params.app === "ig" && route.params.id != undefined) {
+    link = "https://www.soshworld.com/ig/" + route.params.id;
+    // check if ig exists
+    const userProfileDB = firestore.collection('User-Profile');
+    userProfileDB.where("instagramHandle", "==", route.params.id).limit(1).get().then((snapshot) => {
+      if (snapshot != null) {
+        snapshot.forEach((doc) => {
+          uid = doc.id;
+          getUserData(uid, (userData) => {
+            userName = userData.userName;
+            userImage = userData.userImage;
           })
-        }
-      });
-    }
-    else {
-      userName = "";
-      userImage = "";
-      uid = "";
-      link = "";
-    }
-    getUserData(uid, (userData) => {
-      userName = userData.userName;
-      userImage = userData.userImageURL;
+        })
+      }
     });
-
-    return (
-      <View style={{
-        flex: 1,
-        backgroundColor: colors.eyeSafeBackground,
-        alignItems: "center",
-      }}>
-
-        <Helmet>
-          <meta property='og:title' content={userName ? userName : "SOSH WORLD"} />
-          <meta property='og:image' content={userImage ? userImage : 'https://www.soshworld.com/static/media/SoShNavLogo.4e45a847.png'} />
-          <meta property='og:description' content={"Follow what " +
-            (userName ? userName + " is" : "your favorite influences are") +
-            " buying."} />
-          <meta property='og:url' content={location.href} />
-        </Helmet>
-
-        {/* web view background gray */}
-        <View
-          style={{
-            position: 'absolute',
-            width: getCenterSectionWidth(window.width),
-            height: "100%",
-            alignSelf: 'center',
-            backgroundColor: colors.webMainBackground,
-            // shadowRadius: 20,
-            // shadowColor: "black",
-            // shadowOpacity: 1
-          }}>
-        </View>
-        <TopGradient />
-
-        {show ?
-          <OtherUserPosts
-            updateToggle={updateToggle}
-            userFeed={userFeed}
-            width={getProfileWidth(window.width)}
-            topHeight={topHeight}
-            setTopHeight={setTopHeight}
-            isUser={isUser}
-            userData={userData}
-            setUserData={setUserData}
-            navigate={() => { }}
-            height={window.height - topHeight}
-            setStickyHeaderOpacity={setStickyHeaderOpacity}
-            setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
-            onEndReached={onEndReached}
-            loadRequested={loadRequested}
-          />
-          : <View />
-        }
-
-        <StickyHeader
-          opacity={stickyHeaderOpacity}
-          isStickyHeaderExpanded={isStickyHeaderExpanded}
-          setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
-          stickyHeaderHeight={stickyHeaderHeight}
-          topHeight={topHeight}
-          userData={userData}
-          colors={colors}
-          setTopHeight={setTopHeight}
-          userData={userData}
-          isUser={isUser}
-          setUserData={setUserData}
-          navigate={() => { }} />
-
-        {loadRequested &&
-          <View style={{
-            position: 'absolute',
-            alignItems: 'center',
-            alignSelf: 'center',
-            bottom: 10,
-          }}>
-            <ActivityIndicator size="small" color="white" />
-          </View>}
-        {modal && <PostPopUp info={modalInfo} />}
-      </View>
-    )
   }
   else {
-    return (
-      <View style={{
-        flex: 1,
-        backgroundColor: colors.eyeSafeBackground,
-        alignItems: "center",
-      }}>
-
-        {show ?
-          renderView()
-          : <View />
-        }
-
-        {/* header */}
-        <Header title={userData.userName} />
-
-        {loadRequested &&
-          <View style={{
-            position: 'absolute',
-            alignItems: 'center',
-            alignSelf: 'center',
-            bottom: 10,
-          }}>
-            <ActivityIndicator size="small" color="white" />
-          </View>}
-        {modal && <PostPopUp info={modalInfo} />}
-      </View>
-    )
+    userName = "";
+    userImage = "";
+    uid = "";
+    link = "";
   }
+  getUserData(uid, (userData) => {
+    userName = userData.userName;
+    userImage = userData.userImageURL;
+  });
+
+  return (
+    <View style={{
+      flex: 1,
+      backgroundColor: colors.eyeSafeBackground,
+      alignItems: "center",
+    }}>
+
+      <Helmet>
+        <meta property='og:title' content={userName ? userName : "SOSH WORLD"} />
+        <meta property='og:image' content={userImage ? userImage : 'https://www.soshworld.com/static/media/SoShNavLogo.4e45a847.png'} />
+        <meta property='og:description' content={"Follow what " +
+          (userName ? userName + " is" : "your favorite influences are") +
+          " buying."} />
+        <meta property='og:url' content={location.href} />
+      </Helmet>
+
+      {/* web view background gray */}
+      <View
+        style={{
+          position: 'absolute',
+          width: getCenterSectionWidth(window.width),
+          height: "100%",
+          alignSelf: 'center',
+          backgroundColor: colors.eyeSafeBackground,
+          // shadowRadius: 20,
+          // shadowColor: "black",
+          // shadowOpacity: 1
+        }}>
+      </View>
+      <TopGradient />
+
+      {show ?
+        <OtherUserPosts
+          updateToggle={updateToggle}
+          userFeed={userFeed}
+          width={getProfileWidth(window.width)}
+          topHeight={topHeight}
+          setTopHeight={setTopHeight}
+          isUser={isUser}
+          userData={userData}
+          setUserData={setUserData}
+          navigate={() => { }}
+          height={window.height - topHeight}
+          setStickyHeaderOpacity={setStickyHeaderOpacity}
+          setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
+          onEndReached={onEndReached}
+          loadRequested={loadRequested}
+        />
+        : <View />
+      }
+
+      <StickyHeader
+        opacity={stickyHeaderOpacity}
+        isStickyHeaderExpanded={isStickyHeaderExpanded}
+        setIsStickyHeaderExpanded={setIsStickyHeaderExpanded}
+        stickyHeaderHeight={stickyHeaderHeight}
+        topHeight={topHeight}
+        userData={userData}
+        colors={colors}
+        setTopHeight={setTopHeight}
+        userData={userData}
+        isUser={isUser}
+        setUserData={setUserData}
+        navigate={() => { }} />
+
+      {loadRequested &&
+        <View style={{
+          position: 'absolute',
+          alignItems: 'center',
+          alignSelf: 'center',
+          bottom: 10,
+        }}>
+          <ActivityIndicator size="small" color="white" />
+        </View>}
+      {modal && <PostPopUp info={modalInfo} />}
+    </View>
+  )
 };
 export default ProfileScreen;

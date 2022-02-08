@@ -53,9 +53,9 @@ function Badge() {
                 lineHeight: getLineHeight(window.height),
                 color: "white",
                 textAlign: "right",
-                textShadowRadius: 20,
-                textShadowColor: "black",
-                shadowOpacity: 1
+                // textShadowRadius: 20,
+                // textShadowColor: "black",
+                // shadowOpacity: 1
             }} >
                 {"For full\nexperience"}
             </Text>
@@ -66,11 +66,11 @@ function Badge() {
                     height: getImageSide(window.height) / 2.99,
                     alignSelf: "flex-end",
                     marginLeft: getMarginLeft(window.height),
-                    shadowRadius: 15,
-                    shadowColor: "black",
-                    shadowOpacity: 1,
-                    shadowOffset: { width: 5, height: 0 },
-                    overflow: "visible"
+                    // shadowRadius: 15,
+                    // shadowColor: "black",
+                    // shadowOpacity: 1,
+                    // shadowOffset: { width: 5, height: 0 },
+                    // overflow: "visible"
                 }}
                 resizeMode={"contain"}
             />

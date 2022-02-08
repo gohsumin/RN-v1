@@ -18,7 +18,7 @@ const CenterBackground = () => {
                 position: 'absolute',
                 width: getCenterSectionWidth(window.width),
                 height: "100%",
-                backgroundColor: colors.webMainBackground,
+                backgroundColor: colors.eyeSafeBackground,
                 shadowOpacity: 0.7,
                 shadowRadius: 20,
                 shadowColor: 'black'

@@ -9,17 +9,10 @@ import {
     Platform
 } from 'react-native';
 import AppContext from '../../data/AppContext';
-import WebSignIn from './WebSignIn';
 
 function SignIn({ navigation }) {
 
     const window = useWindowDimensions();
-
-    if (Platform.OS === "web") {
-        return (
-            <WebSignIn navigation={navigation} />
-        )
-    }
 
     return (
         <View
@@ -58,7 +51,7 @@ function SignIn({ navigation }) {
                 <Text style={{
                     textAlign: 'center',
                     color: 'black',
-                    fontSize: 19,
+                    fontSize: 20,
                     fontWeight: 'bold',
                     letterSpacing: 0.1,
                 }}>

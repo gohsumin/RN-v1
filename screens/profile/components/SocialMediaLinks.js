@@ -24,7 +24,7 @@ function SocialMediaLinks({ userData }) {
                     style={{
                         padding: 5,
                         paddingRight: 6,
-                        backgroundColor: colors.foreground4,
+                        backgroundColor: colors.background2,
                         borderRadius: 8,
                         flexDirection: "row",
                         alignItems: "center",
@@ -39,7 +39,7 @@ function SocialMediaLinks({ userData }) {
                             marginRight: 5.5
                         }} />
                     <Text style={{
-                        color: (handle in userData) ? colors.antiBackground : colors.foreground1,
+                        color: (handle in userData) ? colors.antiBackground : colors.text2,
                         fontSize: (handle in userData) ? 16 : 15,
                         fontWeight: (handle in userData) ? "666" : "normal",
                     }}>

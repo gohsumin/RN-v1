@@ -8,8 +8,9 @@ import { getAuth, signInWithPhoneNumber, PhoneAuthProvider } from "firebase/auth
 function PhoneSignIn({ navigation }) {
 
     const [phoneNumber, setPhoneNumber] = useState("");
+    const numberWithAreaCode = useRef("");
     const [message, setMessage] = useState("");
-    const [valid, setValid] = useState(true);// useState(false);
+    const [valid, setValid] = useState(false);
     const recaptchaVerifier = useRef(null);
     const phoneInputRef = createRef();
     const app = getApp();
@@ -17,28 +18,33 @@ function PhoneSignIn({ navigation }) {
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () =>
-                <Text onPress={() => {
-                    if (valid) {
-                        sendVerification();
-                    }
-                }}
-                    style={{
-                        color: (valid) ? "#24a0ed" : "#777",
-                        marginRight: 10,
-                        fontSize: 17,
-                    }}
-                >Verify</Text>
+            headerRight: () => <HeaderRight valid={valid} />
         })
     }, [navigation, valid]);
 
     function sendVerification() {
-        signInWithPhoneNumber(auth, '+15555555555', recaptchaVerifier.current)
+        signInWithPhoneNumber(auth, numberWithAreaCode.current, recaptchaVerifier.current)
             .then(confirmationResult => {
                 navigation.navigate("Phone Verification", { verificationId: confirmationResult.verificationId });
             }).catch(err => {
                 setMessage("Error: " + err);
             });
+    }
+
+    function HeaderRight(valid) {
+        return (
+            <Text
+                onPress={() => {
+                    if (valid) {
+                        sendVerification();
+                    }
+                }}
+                style={{
+                    color: (valid) ? "#24a0ed" : "#777",
+                    marginRight: 10,
+                    fontSize: 17,
+                }}>Verify</Text>
+        )
     }
 
     return (
@@ -56,6 +62,15 @@ function PhoneSignIn({ navigation }) {
                 layout="first"
                 onChangeText={(text) => {
                     setPhoneNumber(text);
+                    if (!isNaN(text) && (text.length > 6)) {
+                        setValid(true);
+                    }
+                    else {
+                        setValid(false);
+                    }
+                }}
+                onChangeFormattedText={(text) => {
+                    numberWithAreaCode.current = text;
                 }}
                 autoFocus={true}
                 containerStyle={{

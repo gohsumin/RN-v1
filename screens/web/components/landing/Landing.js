@@ -15,13 +15,14 @@ function Landing({ navigation }) {
 
     function getOuterStyles() {
         let style = {
-            marginVertical: 55,
+            marginVertical: 40,
             width: "92%",
             alignSelf: "center",
             alignItems: "center",
         };
         if (window.width > 700) {
-            style.flexDirection = "row";
+            style.marginVertical = 50,
+                style.flexDirection = "row";
             style.justifyContent = "space-evenly";
         }
         return style;
@@ -29,18 +30,18 @@ function Landing({ navigation }) {
 
     function getFontSize(size) {
         if (window.width > 1200) {
-            return size + 20;
+            return size * 1.2;
         }
         if (window.width > 900) {
-            return size + 15;
+            return size * 1.15;
         }
         if (window.width > 750) {
-            return size + 5;
+            return size * 1.1;
         }
         if (window.width > 650) {
             return size;
         }
-        return size - 10;
+        return size * 0.95;
     }
 
     useEffect(() => {
@@ -60,7 +61,7 @@ function Landing({ navigation }) {
                     style={[{
                         width: 140,
                         height: 70,
-                        marginTop: 30
+                        marginTop: 60
                     }]}
                     resizeMode='contain' />
             </View>
@@ -174,7 +175,7 @@ function Landing({ navigation }) {
                         flexWrap: "wrap",
                         color: "#888",
                         marginTop: 10,
-                        fontSize: getFontSize(13),
+                        fontSize: getFontSize(20),
                     }}>
                         {"Get paid everytime a follower\nbuys what you bought."}
                     </Text>
@@ -195,7 +196,7 @@ function Landing({ navigation }) {
                     fontFamily: "Arial-BoldMT",
                     fontWeight: "800",
                     color: "white",
-                    fontSize: getFontSize(35),
+                    fontSize: getFontSize(30),
                     textAlign: "center",
                     flexWrap: "wrap",
                     marginVertical: 20
@@ -226,7 +227,7 @@ function Landing({ navigation }) {
             </View>
 
             <View style={[{
-                width: "92%",
+                width: "96%",
                 alignItems: "center",
                 alignSelf: "center",
                 marginBottom: 30
@@ -235,11 +236,18 @@ function Landing({ navigation }) {
                 alignItems: "flex-end",
                 justifyContent: "space-between"
             }]}>
-                <View style={window.width <= 800 && { alignItems: "center" }}>
+                <View style={[
+                    window.width <= 800 && { alignItems: "center" },
+                    {
+                        // width: 350,
+                        // borderWidth: 1, borderColor: 'pink'
+                    }
+                ]}>
                     <Image source={require("../../../../assets/SoShNavLogo.png")}
                         style={{
-                            width: 120,
-                            height: 60,
+                            width: 150,
+                            height: 50,
+                            // borderWidth: 1, borderColor: 'pink'
                         }}
                         resizeMode='contain' />
                     <Text style={{
@@ -247,27 +255,43 @@ function Landing({ navigation }) {
                         fontSize: 14,
                         fontFamily: "Arial-BoldMT",
                         fontWeight: "800",
-                        marginTop: 20,
+                        marginTop: 15,
                     }}>
                         All Rights Reserved © 2021 • SOSH WRLD INC.
                     </Text>
                 </View>
 
-                <Text style={{
-                    color: "white",
-                    fontSize: 18,
-                    fontFamily: "Arial-BoldMT",
-                    fontWeight: "800",
-                    marginVertical: 20,
-                }} onMouseEnter={event => {
-                    event.target.style.color = "rgb(155, 240, 11)";
-                }} onMouseLeave={event => {
-                    event.target.style.color = "white";
-                }}>
+                <Text style={[
+                    {
+                        color: "white",
+                        fontSize: 18,
+                        fontFamily: "Arial-BoldMT",
+                        fontWeight: "800",
+                        marginVertical: 10,
+                    },
+                    window.width > 800 && {
+                        position: "absolute",
+                        width: "100%",
+                        textAlign: "center",
+                        marginVertical: 30,
+                    }
+                ]}
+                    onMouseEnter={event => {
+                        event.target.style.color = "rgb(155, 240, 11)";
+                    }} onMouseLeave={event => {
+                        event.target.style.color = "white";
+                    }}>
                     HA@SOSHAPPS.COM
                 </Text>
 
-                <View style={[{ alignItems: "flex-end" }, window.width <= 800 && { alignItems: "center" }]}>
+                <View style={[
+                    { alignItems: "flex-end" },
+                    window.width <= 800 && { alignItems: "center" },
+                    {
+                        // width: 350,
+                        // borderWidth: 1, borderColor: 'pink'
+                    }
+                ]}>
                     <View style={{
                         flexDirection: "row",
                         width: 95,
@@ -280,7 +304,7 @@ function Landing({ navigation }) {
 
                     <View style={{
                         flexDirection: "row",
-                        marginTop: 20
+                        marginTop: 15
                     }}>
                         <Text style={{
                             color: "white",

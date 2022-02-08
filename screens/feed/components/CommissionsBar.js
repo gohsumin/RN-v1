@@ -18,7 +18,7 @@ function CommissionsBar({width}) {
                 justifyContent: 'center',
                 marginTop: 15,
                 padding: 7,
-                backgroundColor: colors.foreground3,
+                backgroundColor: colors.background3,
                 borderRadius: 10
             }}
         >
@@ -34,7 +34,7 @@ function CommissionsBar({width}) {
                     203
                 </Text>
                 <Text style={{
-                    color: colors.foreground1,
+                    color: colors.background1,
                     fontSize: 13,
                     marginTop: -3
                 }}>
@@ -46,7 +46,7 @@ function CommissionsBar({width}) {
                 marginVertical: 6.5,
                 marginHorizontal: 12,
                 borderWidth: 0.3,
-                borderColor: colors.foreground1,
+                borderColor: colors.background1,
             }} />
             <View
                 style={{
@@ -60,7 +60,7 @@ function CommissionsBar({width}) {
                     $145,691.11
                 </Text>
                 <Text style={{
-                    color: colors.foreground1,
+                    color: colors.background1,
                     fontSize: 13,
                     marginTop: -3
                 }}>

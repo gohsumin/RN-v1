@@ -36,7 +36,7 @@ function FeedHeaderText({ item, navigateToProfile }) {
             </TouchableOpacity>
             <Text style={{
                 fontSize: getFeedFontSize(window.width, 17),
-                color: colors.foreground1,
+                color: colors.background1,
                 opacity: 0.9,
                 textAlignVertical: 'center',
                 textShadowColor: colors.background,

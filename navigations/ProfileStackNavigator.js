@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 
 const ProfileStackNavigator = () => {
 
-  const { theme } = React.useContext(AppContext);
+  const { theme, uid } = React.useContext(AppContext);
   const colors = React.useContext(ThemeContext).colors[theme];
 
   const screenOptionStyle = {
@@ -33,7 +33,7 @@ const ProfileStackNavigator = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }} >
-      <Stack.Navigator initialRouteName={""} screenOptions={screenOptionStyle}>
+      <Stack.Navigator initialRouteName={"Profile"} screenOptions={screenOptionStyle}>
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
@@ -41,6 +41,7 @@ const ProfileStackNavigator = () => {
             headerLeft: null,
             gestureEnabled: false,
           }}
+          initialParams={{ app: "uid", id: uid }}
         >
         </Stack.Screen>
         <Stack.Screen

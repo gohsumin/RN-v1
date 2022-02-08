@@ -5,10 +5,10 @@ import Input from './Input';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import brandFunctions from "./brandFunctions";
-import { firebase } from "../data/firebase";
+import { firebaseApp } from "../data/firebase";
+import { collection, getDocs, getFirestore, limit, orderBy } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
 import TranspImage from './TranspImage';
-const firestore = firebase.firestore();
 
 function TeamTools() {
 
@@ -18,10 +18,15 @@ function TeamTools() {
     const [collapsibleObj, setCollapsibleObj] = useState({});
     const [trigger, setTrigger] = useState(false);
     const [inputObj, setInputObj] = useState({});
+    const db = getFirestore(firebaseApp);
 
     useEffect(() => {
-        const db = firestore.collection("Human-Proccessing").orderBy("msgDate", "desc").limit(500);
-        db.get().then((snapshot) => {
+        const q = query(
+            collection(db, "Human-Proccessing"),
+            orderBy("msgDate", "desc"),
+            limit(500)
+        );
+        getDocs(q).then((snapshot) => {
             setReady(false);
             let res = [];
             let ca = {};

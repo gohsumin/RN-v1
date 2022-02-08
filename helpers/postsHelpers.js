@@ -1,7 +1,3 @@
-import React from "react";
-import { firebase } from '../data/firebase';
-import "firebase/compat/firestore";
-const firestore = firebase.firestore();
 
 /* returns elapsed time in string format, given a timestamp */
 function getElapsedTime(then) {

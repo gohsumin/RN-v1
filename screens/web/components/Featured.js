@@ -1,9 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, FlatList, TouchableOpacity, Image } from 'react-native';
-import { firebase } from "../../../data/firebase";
-const firestore = firebase.firestore();
-import { EvilIcons } from '@expo/vector-icons';
+import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
+import { firebaseApp } from "../../../data/firebase";
+import { getFirestore, collection, orderBy, getDocs } from 'firebase/firestore';
 import { BlurView } from 'expo-blur';
 import { useLinkTo } from '@react-navigation/native';
 
@@ -25,16 +24,20 @@ function Featured({ height, width, footerHeight, marginTop }) {
     const cardWidth = profileImageHeight + profileMargin * 2;
     const blurTint = "dark";
 
+    const db = getFirestore(firebaseApp);
+
     useEffect(() => {
-        const db = firestore.collection("Explore").orderBy("rank", "asc");
-        db.get().then((snapshot) => {
+        const exploreRef = collection(db, "Explore");
+        const exploreQuery = query(exploreRef, orderBy("rank", "asc"));
+        getDocs(exploreQuery).then(snapshot => {
             let arr = [];
-            snapshot.forEach((doc) => {
-                const d = doc.data();
-                arr.push(d);
-            });
+            snapshot.forEach(doc => {
+                if (doc.exists()) {
+                    arr.push(doc.data());
+                }
+            })
             setData(arr);
-        });
+        })
     }, []);
 
     function FeaturedProfile({ key, profile }) {

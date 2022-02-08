@@ -18,7 +18,7 @@ function Header(props) {
                 left: 0,
                 width: WINDOW_WIDTH,
                 height: Platform.OS === "android" ? 83 : 110,
-                borderBottomColor: colors.foreground4,
+                borderBottomColor: colors.background4,
                 borderBottomWidth: 0.17,
                 justifyContent: 'flex-end',
                 alignItems: 'center',

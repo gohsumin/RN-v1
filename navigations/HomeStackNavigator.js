@@ -1,10 +1,10 @@
 import React from "react";
 import { View, Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "../screens/feed/Home";
-import ProfileScreen from "../screens/profile/Profile";
+import AppHome from "../screens/feed/AppHome";
 import AppContext from "../data/AppContext";
 import ThemeContext from "../data/ThemeContext";
+import ProfileScreen from "../screens/profile/ProfileScreen";
 
 const HomeStack = createStackNavigator();
 
@@ -23,7 +23,7 @@ const HomeStackNavigator = () => {
       backgroundColor: 'transparent'
     },
     headerTitleStyle: {
-      marginTop: 10,
+      // marginTop: 10,
       fontSize: 18,
     },
     headerTitleAlign: 'center',
@@ -34,13 +34,17 @@ const HomeStackNavigator = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <HomeStack.Navigator screenOptions={screenOptionStyle}>
+      <HomeStack.Navigator screenOptions={screenOptionStyle}
+        initialRouteName="Home">
         <HomeStack.Screen
           name="Home"
-          component={HomeScreen}
+          component={AppHome}
           options={{ headerLeft: null, headerShown: false }}
         />
-        <HomeStack.Screen name="Profile" component={ProfileScreen} />
+        <HomeStack.Screen
+          name="Profile"
+          component={ProfileScreen}
+        />
       </HomeStack.Navigator>
     </View>
   );

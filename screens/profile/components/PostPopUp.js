@@ -74,7 +74,7 @@ function PostPopUp({ info }) {
             </TouchableOpacity>
 
             <Animated.View style={{
-                backgroundColor: colors.foreground4,
+                backgroundColor: colors.background4,
                 position: 'absolute',
                 width: platform === "web" ? getCenterSectionWidth(window.width) : "94%",
                 height: platform === "web" ? getCenterSectionWidth(window.width) * 0.87 : 400,

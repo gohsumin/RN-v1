@@ -61,15 +61,6 @@ const WebNavigationView = ({ currentRoute, setCurrentRoute }) => {
 
             <WebNavigationItem
                 currentRoute={currentRoute}
-                routeName={"Explore"}
-                iconName={"search-outline"}
-                navigate={() => {
-                    setCurrentRoute({ routeName: "Explore", userName: "" });
-                    navigation.navigate("Explore");
-                }} />
-
-            <WebNavigationItem
-                currentRoute={currentRoute}
                 routeName={"My Profile"}
                 iconName={"person-outline"}
                 navigate={() => {

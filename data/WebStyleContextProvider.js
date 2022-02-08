@@ -181,9 +181,7 @@ class WebStyleContextProvider extends Component {
 
     render() {
         return (
-            <WebStyleContext.Provider
-                value={this.state}
-            >
+            <WebStyleContext.Provider value={this.state}>
                 {this.props.children}
             </WebStyleContext.Provider>
         );

@@ -1,5 +1,4 @@
-import firebase from "firebase/compat/app";
-import 'firebase/compat/storage';
+import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAUSNeT750wI-oDmpQm4AZcsYmZfc-ShSU",
@@ -11,19 +10,6 @@ const firebaseConfig = {
     measurementId: "G-JMPYGPX7P5"
 };
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
-// if (firebase.app !== undefined && firebase.apps.length === 0) {
-//     firebaseApp = firebase.initializeApp(firebaseConfig);
-// }
-// else if (firebase === undefined) {
-//    console.log("firebase is undefined");
-// }
-// else {
-//    console.log("firebase.app is undefined");
-//     firebase.initializeApp(firebaseConfig);
-// }
-
-const storageRef = firebase.storage().ref();
-
-export { firebase, firebaseApp, firebaseConfig, storageRef };
+export { firebaseApp };

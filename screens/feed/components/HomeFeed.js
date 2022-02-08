@@ -29,7 +29,7 @@ function HomeFeed({ posts, onEndReached, refreshing, onRefresh, flatlistRef, nav
                 style={{
                     height: 0.4,
                     width: platform === "web" ? getCenterSectionWidth(window.width) * 0.85 : "85%",
-                    backgroundColor: colors.foreground2,
+                    backgroundColor: colors.background2,
                     opacity: 1,
                     alignSelf: "center",
                     marginTop: 6,

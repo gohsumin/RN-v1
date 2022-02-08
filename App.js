@@ -4,9 +4,7 @@ import * as Linking from 'expo-linking';
 import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import UsersContext from "./data/UsersContext";
-import PostsContext from "./data/PostsContext";
 import AppContext from "./data/AppContext";
-import SwipeCardsContext from "./data/SwipeCardsContext";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
 import ThemeContextProvider from "./data/ThemeContextProvider";
 import WebNavigationContext from './data/WebNavigationContext';
@@ -27,11 +25,9 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      remaining: [],
       user: "", //"realhunion",
       uid: "", //"b5aU5qla3eVPqX1asJviRcpYuDq1",
       theme: "dark",
-      currentRoute: { routeName: "Home", userName: "" },
     };
 
     this.platform = Platform.OS;
@@ -55,18 +51,8 @@ export default class App extends React.Component {
     LogBox.ignoreAllLogs(true);
   }
 
-  popRemaining = (key) => {
-    const newRemaining = this.state.remaining;
-    delete newRemaining[key];
-    this.setState(prev => ({ remaining: newRemaining }));
-  }
-
   setUser = user => {
     this.setState({ user: user });
-  }
-
-  setUserToken = userToken => {
-    this.setState({ userToken: userToken });
   }
 
   setUID = uid => {
@@ -81,17 +67,12 @@ export default class App extends React.Component {
     return (
       /* Contexts can be composed later into a single component. */
       <WebNavigationContext.Provider
-      value={{
-        currentRoute: this.state.currentRoute,
-        setCurrentRoute: this.setCurrentRoute
-      }}>
+        value={{
+          currentRoute: this.state.currentRoute,
+          setCurrentRoute: this.setCurrentRoute
+        }}>
         <WebStyleContextProvider>
-          <SwipeCardsContext.Provider
-          value={{
-            remaining: this.state.remaining,
-            popRemaining: this.popRemaining
-          }}>
-            <AppContext.Provider
+          <AppContext.Provider
             value={{
               platform: this.platform,
               user: this.state.user,
@@ -100,21 +81,14 @@ export default class App extends React.Component {
               setUser: this.setUser,
               setUID: this.setUID
             }}>
-              <ThemeContextProvider>
-                <UsersContext.Provider>
-                  <PostsContext.Provider
-                  value={{
-                    updateTimelineAfterFollowing: this.updateTimelineAfterFollowing,
-                    updateTimelineAfterUnfollowing: this.updateTimelineAfterUnfollowing,
-                  }}>
-                    <NavigationContainer linking={this.linking} fallback={<Text>Loading...</Text>}>
-                      {this.platform === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
-                    </NavigationContainer>
-                  </PostsContext.Provider>
-                </UsersContext.Provider>
-              </ThemeContextProvider>
-            </AppContext.Provider>
-          </SwipeCardsContext.Provider>
+            <ThemeContextProvider>
+              <UsersContext.Provider>
+                <NavigationContainer linking={this.linking} fallback={<Text>Loading...</Text>}>
+                  {this.platform === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
+                </NavigationContainer>
+              </UsersContext.Provider>
+            </ThemeContextProvider>
+          </AppContext.Provider>
         </WebStyleContextProvider>
       </WebNavigationContext.Provider>
     );

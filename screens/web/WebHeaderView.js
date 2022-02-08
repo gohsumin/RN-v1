@@ -117,7 +117,7 @@ const WebHeaderView = () => {
                     <Icon
                         name="chevron-back"
                         size={27}
-                        color={colors.foreground1}
+                        color={colors.background1}
                         style={{
                             textShadowColor: 'black',
                             textShadowRadius: 3,
@@ -131,7 +131,7 @@ const WebHeaderView = () => {
                     style={{
                         width: 0,
                         height: 45,
-                        borderColor: colors.foreground2,
+                        borderColor: colors.background2,
                         borderWidth: 0.1,
                     }} />
                 {(userName !== "") ?
@@ -153,7 +153,7 @@ const WebHeaderView = () => {
                         </Text>
                         <Text
                             style={{
-                                color: colors.foreground1,
+                                color: colors.background1,
                                 fontSize: 18,
                                 fontWeight: '500',
                             }}>
