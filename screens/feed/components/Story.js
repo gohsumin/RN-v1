@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, Image, Linking, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Linking, Text, TouchableOpacity, View, Share } from 'react-native';
 import Modal from "react-native-modal";
 import AppContext from '../../../data/AppContext';
 import { firebaseApp } from '../../../data/firebase';
 import { arrayUnion, collection, doc, getDocs, getFirestore, increment, orderBy, query, setDoc, Timestamp, updateDoc, where } from "firebase/firestore";
 import ThemeContext from '../../../data/ThemeContext';
 import { getElapsedTime } from "../../../helpers/postsHelpers";
-import { AntDesign } from '@expo/vector-icons';
-import { Link } from 'react-router-native';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 
 function Story({ startTime, endTime, data, closeStory, navigation, countDownTransitioning }) {
 
@@ -136,6 +135,26 @@ function Story({ startTime, endTime, data, closeStory, navigation, countDownTran
         setNoPosts(false);
         closeStory();
     }
+
+    const onShare = async (userName) => {
+        try {
+            const result = await Share.share({
+                message:
+                    'SOSH  |  Shop like ' + userName,
+            });
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    // shared with activity type of result.activityType
+                } else {
+                    // shared
+                }
+            } else if (result.action === Share.dismissedAction) {
+                // dismissed
+            }
+        } catch (error) {
+            alert(error.message);
+        }
+    };
 
     function NoPosts() {
         return (
@@ -340,7 +359,19 @@ function Story({ startTime, endTime, data, closeStory, navigation, countDownTran
                                         </Text>
                                     </View>
                                 </View>
-                                {/* <Octicons name="kebab-horizontal" size={20} color={colors.text1} /> */}
+                                <TouchableOpacity
+                                    style={{
+                                        width: 30,
+                                        height: 20,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        // borderWidth: 1, borderColor: "white"
+                                    }}
+                                    onPress={() => {
+                                        onShare(data.userName);
+                                    }}>
+                                    <Octicons name="kebab-horizontal" size={20} color={colors.text1} />
+                                </TouchableOpacity>
                             </View>
 
                             {/* Item image */}
@@ -369,6 +400,7 @@ function Story({ startTime, endTime, data, closeStory, navigation, countDownTran
                                 alignItems: "center",
                                 marginHorizontal: padding,
                                 marginTop: padding,
+                                // borderWidth: 1, borderColor: "green"
                             }}>
                                 <Text style={{
                                     flex: 1,

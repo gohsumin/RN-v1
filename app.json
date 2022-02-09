@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SoSH",
-    "slug": "SoSH",
+    "name": "sosh",
+    "slug": "soshworld",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "sosh",
@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.soshworld"
     },
     "androidNavigationBar": {
       "visible": "immersive",
