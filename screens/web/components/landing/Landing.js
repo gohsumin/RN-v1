@@ -52,6 +52,17 @@ function Landing({ navigation }) {
         linkTo("/Home");
     }
 
+    function openiOSApp() {
+        const link = "";
+        Linking.canOpenURL(link).then(supported => {
+            if (supported) {
+              Linking.openURL(link);
+            } else {
+             //console.log("Can't open URL: " + link);
+            }
+          });
+    }
+
     return (
         <ScrollView style={{ backgroundColor: "#060606" }}>
             <View style={window.width > 700 ?
@@ -75,18 +86,40 @@ function Landing({ navigation }) {
                         fontFamily: "Arial-BoldMT",
                         fontWeight: "800",
                         color: "white",
-                        lineHeight: getFontSize(55) - 3,
-                        fontSize: getFontSize(55),
+                        lineHeight: getFontSize(60),
+                        fontSize: getFontSize(60),
                         textAlign: "center",
                         flexWrap: "wrap"
                     }}>
-                        <Text style={{ color: "rgb(155, 240, 11)" }}>Follow</Text>
-                        {" what\nyour favorite\n"}
-                        <Text style={{ color: "rgb(155, 240, 11)" }}>Influencers</Text>
-                        {"\nare "}
-                        <Text style={{ color: "rgb(155, 240, 11)" }}>Buying.</Text>
+                        <Text style={{ color: "rgb(155, 240, 11)" }}>Shop</Text>
+                        {" like\nyour favorite\n"}
+                        <Text style={{ color: "rgb(155, 240, 11)" }}>Influencers.</Text>
                     </Text>
-                    <Text style={{
+                    <View style={{
+                        flexDirection: window.width > 920 && "row",
+                        marginTop: 40,
+                    }}>
+                        <Image source={require("../../../../assets/appStoreBadge.png")}
+                            style={{
+                                height: 57,
+                                margin: 15,
+                                aspectRatio: 2.99,
+                            }}
+                            resizeMode={"contain"}
+                            onMouseEnter={event => {
+                                event.target.style.backgroundColor = "#9bff20";
+                            }} onMouseLeave={event => {
+                                event.target.style.backgroundColor = "#9bf00b";
+                            }} onPress={openiOSApp} />
+                        <Image source={require("../../../../assets/google_play_coming.png")}
+                            style={{
+                                height: 57,
+                                margin: 15,
+                                aspectRatio: 3.47,
+                            }}
+                            resizeMode={"contain"} />
+                    </View>
+                    {/* <Text style={{
                         paddingVertical: 22,
                         paddingHorizontal: 70,
                         fontSize: 17,
@@ -100,7 +133,7 @@ function Landing({ navigation }) {
                         event.target.style.backgroundColor = "#9bf00b";
                     }} onPress={enter}>
                         ENTER SOSH
-                    </Text>
+                    </Text> */}
                 </View>
 
                 <Image source={{ uri: "https://i.ibb.co/pZ089Wh/Saturday-13-Nov-2021-23-15-10.png" }}

@@ -84,7 +84,7 @@ export default class App extends React.Component {
             <ThemeContextProvider>
               <UsersContext.Provider>
                 <NavigationContainer linking={this.linking} fallback={<Text>Loading...</Text>}>
-                  {this.platform === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
+                  {Platform.OS === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
                 </NavigationContainer>
               </UsersContext.Provider>
             </ThemeContextProvider>
