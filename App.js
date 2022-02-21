@@ -3,7 +3,6 @@ import { LogBox, Platform, Text } from "react-native";
 import * as Linking from 'expo-linking';
 import RootStackNavigator from "./navigations/RootStackNavigator";
 import { NavigationContainer } from "@react-navigation/native";
-import UsersContext from "./data/UsersContext";
 import AppContext from "./data/AppContext";
 import WebStyleContextProvider from './data/WebStyleContextProvider';
 import ThemeContextProvider from "./data/ThemeContextProvider";
@@ -82,11 +81,9 @@ export default class App extends React.Component {
               setUID: this.setUID
             }}>
             <ThemeContextProvider>
-              <UsersContext.Provider>
                 <NavigationContainer linking={this.linking} fallback={<Text>Loading...</Text>}>
                   {Platform.OS === "web" ? <WebMainSimpleNavigator /> : <RootStackNavigator />}
                 </NavigationContainer>
-              </UsersContext.Provider>
             </ThemeContextProvider>
           </AppContext.Provider>
         </WebStyleContextProvider>

@@ -11,7 +11,7 @@ function Sign({ nextDrop, dateReached }) {
     const colors = useContext(ThemeContext).colors[theme];
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const interval = setInterval(() => {
 
             const now = new Date();
             let n = Math.floor((nextDrop.getTime() - now.getTime()) / 1000);
@@ -44,7 +44,7 @@ function Sign({ nextDrop, dateReached }) {
             }
         }, 1000);
 
-        return () => clearTimeout(timer);
+        return () => clearInterval(interval);
     });
 
     return (

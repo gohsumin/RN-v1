@@ -5,7 +5,9 @@ import {
     Text,
     useWindowDimensions,
     FlatList,
-    RefreshControl
+    RefreshControl,
+    ScrollView,
+    Dimensions
 } from 'react-native';
 import AppContext from '../../data/AppContext';
 import ThemeContext from '../../data/ThemeContext';
@@ -13,6 +15,7 @@ import logo_big from "../../assets/SoShNavLogo.png";
 import WebSign from './components/WebSign';
 import WebStory from './components/WebStory';
 import WebDropCircle from "./components/WebDropCircle";
+import { AntDesign } from '@expo/vector-icons';
 import { Helmet } from "react-helmet";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebaseApp } from "../../data/firebase";
@@ -38,7 +41,7 @@ function WebHome({ navigation }) {
     const numColumns = 3;
 
     useEffect(() => {
-        AsyncStorage.clear();
+        // AsyncStorage.clear();
         getTimeAttributes().then((dates) => {
             setDates(dates);
             getFeedOutline(dates).then(({ feedArr, feedObj }) => {
@@ -157,9 +160,10 @@ function WebHome({ navigation }) {
     }
 
     return (
-        <View style={{
-            flex: 1,
-            backgroundColor: colors.background
+        <ScrollView style={{
+            margin: 0,
+            backgroundColor: colors.background,
+            // borderWidth: 1, borderColor: "blue"
         }}>
             <Helmet>
                 <meta property='og:title' content='SOSH WORLD' />
@@ -168,51 +172,178 @@ function WebHome({ navigation }) {
                 <meta property='og:url' content='https://www.soshworld.com/' />
             </Helmet>
             {ready && <View style={{
-                flex: 1,
-                alignItems: "center",
-                width: "100%",
-                height: "100%",
-                // borderWidth: 1, borderColor: "salmon"
+                justifyContent: "space-between",
+                margin: 0,
+                height: window.height,
+                paddingVertical: 20,
+                // borderWidth: 1, borderColor: "blue"
             }}>
-                <WebSign
-                    nextDrop={dates.nextDrop}
-                    dateReached={countDownTransition} />
-                <FlatList
-                    data={feedOrder}
-                    extraData={trigger}
-                    numColumns={numColumns}
-                    renderItem={renderItem}
-                    columnWrapperStyle={{
-                        justifyContent: "space-between",
-                        marginVertical: 10
-                    }}
-                    keyExtractor={(item, index) => item.userID}
-                    refreshControl={
-                        <RefreshControl
-                            colors={['black', 'white']}
-                            tintColor={'white'}
-                            refreshing={refreshing}
-                            onRefresh={refreshDataWithTime}
-                        />
-                    }
-                    style={{
-                        flex: 1,
-                        width: 350,
-                        alignSelf: "center",
-                        paddingTop: 20,
-                        paddingHorizontal: 10,
-                    }}
-                />
-                <WebStory
-                    startTime={dates.prevPrevDrop}
-                    endTime={dates.prevDrop}
-                    data={(storyOpen != null) ? feed[storyOpen] : null}
-                    closeStory={closeStory}
-                    navigation={navigation}
-                    countDownTransitioning={countDownTransitioning}
-                />
+                <View style={{
+                    flex: 1,
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100%",
+                    // borderWidth: 1, borderColor: "salmon"
+                }}>
+                    <WebSign
+                        nextDrop={dates.nextDrop}
+                        dateReached={countDownTransition} />
+                    <FlatList
+                        data={feedOrder}
+                        extraData={trigger}
+                        numColumns={numColumns}
+                        renderItem={renderItem}
+                        columnWrapperStyle={{
+                            justifyContent: "space-between",
+                            marginVertical: 10
+                        }}
+                        keyExtractor={(item, index) => item.userID}
+                        refreshControl={
+                            <RefreshControl
+                                colors={['black', 'white']}
+                                tintColor={'white'}
+                                refreshing={refreshing}
+                                onRefresh={refreshDataWithTime}
+                            />
+                        }
+                        style={{
+                            flex: 1,
+                            width: 350,
+                            alignSelf: "center",
+                            paddingTop: 20,
+                            paddingHorizontal: 10,
+                        }}
+                    />
+                    <WebStory
+                        startTime={dates.prevPrevDrop}
+                        endTime={dates.prevDrop}
+                        data={(storyOpen != null) ? feed[storyOpen] : null}
+                        closeStory={closeStory}
+                        navigation={navigation}
+                        countDownTransitioning={countDownTransitioning}
+                    />
+                </View>
+                <View style={[{
+                    width: "96%",
+                    alignItems: "center",
+                    alignSelf: "center",
+                    // marginBottom: 30,
+                    // borderWidth: 1, borderColor: "blue"
+                }, window.width > 800 && {
+                    flexDirection: "row",
+                    alignItems: "flex-end",
+                    justifyContent: "space-between"
+                }]}>
+                    <View style={[
+                        window.width <= 800 && { alignItems: "center" },
+                        {
+                            // width: 350,
+                            // borderWidth: 1, borderColor: 'pink'
+                        }
+                    ]}>
+                        <Image source={require("../../assets/SoShNavLogo.png")}
+                            style={{
+                                width: 150,
+                                height: 50,
+                                // borderWidth: 1, borderColor: 'pink'
+                            }}
+                            resizeMode='contain' />
+                        <Text style={{
+                            color: "white",
+                            fontSize: 14,
+                            fontFamily: "Arial-BoldMT",
+                            fontWeight: "800",
+                            marginTop: 15,
+                        }}>
+                            All Rights Reserved © 2021 • SOSH WRLD INC.
+                        </Text>
+                    </View>
+
+                    <Text style={[
+                        {
+                            color: "white",
+                            fontSize: 18,
+                            fontFamily: "Arial-BoldMT",
+                            fontWeight: "800",
+                            marginVertical: 10,
+                        },
+                        window.width > 800 && {
+                            position: "absolute",
+                            width: "100%",
+                            textAlign: "center",
+                            marginVertical: 30,
+                        }
+                    ]}
+                        onMouseEnter={event => {
+                            event.target.style.color = "rgb(155, 240, 11)";
+                        }} onMouseLeave={event => {
+                            event.target.style.color = "white";
+                        }}>
+                        HA@SOSHAPPS.COM
+                    </Text>
+
+                    <View style={[
+                        { alignItems: "flex-end" },
+                        window.width <= 800 && { alignItems: "center" },
+                        {
+                            // width: 350,
+                            // borderWidth: 1, borderColor: 'pink'
+                        }
+                    ]}>
+                        <View style={{
+                            flexDirection: "row",
+                            width: 95,
+                            justifyContent: "space-between",
+                        }}>
+                            <AntDesign name="instagram" size={24} color="white" />
+                            <AntDesign name="twitter" size={24} color="white" />
+                            <AntDesign name="youtube" size={24} color="white" />
+                        </View>
+
+                        <View style={{
+                            flexDirection: "row",
+                            marginTop: 15
+                        }}>
+                            <Text style={{
+                                color: "white",
+                                fontSize: 14,
+                                fontFamily: "Arial-BoldMT",
+                                fontWeight: "800",
+                                borderBottomColor: "black",
+                                borderBottomWidth: 0.5,
+                                lineHeight: 19
+                            }} onMouseEnter={event => {
+                                event.target.style.color = "rgb(155, 240, 11)";
+                                event.target.style.borderBottomColor = "rgb(155, 240, 11)";
+                            }} onMouseLeave={event => {
+                                event.target.style.color = "white";
+                                event.target.style.borderBottomColor = "black";
+                            }} onPress={() => { linkTo("/terms"); }}>
+                                {"Terms & Conditions"}
+                            </Text>
+                            <Text style={{
+                                color: "white",
+                                fontSize: 14,
+                                fontFamily: "Arial-BoldMT",
+                                fontWeight: "800",
+                                marginLeft: 15,
+                                borderBottomColor: "black",
+                                borderBottomWidth: 0.5,
+                                lineHeight: 19
+                            }} onMouseEnter={event => {
+                                event.target.style.color = "rgb(155, 240, 11)";
+                                event.target.style.borderBottomColor = "rgb(155, 240, 11)";
+                            }} onMouseLeave={event => {
+                                event.target.style.color = "white";
+                                event.target.style.borderBottomColor = "black";
+                            }} onPress={() => { linkTo("/privacy"); }}>
+                                {"Privacy"}
+                            </Text>
+                        </View>
+                    </View>
+                </View>
             </View>}
-        </View>)
+        </ScrollView>)
 }
 
 export default WebHome;

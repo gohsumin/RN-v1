@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "sosh",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -22,10 +22,11 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#000000"
       },
-      "package": "com.soshworld"
+      "package": "com.soshworld",
+      "versionCode": 1
     },
     "androidNavigationBar": {
       "visible": "immersive",
@@ -33,10 +34,10 @@
       "backgroundColor": "#000000"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/logo.png"
     },
     "splash": {
-      "image": "./assets/icon.png",
+      "image": "./assets/logo.png",
       "resizeMode": "cover",
       "backgroundColor": "#000000"
     }

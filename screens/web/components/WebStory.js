@@ -55,7 +55,7 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
         if (ready) {
             // note: index is the previous index
             // tapped on right
-            if (tapX - styles.popUpWidth / 2 > 0) {
+            if (tapX > styles.imageSideLength) {
                 if (index + 2 < stories.length) {
                     setIndex(index + 1);
                 }
@@ -310,6 +310,7 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
             style={{
                 margin: 0,
                 width: "100%",
+                borderColor: "yellow", borderWidth: 1,
                 justifyContent: "center",
                 alignItems: "center",
                 alignSelf: "center",
@@ -344,10 +345,6 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
                     /* wrapper around story to listen for tap location;
                        it also blocks the outer TouchableOpacity */
                     <TouchableOpacity
-                        activeOpacity={1.0}
-                        onPress={(event) => {
-                            setTapX(event.nativeEvent.locationX);
-                        }}
                         style={{
                             width: styles.popUpWidth,
                             borderRadius: 20,
@@ -375,20 +372,21 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
                                 paddingVertical: 12,
                                 // borderWidth: 1,borderColor:"salmon"
                             }}>
+                                <Text style={{
+                                    color: "cyan"
+                                }}>
+                                    {tapX}
+                                </Text>
                                 <View style={{
                                     flex: 1,
                                     flexDirection: "row",
                                     alignItems: "center"
                                 }}>
-                                    <TouchableOpacity style={{
+                                    <View style={{
                                         width: 56,
                                         height: 56,
                                         borderRadius: 28,
                                     }} activeOpacity={1}
-                                    // onPress={() => {
-                                    // onExitRequested();
-                                    // navigation.navigate("Profile", { uid: data.uid });
-                                    // }}
                                     >
                                         <Image source={{ uri: data.userImageURL }}
                                             style={{
@@ -396,7 +394,7 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
                                                 height: 56,
                                                 borderRadius: 28,
                                             }} />
-                                    </TouchableOpacity>
+                                    </View>
                                     <View style={{
                                         flex: 1,
                                         justifyContent: "space-between",
@@ -446,13 +444,17 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
                             </View>
 
                             {/* Item image */}
-                            <View style={{
+                            <TouchableOpacity style={{
                                 width: styles.imageSideLength,
                                 height: styles.imageSideLength,
                                 // borderRadius: 15,
                                 backgroundColor: "white",
                                 alignItems: "center",
                                 justifyContent: "center"
+                            }}
+                            activeOpacity={1.0}
+                            onPress={(event) => {
+                                setTapX(event.nativeEvent.locationX);
                             }}>
                                 <Image style={{
                                     width: styles.imageSideLength - 30,
@@ -460,7 +462,7 @@ function WebStory({ startTime, endTime, data, closeStory, navigation, countDownT
                                 }}
                                     source={{ uri: stories[index].itemImageURL }}
                                     resizeMode='contain' />
-                            </View>
+                            </TouchableOpacity>
 
                             {/* Bottom row */}
                             <View style={{

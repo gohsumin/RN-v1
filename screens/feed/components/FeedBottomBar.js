@@ -1,10 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, useWindowDimensions, Linking } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import AppContext from "../../../data/AppContext";
 import ThemeContext from "../../../data/ThemeContext";
-
-import shopIcon from "../../../assets/shopIcon.png";
 import WebStyleContext from '../../../data/WebStyleContext';
 
 function FeedBottomBar({ numTapped, link, incrementViews }) {
@@ -76,12 +73,6 @@ function FeedBottomBar({ numTapped, link, incrementViews }) {
                             }
                           });
                     }}>
-                    {/* <Image source={shopIcon}
-                        style={{
-                            width: 20,
-                            height: 20,
-                            tintColor: colors.green,
-                        }} /> */}
                     <Text style={{
                         fontSize: getFeedFontSize(window.width, 18),
                         color: "black", //colors.green,

@@ -41,7 +41,7 @@ const RootStackNavigator = () => {
 
   useEffect(() => {
 
-    var subscription = onAuthStateChanged(auth, (user) => {
+    var sub = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, displayName, photoURL } = user;
         if (uid && displayName) {
@@ -54,9 +54,9 @@ const RootStackNavigator = () => {
         setInitialRoute("SignIn");
       }
     });
-    subscription.current = subscription;
+    // subscription.current = sub;
 
-    return subscription.current;
+    return sub;
   }, []);
 
   return (
@@ -66,16 +66,19 @@ const RootStackNavigator = () => {
         flex: 1, backgroundColor: colors.background,
         // borderWidth: 1, borderColor: "cyan"
       }}>
+        
         <StatusBar translucent
           backgroundColor="transparent"
           barStyle={theme === "dark" ?
             "light-content" :
             "dark-content"} />
         <FlashMessage position="top" />
+
         <RootStack.Navigator
           initialRouteName={initialRoute}
           mode="modal"
           screenOptions={screenOptionStyle}>
+
           <RootStack.Screen
             name="SignIn"
             component={SignInMain}
@@ -99,6 +102,7 @@ const RootStackNavigator = () => {
             component={TabBar}
             options={{ headerShown: false }}
           />
+
         </RootStack.Navigator>
       </View>
   );

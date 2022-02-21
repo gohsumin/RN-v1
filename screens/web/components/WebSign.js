@@ -11,7 +11,7 @@ function WebSign({ nextDrop, dateReached }) {
     const colors = useContext(ThemeContext).colors[theme];
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const interval = setInterval(() => {
 
             const now = new Date();
             let n = Math.floor((nextDrop.getTime() - now.getTime()) / 1000);
@@ -44,12 +44,12 @@ function WebSign({ nextDrop, dateReached }) {
             }
         }, 1000);
 
-        return () => clearTimeout(timer);
-    });
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <View style={{
-            marginTop: 60,
+            // marginTop: 60,
             width: 350,
             height: 137,
             padding: 5,
