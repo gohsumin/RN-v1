@@ -7,6 +7,7 @@ import WebStyleContext from '../../../data/WebStyleContext';
 function FeedBottomBar({ numTapped, link, incrementViews }) {
 
     const theme = useContext(AppContext).theme;
+    
     const colors = useContext(ThemeContext).colors[theme];
     const { getFeedFontSize } = useContext(WebStyleContext);
     const window = useWindowDimensions();

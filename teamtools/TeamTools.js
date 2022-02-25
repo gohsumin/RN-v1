@@ -4,9 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Input from './Input';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
+import sanitizeHtml from 'sanitize-html';
 import brandFunctions from "./brandFunctions";
 import { firebaseApp } from "../data/firebase";
-import { collection, getDocs, getFirestore, limit, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, getFirestore, limit, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { LinearGradient } from 'expo-linear-gradient';
 import TranspImage from './TranspImage';
 
@@ -277,7 +278,8 @@ function TeamTools() {
         }
 
         function remove(index) {
-            firestore.collection("Human-Proccessing").doc(emailArr[index].msgID).delete().then(() => {
+            const docRef = doc(db, "Human-Proccessing", emailArr[index].msgID);
+            deleteDoc(docRef).then(() => {
                 console.log("deleted email " + emailArr[index].msgID);
             }).catch((err) => { console.log(err); });
             emailArr.splice(index, 1);
@@ -331,6 +333,28 @@ function TeamTools() {
             setTrigger(!trigger);
         }
 
+        function sanitize(html) {
+            return sanitizeHtml(html, {
+                allowedTags: [
+                    "address", "article", "aside", "footer", "header", "h1", "h2", "h3", "h4",
+                    "h5", "h6", "hgroup", "main", "nav", "section", "blockquote", "dd", "div",
+                    "dl", "dt", "figcaption", "figure", "hr", "li", "main", "ol", "p", "pre",
+                    "ul", "a", "abbr", "b", "bdi", "bdo", "br", "cite", "code", "data", "dfn",
+                    "em", "i", "kbd", "mark", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp",
+                    "small", "span", "strong", "sub", "sup", "time", "u", "var", "wbr", "caption", "img",
+                    "col", "colgroup", "table", "tbody", "td", "tfoot", "th", "thead", "tr"
+                ],
+                allowedAttributes: {
+                    a: ['href', 'name', 'target'],
+                    // We don't currently allow img itself by default, but
+                    // these attributes would make sense if we did.
+                    img: ['src', 'srcset', 'alt', 'title', 'width',
+                        'height', 'loading'],
+                    "*": ['style']
+                },
+            });
+        }
+
         return (
 
             <View style={styles.renderItemStyle}>
@@ -361,7 +385,9 @@ function TeamTools() {
                                 color: '#222',
                                 backgroundColor: "white",
                                 padding: 15,
-                            }} dangerouslySetInnerHTML={{ __html: item.msgHTML }} />
+                            }} dangerouslySetInnerHTML={{
+                                __html: sanitize(item.msgHTML)
+                            }} />
                         </View>}
                     <View style={styles.renderItemTop}>
                         <Text style={styles.categoryText}>
@@ -475,18 +501,19 @@ function TeamTools() {
                         </Text>
                     </View>
 
-                    {item.brandFunctionExists && <View style={[
-                        { height: "100%" },
-                        styles.collapsibleMenuFrame,
-                        collapsibleObj[item.msgID].tab === "closed" && {
-                            borderBottomWidth: 0,
-                        },
-                        collapsibleObj[item.msgID].tab === "auto" && {
-                            borderLeftWidth: 0.1,
-                            borderRightWidth: 0.1,
-                            borderBottomWidth: 0,
-                            backgroundColor: "rgba(255, 255, 255, 0.7)",
-                        }]} >
+                    {item.brandFunctionExists && <View // auto entry button
+                        style={[
+                            { height: "100%" },
+                            styles.collapsibleMenuFrame,
+                            collapsibleObj[item.msgID].tab === "closed" && {
+                                borderBottomWidth: 0,
+                            },
+                            collapsibleObj[item.msgID].tab === "auto" && {
+                                borderLeftWidth: 0.1,
+                                borderRightWidth: 0.1,
+                                borderBottomWidth: 0,
+                                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                            }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
                             collapsibleObj[item.msgID].tab === "auto" &&
@@ -507,17 +534,18 @@ function TeamTools() {
                         }} />}
                     </View>}
 
-                    <View style={[{ height: "100%" },
-                    styles.collapsibleMenuFrame,
-                    collapsibleObj[item.msgID].tab === "closed" && {
-                        borderBottomWidth: 0,
-                    },
-                    collapsibleObj[item.msgID].tab === "manual" && {
-                        borderLeftWidth: 0.1,
-                        borderRightWidth: 0.1,
-                        borderBottomWidth: 0,
-                        backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    }]} >
+                    <View // manual entry button
+                        style={[{ height: "100%" },
+                        styles.collapsibleMenuFrame,
+                        collapsibleObj[item.msgID].tab === "closed" && {
+                            borderBottomWidth: 0,
+                        },
+                        collapsibleObj[item.msgID].tab === "manual" && {
+                            borderLeftWidth: 0.1,
+                            borderRightWidth: 0.1,
+                            borderBottomWidth: 0,
+                            backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        }]} >
                         <Text style={[
                             styles.collapsibleMenuText,
                             collapsibleObj[item.msgID].tab === "manual" &&
@@ -542,12 +570,13 @@ function TeamTools() {
                         borderBottomWidth: 0,
                     },]} />
 
-                    <View style={{
-                        height: "100%",
-                        borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
-                        borderColor: 'rgba(0, 30, 122, 0.6)',
-                        justifyContent: "center"
-                    }} >
+                    <View // delete button
+                        style={{
+                            height: "100%",
+                            borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
+                            borderColor: 'rgba(0, 30, 122, 0.6)',
+                            justifyContent: "center"
+                        }} >
                         <View style={styles.deleteFrame} >
                             <Text style={styles.deleteButton} onPress={() => {
                                 remove(index);
@@ -557,12 +586,13 @@ function TeamTools() {
                         </View>
                     </View>
 
-                    <View style={{
-                        height: "100%",
-                        borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
-                        borderColor: 'rgba(0, 30, 122, 0.6)',
-                        justifyContent: "center"
-                    }} >
+                    <View // submit button
+                        style={{
+                            height: "100%",
+                            borderBottomWidth: collapsibleObj[item.msgID].tab !== "closed" && 0.1,
+                            borderColor: 'rgba(0, 30, 122, 0.6)',
+                            justifyContent: "center"
+                        }} >
                         <View style={styles.submitFrame} >
                             <Text style={styles.submitButton} onPress={() => {
                                 submit(index);
@@ -627,7 +657,7 @@ function TeamTools() {
                                     fontSize: 10,
                                     color: '#222',
                                     backgroundColor: "white",
-                                }} dangerouslySetInnerHTML={{ __html: item.msgHTML }} />
+                                }} dangerouslySetInnerHTML={{ __html: sanitize(item.msgHTML) }} />
                             </View>}
                         <View style={{
                             flex: 1,

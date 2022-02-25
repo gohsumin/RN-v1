@@ -8,7 +8,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { getAuth, updateProfile } from "firebase/auth";
 import { getDoc, getFirestore, doc, updateDoc } from 'firebase/firestore';
 import { firebaseApp } from '../../../data/firebase';
-import { setSourceMapRange } from 'typescript';
 import { update } from 'firebase/database';
 
 function EditProfile({ isVisible, close }) {
