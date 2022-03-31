@@ -1,5 +1,5 @@
 # SOSH WORLD React Native
-## _SOSH is a social media platform for sharing authentic purchases._
+**SOSH is a social media platform for sharing authentic purchases.**
 
 ### Web App
 
