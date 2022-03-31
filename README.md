@@ -12,7 +12,7 @@
 
 ### Demo
 
-- [Demo videos](https://www.dropbox.com/sh/ybqu8we3q8lp94p/AAA4EXX97__j3yaNqxu8JfVsa?dl=0) submitted for OAuth Verification
+- [Demo videos](https://www.dropbox.com/sh/ybqu8we3q8lp94p/AAA4EXX97__j3yaNqxu8JfVsa?dl=0) submitted for OAuth Verification (also my work; I like making videos!)
 
 
 -----
