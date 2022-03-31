@@ -19,7 +19,8 @@
 
 
 #### Hindsight
-_There are many, many, many ways to improve this repository to follow better coding conventions. For example, the mobile and web code should be in separate repos considering their differences now. Also, only the newer components utilize React StyleSheets._
+- _There are many, many, many ways to improve this repository to follow better coding conventions. For example, the mobile and web code should be in separate repos considering their differences now. Also, only the newer components utilize React StyleSheets._
 
 #### Credit + Disclaimer
-_All major decisions, including over-arching design decisions, were made by the team leader. Both the backend and frontend structures changed frequently, and there are multiple fully-functioning past commits with quite different designs and functionalities. Unfortunately, with the frequent, big changes, this project ended up being less of an opportunity to establish that knowledge (as mentioned above), but rather an opportunity to learn a wide range of frontend logic._
+- _This repo was written entirely by me, using the server code written entirely by the team leader H.A. However, this repo is far from complete as I've left the team._
+- _All major decisions, including over-arching design decisions, were made by H.A. Both the backend and frontend structures changed frequently, and there are multiple fully-functioning past commits with quite different designs and functionalities. Unfortunately, with the frequent, big changes, this project ended up being less of an opportunity to establish that knowledge (as mentioned above), but rather an opportunity to learn a wide range of frontend logic._
