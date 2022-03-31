@@ -3,8 +3,8 @@
 
 ### Web App
 
-- [Landing page](www.soshworld.com)
-- [Processing emails](www.soshworld.com/tools) (TEMPORARY internal tool)
+- [Landing page](https://www.soshworld.com)
+- [Processing emails](https://www.soshworld.com/tools) (TEMPORARY internal tool)
 
 ### Mobile App
 
