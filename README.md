@@ -22,5 +22,5 @@
 - I worked on this repo from June 2021 to February 2022 as a front-end developer.
 - This repo was written by me, using the server code written by the team leader H.A.
 - There are many, many, many ways I could've done better to follow better coding conventions. For example, the mobile and web code should be in separate repos considering their differences now. Also, only the newer components utilize React StyleSheets.
-- All major decisions regarding our organization, representation, and mission were made by H.A. Both the backend and frontend structures changed frequently — therefore I have multiple fully-functioning past commits with quite different designs and functionalities. Unfortunately, with the frequent, big changes, this project ended up being less of an opportunity to establish that knowledge (as mentioned above), but rather an opportunity to learn a wide range of frontend logic.
+- All major decisions regarding our organization, representation, and mission were made by H.A. Both the backend and frontend _design_ changed very frequently — therefore I have multiple fully-functioning past commits with quite different designs and functionalities.
 - There is a lot more functionality that is currently hidden (due to frequent changes mentioned above).
